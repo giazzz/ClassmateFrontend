@@ -1,0 +1,32 @@
+.top-menu{
+    margin: 0 auto;
+    height: -webkit-fill-available;
+}
+.ml{
+    margin-left: auto;
+}
+a.nav-link{
+    letter-spacing: .01785714em;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 3.25rem;
+    color: #3c4043;
+    text-transform: none;
+}
+.app-header .navbar-nav {
+    height: -webkit-fill-available;
+}
+.app-header .nav-item {
+    height: -webkit-fill-available;
+}
+.app-header .nav-item .nav-link {
+    height: inherit;
+    padding: 0px 10px;
+}
+.nav-item a.active{
+    color: #1967d2;
+    border-bottom: 4px solid #1967d2;
+}
+.nav-item a.active:hover{
+    background-color: #e8f0fe;
+}

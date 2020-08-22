@@ -40,6 +40,8 @@ import { AppRoutingModule } from './app.routing';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
+import { ClassRoomComponent } from './views/class-room/class-room.component';
+import { DashboardComponent } from './views/dashboard/dashboard.component';
 
 @NgModule({
   imports: [
@@ -59,10 +61,12 @@ import { ChartsModule } from 'ng2-charts';
   declarations: [
     AppComponent,
     ...APP_CONTAINERS,
+    DashboardComponent,
     P404Component,
     P500Component,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    ClassRoomComponent
   ],
   providers: [{
     provide: LocationStrategy,

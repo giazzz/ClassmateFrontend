@@ -5,26 +5,28 @@
   [navbarBrandMinimized]="{src: 'assets/img/brand/sygnet.svg', width: 30, height: 30, alt: 'CoreUI Logo'}"
   [sidebarToggler]="'lg'"
   [asideMenuToggler]="'lg'">
-  <ul class="nav navbar-nav d-md-down-none">
-    <li class="nav-item px-3">
-      <a class="nav-link" href="#">Dashboard</a>
-    </li>
-    <li class="nav-item px-3">
-      <a class="nav-link" href="#">Users</a>
-    </li>
-    <li class="nav-item px-3">
-      <a class="nav-link" href="#">Settings</a>
-    </li>
-  </ul>
-  <ul class="nav navbar-nav ml-auto">
+  <div class="text-center top-menu" *ngIf="route.url.includes('class')">
+    <ul class="nav navbar-nav d-md-down-none">
+      <li class="nav-item px-3">
+        <a class="nav-link active" href="#">Luồng</a>
+      </li>
+      <li class="nav-item px-3">
+        <a class="nav-link" href="#">Bài tập trên lớp</a>
+      </li>
+      <li class="nav-item px-3">
+        <a class="nav-link" href="#">Mọi người</a>
+      </li>
+      <li class="nav-item px-3">
+        <a class="nav-link" href="#">Số điểm</a>
+      </li>
+      <li class="nav-item px-3">
+        <a class="nav-link" href="#">Điểm danh</a>
+      </li>
+    </ul>
+  </div>
+  <ul class="nav navbar-nav" [ngClass]="{'ml' : !route.url.includes('class')}">
     <li class="nav-item d-md-down-none">
       <a class="nav-link" href="#"><i class="icon-bell"></i><span class="badge badge-pill badge-danger">5</span></a>
-    </li>
-    <li class="nav-item d-md-down-none">
-      <a class="nav-link" href="#"><i class="icon-list"></i></a>
-    </li>
-    <li class="nav-item d-md-down-none">
-      <a class="nav-link" href="#"><i class="icon-location-pin"></i></a>
     </li>
     <li class="nav-item dropdown" dropdown placement="bottom right">
       <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" dropdownToggle (click)="false">
@@ -67,18 +69,6 @@
         </div>
       </li>
     </cui-breadcrumb>
-    <!-- deprecation warning for 'app-breadcrumb' -->
-    <!--<ol class="breadcrumb">-->
-      <!--<app-breadcrumb></app-breadcrumb>-->
-      <!--&lt;!&ndash; Breadcrumb Menu&ndash;&gt;-->
-      <!--<li class="breadcrumb-menu d-md-down-none">-->
-        <!--<div class="btn-group" role="group" aria-label="Button group with nested dropdown">-->
-          <!--<a class="btn" href="#"><i class="icon-speech"></i></a>-->
-          <!--<a class="btn" [routerLink]="['/dashboard']"><i class="icon-graph"></i> &nbsp;Dashboard</a>-->
-          <!--<a class="btn" href="#"><i class="icon-settings"></i> &nbsp;Settings</a>-->
-        <!--</div>-->
-      <!--</li>-->
-    <!--</ol>-->
     <div class="container-fluid">
       <router-outlet></router-outlet>
     </div><!-- /.container-fluid -->
