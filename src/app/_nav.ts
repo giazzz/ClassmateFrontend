@@ -17,22 +17,22 @@ export const navItems: INavData[] = [
   },
   {
     name: 'T1807E',
-    url: '/theme/colors',
+    url: '/class/1',
     icon: 'icon-graduation'
   },
   {
     name: 'T1907E',
-    url: '/theme/typography',
+    url: '/class/2',
     icon: 'icon-graduation'
   },
   {
     name: 'T1907E',
-    url: '/theme/typography',
+    url: '/class/3',
     icon: 'icon-graduation'
   },
   {
     name: 'T1907E',
-    url: '/theme/typography',
+    url: '/class/4',
     icon: 'icon-graduation'
   }
 ];
