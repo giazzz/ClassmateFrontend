@@ -12,6 +12,10 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 };
 
 import { AppComponent } from './app.component';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { NgxUiLoaderModule } from 'ngx-ui-loader';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 // Import containers
 import { DefaultLayoutComponent } from './containers';
@@ -45,6 +49,11 @@ import { DashboardComponent } from './views/dashboard/dashboard.component';
 
 @NgModule({
   imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    NgxUiLoaderModule,
+    FontAwesomeModule,
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,

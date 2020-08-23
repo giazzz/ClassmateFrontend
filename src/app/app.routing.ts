@@ -42,7 +42,7 @@ export const routes: Routes = [
     path: 'register',
     component: RegisterComponent,
     data: {
-      title: 'Register Page'
+      title: 'Tạo tài khoản'
     }
   },
   {

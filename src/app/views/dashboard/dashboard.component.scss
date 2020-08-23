@@ -7,3 +7,20 @@ h2{
     background-repeat: no-repeat;
     background-size: cover;
 }
+.add-card{
+    height: 237px;
+    border: 4px dashed #ccc4ff;
+    cursor: pointer;
+}
+.add-card .brand-card-body{
+    display: block;
+    font-size: 75px;
+    color: #ccc4ff;
+    padding-top: 25px;
+}
+.add-card .brand-card-body > *:not(:last-child) {
+    border-right: none;
+}
+.add-char{
+    font-size: 20px;
+}
