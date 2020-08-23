@@ -10,6 +10,8 @@ import { LoginComponent } from './views/login/login.component';
 import { RegisterComponent } from './views/register/register.component';
 import { DashboardComponent } from './views/dashboard/dashboard.component';
 import { ClassRoomComponent } from './views/class-room/class-room.component';
+import { AttendanceByStudentComponent } from './views/attendance/attendance-by-student/attendance-by-student.component';
+import { AttendanceByTeacherComponent } from './views/attendance/attendance-by-teacher/attendance-by-teacher.component';
 
 export const routes: Routes = [
   {
@@ -53,7 +55,9 @@ export const routes: Routes = [
     },
     children: [
       { path: 'dashboard', component: DashboardComponent},
-      { path: 'class/:id', component: ClassRoomComponent },
+      { path: 'class/:id/stream', component: ClassRoomComponent },
+      { path: 'student/:id/attendance', component: AttendanceByStudentComponent },
+      { path: 'class/:id/attendance', component: AttendanceByTeacherComponent }
     ]
   },
   { path: '**', component: P404Component }

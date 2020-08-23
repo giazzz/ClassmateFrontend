@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { navItems } from '../../_nav';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,11 +10,27 @@ import { Router } from '@angular/router';
 export class DefaultLayoutComponent implements OnInit {
   public sidebarMinimized = false;
   public navItems = navItems;
+  public classId: string;
+  public userId: string;
 
-  constructor(private route: Router
+  constructor(private routeActive: ActivatedRoute, private router: Router
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
+    // Get id user logged from session storage:
+    this.userId = sessionStorage.id || '';
+
+    this.classId = this.router.url.substr(7, 1);
+    this.router.events.subscribe((events) => {
+      if (events instanceof NavigationStart) {
+        if (events.url.includes('class')) {
+          this.router.routerState.root.snapshot.paramMap.get('id');
+          this.classId = events.url.substr(7, 1);
+          // Get id user logged from session storage:
+          this.userId = sessionStorage.id;
+        }
+      }
+    });
   }
 
   toggleMinimize(e) {
