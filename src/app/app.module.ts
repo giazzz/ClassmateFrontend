@@ -16,6 +16,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgxUiLoaderModule } from 'ngx-ui-loader';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {WebcamModule} from 'ngx-webcam';
 
 // Import containers
 import { DefaultLayoutComponent } from './containers';
@@ -56,6 +57,7 @@ import { AttendanceByStudentComponent } from './views/attendance/attendance-by-s
     HttpClientModule,
     NgxUiLoaderModule,
     FontAwesomeModule,
+    WebcamModule,
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,

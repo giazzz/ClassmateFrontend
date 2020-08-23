@@ -1,12 +1,16 @@
 .card-header-class{
-    height: 600px;
+    height: 500px;
     border-radius: 10px;
+    margin-bottom: 0.8rem;
 }
 .container-fluid {
-    padding: 0 25%;
+    padding: 0 20%;
+    margin-top: 10px;
 }
 .card-footer{
     background-color: #1abc9c;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 .margin-auto{
     margin: auto;
@@ -17,8 +21,9 @@
     background-repeat: no-repeat;
     background-position-x: center;
     background-position-y: center;
-    opacity: 0.2;
+    // opacity: 0.2;
     background-size: 200px;
+    padding: 0px;
 }
 @import url(//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css);
 @import url(https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500);
@@ -35,11 +40,11 @@
 
   animation: roll 1.5s;
   position: relative;
-  width: 120px;
+  width: 80px;
   left: 50%;
-  top: 42%;
+  top: 35%;
   transform: translate(-50%,-50%);
-  padding: 15px;
+  padding: 10px;
   background: #16a085;
   border-radius: 50%;
   box-shadow: 0 3px 5px rgba(0,0,0,.3);
@@ -52,8 +57,8 @@
     background-size: cover;
     background-position: center;
     display: block;
-    width: 90px;
-    height: 90px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     box-shadow: 0 3px 5px rgba(0,0,0,.3);
     color: rgba(0,0,0,0);
@@ -66,7 +71,7 @@
       left: 50%;
       top: 50%;
       color: #fff;
-      font-size: 48px;
+      font-size: 36px;
       opacity: .8;
       transform: translate(-50%, -50%);
       text-shadow: 0 0px 5px rgba(0,0,0,.4);
@@ -122,3 +127,14 @@
   }
 }
 
+.wrap-webcam{
+  display: flex;
+  width: 100%;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  height: 400px;
+  align-items: center;
+  justify-content: center;
+  // inexplicable/unknown extra space is rendered, causing scrollbars to show up 
+  overflow: hidden;
+}
