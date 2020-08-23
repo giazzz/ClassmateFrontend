@@ -25,6 +25,10 @@
                     <p *ngIf="f.inputUsername.errors.required">Tên không được để trống!</p>
                     <p *ngIf="f.inputUsername.errors.minlength">Tên phải lớn hơn 6 ký tự!</p>
                     <p *ngIf="f.inputUsername.errors.maxlength">Tên phải nhỏ hơn 30 ký tự!</p>
+                    <p *ngIf="blnIsNameExisted">Tên người dùng đã được sử dụng!</p>
+                  </div>
+                  <div *ngIf="!frmRegister.invalid && blnIsNameExisted" class="invalid-msg">
+                    <p>Tên người dùng đã được sử dụng!</p>
                   </div>
                 </div>
                 
@@ -37,6 +41,9 @@
                     <p *ngIf="f.inputEmail.errors.required">Email không được để trống!</p>
                     <p *ngIf="f.inputEmail.errors.maxlength">Email không được dài quá 50 ký tự!</p>
                     <p *ngIf="f.inputEmail.errors.email">Email không đúng định dạng!</p>
+                  </div>
+                  <div *ngIf="!frmRegister.invalid && blnIsMailExisted" class="invalid-msg">
+                    <p>Email đã được sử dụng!</p>
                   </div>
                 </div>
 

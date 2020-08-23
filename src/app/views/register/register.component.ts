@@ -8,11 +8,13 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
   templateUrl: 'register.component.html',
   styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent implements OnInit{
+export class RegisterComponent implements OnInit {
 
   public frmRegister: FormGroup;
   public submitted: boolean;
   public regexPassword: RegExp;
+  public blnIsNameExisted: boolean;
+  public blnIsMailExisted: boolean;
 
   constructor(private fb: FormBuilder,
               private resService: RegisterService,
@@ -22,6 +24,8 @@ export class RegisterComponent implements OnInit{
   ngOnInit(): void {
     this.submitted = false;
     this.regexPassword = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).*$/;
+    this.blnIsMailExisted = false;
+    this.blnIsNameExisted = false;
 
     this.frmRegister = this.fb.group({
       inputUsername: ['', [
@@ -56,6 +60,8 @@ export class RegisterComponent implements OnInit{
   onSubmit() {
     this.submitted = true;
     this.ngxService.start();
+    this.blnIsMailExisted = false;
+    this.blnIsNameExisted = false;
     // Stop here if form is invalid
     if (this.frmRegister.invalid) {
       this.ngxService.stop();
@@ -70,13 +76,21 @@ export class RegisterComponent implements OnInit{
     this.resService.register(objAcc)
       .subscribe(
         response => {
-          if (response.status === 200 && response.body != null) {
-            // Create success:
+          const successMsg = 'User registered successfully!';
+          if (response.status === 200 && response.body.message === successMsg) {
+            // Success:
             this.ngxService.stop();
           }
         },
         error => {
-          // Create error:
+          // Error:
+          const errUsername = 'Error: Username is already in use!';
+          const errEmail = 'Error: Email is already in use!';
+          if (error.error.message === errUsername) {
+            this.blnIsNameExisted = true;
+          } else if (error.error.message === errEmail) {
+            this.blnIsMailExisted = true;
+          }
           this.ngxService.stop();
         });
   }
@@ -98,5 +112,5 @@ export function mustMatch(controlName: string, matchingControlName: string) {
       } else {
           matchingControl.setErrors(null);
       }
-  }
+  };
 }
