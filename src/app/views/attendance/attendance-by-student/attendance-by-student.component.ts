@@ -85,6 +85,45 @@ export class AttendanceByStudentComponent implements OnInit {
   }
 
   onClickAttendance(){
-    console.log(this.webcamImage);
+    console.log(this.webcamImage?.imageAsDataUrl);
+    const data = this.webcamImage?.imageAsDataUrl;
+    const fileImg = this.dataURLtoFile(data, 'a.png');
+    this.uploadFileToCloudinary(fileImg);
+
   }
+
+  uploadFileToCloudinary(file) {
+    const url = `https://api.cloudinary.com/v1_1/dev20/upload`;
+    const xhr = new XMLHttpRequest();
+    const fd = new FormData();
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+
+    xhr.onreadystatechange = function(e) {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        // File uploaded successfully
+        const response = JSON.parse(xhr.responseText);
+        alert(response);
+        console.log(response);
+
+      }
+    };
+
+    fd.append('upload_preset', 'gfj9avei');
+    fd.append('tags', 'attendance_upload');
+    fd.append('file', file);
+    xhr.send(fd);
+  }
+
+  dataURLtoFile(dataurl, filename) {
+    let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while ( n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, {type: mime});
+  }
+
+
 }
