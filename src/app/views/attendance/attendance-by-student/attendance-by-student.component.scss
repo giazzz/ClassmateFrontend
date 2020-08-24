@@ -6,6 +6,19 @@
 .container-fluid {
     padding: 0 20%;
     margin-top: 10px;
+    height: 100%;
+}
+.animated{
+  height: 100%;
+}
+.container-card{
+  height: 90%;
+}
+.card{
+  height: 98%;
+}
+.btn-disabled{
+  cursor: not-allowed;
 }
 .card-footer{
     background-color: #1abc9c;

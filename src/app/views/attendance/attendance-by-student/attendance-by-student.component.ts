@@ -14,6 +14,11 @@ export class AttendanceByStudentComponent implements OnInit {
   public allowCameraSwitch = true;
   public multipleWebcamsAvailable = false;
   public deviceId: string;
+  public canSubmit: boolean;
+  public isAttendanced: boolean;
+  public cloud_name = 'dev20';
+  public upload_preset = 'gfj9avei';
+
   public videoOptions: MediaTrackConstraints = {
     width: {ideal: 640},
     height: {ideal: 480}
@@ -42,6 +47,14 @@ export class AttendanceByStudentComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.canSubmit = false;
+    this.isAttendanced = false;
+
+    // Check isAttendanced if true -> return:
+    // this.isAttendanced = true;
+
+
+
     WebcamUtil.getAvailableVideoInputs()
       .then((mediaDevices: MediaDeviceInfo[]) => {
         this.multipleWebcamsAvailable = mediaDevices && mediaDevices.length > 1;
@@ -70,6 +83,7 @@ export class AttendanceByStudentComponent implements OnInit {
 
   public handleImage(webcamImage: WebcamImage): void {
     this.webcamImage = webcamImage;
+    this.canSubmit = true;
   }
 
   public cameraWasSwitched(deviceId: string): void {
@@ -86,31 +100,32 @@ export class AttendanceByStudentComponent implements OnInit {
 
   onClickAttendance(){
     console.log(this.webcamImage?.imageAsDataUrl);
+    const imgName = 'tenSinhVienAndDate';
     const data = this.webcamImage?.imageAsDataUrl;
-    const fileImg = this.dataURLtoFile(data, 'a.png');
+    const fileImg = this.dataURLtoFile(data, imgName + '.png');
     this.uploadFileToCloudinary(fileImg);
 
   }
 
   uploadFileToCloudinary(file) {
-    const url = `https://api.cloudinary.com/v1_1/dev20/upload`;
+    const url = `https://api.cloudinary.com/v1_1/${this.cloud_name}/upload`;
     const xhr = new XMLHttpRequest();
     const fd = new FormData();
     xhr.open('POST', url, true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
 
-    xhr.onreadystatechange = function(e) {
+    xhr.onreadystatechange = () => {
       if (xhr.readyState === 4 && xhr.status === 200) {
         // File uploaded successfully
         const response = JSON.parse(xhr.responseText);
         alert(response);
-        console.log(response);
+        this.isAttendanced = true;
 
       }
     };
 
-    fd.append('upload_preset', 'gfj9avei');
+    fd.append('upload_preset', this.upload_preset);
     fd.append('tags', 'attendance_upload');
     fd.append('file', file);
     xhr.send(fd);

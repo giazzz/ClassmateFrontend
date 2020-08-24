@@ -18,7 +18,7 @@ export class DefaultLayoutComponent implements OnInit {
 
   public ngOnInit(): void {
     // Get id user logged from session storage:
-    this.userId = sessionStorage.id || '';
+    this.userId = sessionStorage.id || '0';
 
     this.classId = this.router.url.substr(7, 1);
     this.router.events.subscribe((events) => {

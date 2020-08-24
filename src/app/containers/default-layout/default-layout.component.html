@@ -58,7 +58,7 @@
         </div>
       </li>
     </cui-breadcrumb>
-    <div class="container-fluid">
+    <div class="container-fluid" [ngStyle]="router.url === ('/student/'+userId+'/attendance') ? {'height': '100%'} : null">
       <router-outlet></router-outlet>
     </div><!-- /.container-fluid -->
   </main>

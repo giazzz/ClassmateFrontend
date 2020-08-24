@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <div class="animated fadeIn">
-        <div class="col-sm-12 text-center">
+        <div class="col-sm-12 text-center container-card" >
             <div class="card card-header-class">
                 <div class="card-body" >
                     <div class="wrap-webcam" (window:resize)="onResize($event)">
@@ -28,9 +28,10 @@
             </div>
         </div>
         <div class="col-sm-12 text-center">
-            <button (click)="onClickAttendance()" type="button" class="btn btn-brand btn-lg btn-html5 mr-1 margin-auto">
+            <button (click)="onClickAttendance()" type="button" class="btn btn-brand btn-lg btn-html5 mr-1 margin-auto" [ngClass]="{'btn-disabled' : !canSubmit || isAttendanced}" [disabled]="!canSubmit || isAttendanced">
                 <i class="fa fa-check"></i>
-                <span>Điểm danh</span>
+                <span *ngIf="!isAttendanced">Điểm danh</span>
+                <span *ngIf="isAttendanced">Đã điểm danh</span>
             </button>
         </div>
     </div>
