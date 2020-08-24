@@ -119,7 +119,7 @@ export class AttendanceByStudentComponent implements OnInit {
       if (xhr.readyState === 4 && xhr.status === 200) {
         // File uploaded successfully
         const response = JSON.parse(xhr.responseText);
-        alert(response);
+        console.log(response.secure_url)
         this.isAttendanced = true;
 
       }
