@@ -46,6 +46,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
 import { ClassRoomComponent } from './views/class-room/class-room.component';
 import { DashboardComponent } from './views/dashboard/dashboard.component';
+import {JwtModule} from '@auth0/angular-jwt';
 
 @NgModule({
   imports: [
@@ -65,6 +66,8 @@ import { DashboardComponent } from './views/dashboard/dashboard.component';
     PerfectScrollbarModule,
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
+    JwtModule.forRoot({}),
+    AppRoutingModule,
     ChartsModule
   ],
   declarations: [

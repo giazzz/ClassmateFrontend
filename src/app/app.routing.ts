@@ -10,6 +10,8 @@ import { LoginComponent } from './views/login/login.component';
 import { RegisterComponent } from './views/register/register.component';
 import { DashboardComponent } from './views/dashboard/dashboard.component';
 import { ClassRoomComponent } from './views/class-room/class-room.component';
+import {AuthGuard} from './guard/auth.guard';
+import {AuthorizationService} from './service/authorization.service';
 
 export const routes: Routes = [
   {
