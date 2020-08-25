@@ -1,0 +1,38 @@
+<div class="container-fluid">
+    <div class="animated fadeIn">
+        <div class="col-sm-12 text-center container-card" >
+            <div class="card card-header-class">
+                <div class="card-body" >
+                    <div class="wrap-webcam" (window:resize)="onResize($event)">
+                        <img *ngIf="!this.showWebcam" style="width: 100%;" [src]="webcamImage?.imageAsDataUrl"/>
+                        <webcam 
+                            *ngIf="showWebcam"
+                            [width]="width" 
+                            [height]="height" 
+                            [trigger]="triggerObservable" 
+                            (imageCapture)="handleImage($event)" 
+                            [allowCameraSwitch]="allowCameraSwitch" 
+                            [switchCamera]="nextWebcamObservable"
+                            [videoOptions]="videoOptions"
+                            [imageQuality]="1"
+                            (cameraSwitched)="cameraWasSwitched($event)"
+                            (initError)="handleInitError($event)">
+                        </webcam>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="wrapper">
+                        <button class="no-image" id="img-result" (click)="triggerSnapshot();">Upload Image</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 text-center">
+            <button (click)="onClickAttendance()" type="button" class="btn btn-brand btn-lg btn-html5 mr-1 margin-auto" [ngClass]="{'btn-disabled' : !canSubmit || isAttendanced}" [disabled]="!canSubmit || isAttendanced">
+                <i class="fa fa-check"></i>
+                <span *ngIf="!isAttendanced">Điểm danh</span>
+                <span *ngIf="isAttendanced">Đã điểm danh</span>
+            </button>
+        </div>
+    </div>
+</div>

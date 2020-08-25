@@ -16,6 +16,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgxUiLoaderModule } from 'ngx-ui-loader';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {WebcamModule} from 'ngx-webcam';
 
 // Import containers
 import { DefaultLayoutComponent } from './containers';
@@ -46,6 +47,8 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
 import { ClassRoomComponent } from './views/class-room/class-room.component';
 import { DashboardComponent } from './views/dashboard/dashboard.component';
+import { AttendanceByTeacherComponent } from './views/attendance/attendance-by-teacher/attendance-by-teacher.component';
+import { AttendanceByStudentComponent } from './views/attendance/attendance-by-student/attendance-by-student.component';
 
 @NgModule({
   imports: [
@@ -54,6 +57,7 @@ import { DashboardComponent } from './views/dashboard/dashboard.component';
     HttpClientModule,
     NgxUiLoaderModule,
     FontAwesomeModule,
+    WebcamModule,
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
@@ -75,7 +79,9 @@ import { DashboardComponent } from './views/dashboard/dashboard.component';
     P500Component,
     LoginComponent,
     RegisterComponent,
-    ClassRoomComponent
+    ClassRoomComponent,
+    AttendanceByTeacherComponent,
+    AttendanceByStudentComponent
   ],
   providers: [{
     provide: LocationStrategy,
