@@ -1,39 +1,54 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {User} from '../model/user.model';
-import { environment } from '../../environments/environment';
+import {environment} from '../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {map} from 'rxjs/operators';
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthorizationService {
+import {IAuthenticationService} from './interface/authentication-service.interface';
 
-  constructor(
-      private jwtHelperService: JwtHelperService,
-  ) { }
+@Injectable()
+export class AuthenticationService implements IAuthenticationService{
 
-  public isAuthorized(allowedRoles: string[]): boolean {
-    // check if the list of allowed roles is empty, if empty, authorize the user to access the page
-    if (allowedRoles == null || allowedRoles.length === 0) {
-      return true;
+    //#region properties
+
+    private _currentUserSubject$: BehaviorSubject<User>;
+
+    public currentUserValue$: Observable<User>;
+
+
+    public currentUser: Observable<User>;
+
+    //#endregion
+
+    constructor(
+        private jwtHelperService: JwtHelperService,
+        private http: HttpClient
+    ) {
+        this._currentUserSubject$ = new BehaviorSubject<User>(null);
+        this.currentUserValue$ = this._currentUserSubject$.asObservable();
     }
 
-    // get token from local storage
-    const token = localStorage.getItem('token');
-
-    // decode token to read the payload details
-    const decodeToken = this.jwtHelperService.decodeToken(token);
-
-    // check if it was decoded successfully, if not the token is not valid, deny access
-    if (!decodeToken) {
-      console.log('Invalid token');
-      return false;
+    public currentUserValueAsync(): User {
+        return this._currentUserSubject$.getValue();
     }
 
-    // check if the user roles is in the list of allowed roles, return true if allowed and false if not allowed
-    return allowedRoles.includes(decodeToken['role']);
-  }
+    // TODO : get url api
+    public login(username: string, password: string): Observable<User> {
+        return this.http.post<User>(`${environment.apiUrl}`, {username, password})
+            .pipe(
+                map(user => {
+                    // store user details and jwt token in local storage to keep user logged in between page refreshes
+                    sessionStorage.setItem('currentUser', JSON.stringify(user));
+                    this._currentUserSubject$.next(user);
+                    return user;
+                }));
+    }
+
+    public logout(): void {
+        // remove user from local storage to log user out
+        sessionStorage.removeItem('currentUser');
+        this._currentUserSubject$.next(null);
+    }
 
 }

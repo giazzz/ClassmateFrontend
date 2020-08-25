@@ -46,7 +46,11 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
 import { ClassRoomComponent } from './views/class-room/class-room.component';
 import { DashboardComponent } from './views/dashboard/dashboard.component';
-import {JwtModule} from '@auth0/angular-jwt';
+import {JwtInterceptor, JwtModule} from '@auth0/angular-jwt';
+import {ErrorInterceptor} from './service/errorIntercepter.interceptor';
+import {AUTHENTICATION_SERVICE_PROVIDER, AUTHORIZATION_SERVICE_PROVIDER} from './service/service.constant';
+import {AuthenticationService} from './service/authentication.service';
+import {AuthorizationService} from './service/authorization.service';
 
 @NgModule({
   imports: [
@@ -80,10 +84,13 @@ import {JwtModule} from '@auth0/angular-jwt';
     RegisterComponent,
     ClassRoomComponent
   ],
-  providers: [{
-    provide: LocationStrategy,
-    useClass: HashLocationStrategy
-  }],
+  providers: [
+      // {provide: LocationStrategy, useClass: HashLocationStrategy},
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    { provide: AUTHENTICATION_SERVICE_PROVIDER, useClass: AuthenticationService},
+    { provide: AUTHORIZATION_SERVICE_PROVIDER, useClass: AuthorizationService}
+    ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

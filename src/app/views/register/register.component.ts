@@ -71,7 +71,9 @@ export class RegisterComponent implements OnInit {
     const email = this.f.inputEmail.value;
     const password = this.f.inputPwd.value;
     const role = this.f.radioRole.value;
-    const objAcc = {username: username, password: password, email: email, role: [role]};
+
+    const objAcc = {username, password, email, role: [role]};
+
 
     this.resService.register(objAcc)
       .subscribe(
@@ -86,13 +88,24 @@ export class RegisterComponent implements OnInit {
           // Error:
           const errUsername = 'Error: Username is already in use!';
           const errEmail = 'Error: Email is already in use!';
-          if (error.error.message === errUsername) {
+          if (error?.error?.message === errUsername) {
             this.blnIsNameExisted = true;
           } else if (error.error.message === errEmail) {
             this.blnIsMailExisted = true;
           }
           this.ngxService.stop();
         });
+  }
+
+  getUser = async (id) => {
+    try {
+      const res = await this.resService.getUser(id);
+      if (res) {
+        console.log(res);
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 }
 
