@@ -35,7 +35,7 @@ export class AuthenticationService implements IAuthenticationService{
 
     // TODO : get url api
     public login(username: string, password: string): Observable<User> {
-        return this.http.post<User>(`${environment.apiUrl}`, {username, password})
+        return this.http.post<User>(`${environment.apiUrl}/auth/signin`, {username, password})
             .pipe(
                 map(user => {
                     // store user details and jwt token in local storage to keep user logged in between page refreshes
