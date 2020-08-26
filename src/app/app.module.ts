@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
@@ -16,7 +17,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgxUiLoaderModule } from 'ngx-ui-loader';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import {WebcamModule} from 'ngx-webcam';
+import { WebcamModule } from 'ngx-webcam';
 
 // Import containers
 import { DefaultLayoutComponent } from './containers';
@@ -52,6 +53,7 @@ import { AttendanceByStudentComponent } from './views/attendance/attendance-by-s
 
 @NgModule({
   imports: [
+    ModalModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
