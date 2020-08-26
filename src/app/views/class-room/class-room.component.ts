@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CarouselConfig } from 'ngx-bootstrap/carousel';
 
@@ -8,7 +8,6 @@ import { CarouselConfig } from 'ngx-bootstrap/carousel';
   styleUrls: ['./class-room.component.scss']
 })
 export class ClassRoomComponent implements OnInit {
-
   public classId;
 
   constructor(private route: ActivatedRoute

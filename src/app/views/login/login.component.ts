@@ -1,30 +1,72 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {AuthenticationService} from '../../service/authentication.service';
+import {first} from 'rxjs/operators';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: 'login.component.html'
+    selector: 'app-dashboard',
+    templateUrl: 'login.component.html'
 })
-export class LoginComponent implements OnInit, OnDestroy{
+export class LoginComponent implements OnInit, OnDestroy {
 
-  //#region properties
-  public userFormControl: FormControl;
+    loginForm: FormGroup;
+    loading = false;
+    submitted = false;
+    returnUrl: string;
+    error = '';
 
-  public passwordControl: FormControl;
+    constructor(
+        private formBuilder: FormBuilder,
+        private route: ActivatedRoute,
+        private router: Router,
+        private authenticationService: AuthenticationService
+    ) {
+        // redirect to home if already logged in
+        if (this.authenticationService.currentUserValue()) {
+            this.router.navigate(['/']);
+        }
+    }
 
-  public loginFormGroup: FormGroup;
-  //#endregion
-  constructor(protected fb: FormBuilder) {
-  }
+    ngOnInit() {
+        this.loginForm = this.formBuilder.group({
+            username: ['', Validators.required],
+            password: ['', Validators.required]
+        });
 
-  public ngOnInit(): void {}
+        // get return url from route parameters or default to '/'
+        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    }
 
-  public submit(): void {
+    // convenience getter for easy access to form fields
+    get f() {
+        return this.loginForm.controls;
+    }
 
-  }
-  public ngOnDestroy(): void {}
+    onSubmit() {
+        this.submitted = true;
 
-  public forgotPassword(): void {
+        // stop here if form is invalid
+        if (this.loginForm.invalid) {
+            return;
+        }
 
-  }
+        this.loading = true;
+        this.authenticationService.login(this.f.username.value, this.f.password.value)
+            .pipe(first())
+            .subscribe(
+                data => {
+                    this.router.navigate([this.returnUrl]);
+                },
+                error => {
+                    this.error = error;
+                    this.loading = false;
+                });
+    }
+
+    ngOnDestroy() {
+    }
+
+    forgotPassword() {
+    }
 }

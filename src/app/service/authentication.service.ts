@@ -1,23 +1,23 @@
 import {Injectable} from '@angular/core';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {User} from '../model/user.model';
 import {environment} from '../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {map} from 'rxjs/operators';
 import {IAuthenticationService} from './interface/authentication-service.interface';
+import {LoginResponseModel} from '../model/response/login-response.model';
 
 @Injectable()
-export class AuthenticationService implements IAuthenticationService{
+export class AuthenticationService implements IAuthenticationService {
 
     //#region properties
 
-    private _currentUserSubject$: BehaviorSubject<User>;
+    private _currentUserSubject$: BehaviorSubject<LoginResponseModel>;
 
-    public currentUserValue$: Observable<User>;
+    public currentUserValue$: Observable<LoginResponseModel>;
 
 
-    public currentUser: Observable<User>;
+    public currentUser: Observable<LoginResponseModel>;
 
     //#endregion
 
@@ -25,17 +25,17 @@ export class AuthenticationService implements IAuthenticationService{
         private jwtHelperService: JwtHelperService,
         private http: HttpClient
     ) {
-        this._currentUserSubject$ = new BehaviorSubject<User>(null);
+        this._currentUserSubject$ = new BehaviorSubject<LoginResponseModel>(null);
         this.currentUserValue$ = this._currentUserSubject$.asObservable();
     }
 
-    public currentUserValueAsync(): User {
+    public currentUserValue(): LoginResponseModel {
         return this._currentUserSubject$.getValue();
     }
 
     // TODO : get url api
-    public login(username: string, password: string): Observable<User> {
-        return this.http.post<User>(`${environment.apiUrl}/auth/signin`, {username, password})
+    public login(username: string, password: string): Observable<LoginResponseModel> {
+        return this.http.post<LoginResponseModel>(`${environment.apiUrl}/auth/signin`, {username, password})
             .pipe(
                 map(user => {
                     // store user details and jwt token in local storage to keep user logged in between page refreshes

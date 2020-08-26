@@ -15,6 +15,7 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
     BsDropdownModule,
     ButtonsModule.forRoot()
   ],
-  declarations: [ DashboardComponent ]
+  declarations: [ DashboardComponent ],
+  exports: [DashboardComponent]
 })
 export class DashboardModule { }

@@ -1,10 +1,10 @@
-import {User} from '../../model/user.model';
 import {Observable} from 'rxjs';
+import {LoginResponseModel} from '../../model/response/login-response.model';
 
 export interface IAuthenticationService {
-    currentUserValueAsync(): User;
+    currentUserValue(): LoginResponseModel;
 
-    login(username: string, password: string): Observable<User>;
+    login(username: string, password: string): Observable<LoginResponseModel>;
 
     logout(): void;
 }
