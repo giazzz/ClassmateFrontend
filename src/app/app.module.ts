@@ -47,9 +47,14 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
 import { ClassRoomComponent } from './views/class-room/class-room.component';
-import { DashboardComponent } from './views/dashboard/dashboard.component';
-import { AttendanceByTeacherComponent } from './views/attendance/attendance-by-teacher/attendance-by-teacher.component';
-import { AttendanceByStudentComponent } from './views/attendance/attendance-by-student/attendance-by-student.component';
+import {AttendanceByTeacherComponent} from './views/attendance/attendance-by-teacher/attendance-by-teacher.component';
+import {AttendanceByStudentComponent} from './views/attendance/attendance-by-student/attendance-by-student.component';
+import {ErrorInterceptor} from './service/errorIntercepter.interceptor';
+import {AUTHENTICATION_SERVICE_PROVIDER, AUTHORIZATION_SERVICE_PROVIDER} from './service/service.constant';
+import {JwtInterceptor, JwtModule} from '@auth0/angular-jwt';
+import {AuthorizationService} from './service/authorization.service';
+import {AuthenticationService} from './service/authentication.service';
+import {DashboardModule} from './views/dashboard/dashboard.module';
 
 @NgModule({
   imports: [
@@ -71,12 +76,14 @@ import { AttendanceByStudentComponent } from './views/attendance/attendance-by-s
     PerfectScrollbarModule,
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
-    ChartsModule
+    JwtModule.forRoot({}),
+    AppRoutingModule,
+    ChartsModule,
+      DashboardModule
   ],
   declarations: [
     AppComponent,
     ...APP_CONTAINERS,
-    DashboardComponent,
     P404Component,
     P500Component,
     LoginComponent,
@@ -85,10 +92,13 @@ import { AttendanceByStudentComponent } from './views/attendance/attendance-by-s
     AttendanceByTeacherComponent,
     AttendanceByStudentComponent
   ],
-  providers: [{
-    provide: LocationStrategy,
-    useClass: HashLocationStrategy
-  }],
+  providers: [
+      // {provide: LocationStrategy, useClass: HashLocationStrategy},
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    { provide: AUTHENTICATION_SERVICE_PROVIDER, useClass: AuthenticationService},
+    { provide: AUTHORIZATION_SERVICE_PROVIDER, useClass: AuthorizationService}
+    ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

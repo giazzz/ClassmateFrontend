@@ -1,0 +1,54 @@
+import {Injectable} from '@angular/core';
+import {JwtHelperService} from '@auth0/angular-jwt';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {environment} from '../../environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {map} from 'rxjs/operators';
+import {IAuthenticationService} from './interface/authentication-service.interface';
+import {LoginResponseModel} from '../model/response/login-response.model';
+
+@Injectable()
+export class AuthenticationService implements IAuthenticationService {
+
+    //#region properties
+
+    private _currentUserSubject$: BehaviorSubject<LoginResponseModel>;
+
+    public currentUserValue$: Observable<LoginResponseModel>;
+
+
+    public currentUser: Observable<LoginResponseModel>;
+
+    //#endregion
+
+    constructor(
+        private jwtHelperService: JwtHelperService,
+        private http: HttpClient
+    ) {
+        this._currentUserSubject$ = new BehaviorSubject<LoginResponseModel>(null);
+        this.currentUserValue$ = this._currentUserSubject$.asObservable();
+    }
+
+    public currentUserValue(): LoginResponseModel {
+        return this._currentUserSubject$.getValue();
+    }
+
+    // TODO : get url api
+    public login(username: string, password: string): Observable<LoginResponseModel> {
+        return this.http.post<LoginResponseModel>(`${environment.apiUrl}/auth/signin`, {username, password})
+            .pipe(
+                map(user => {
+                    // store user details and jwt token in local storage to keep user logged in between page refreshes
+                    sessionStorage.setItem('currentUser', JSON.stringify(user));
+                    this._currentUserSubject$.next(user);
+                    return user;
+                }));
+    }
+
+    public logout(): void {
+        // remove user from local storage to log user out
+        sessionStorage.removeItem('currentUser');
+        this._currentUserSubject$.next(null);
+    }
+
+}

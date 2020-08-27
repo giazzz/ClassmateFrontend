@@ -14,4 +14,8 @@ export class RegisterService {
         return this.http.post<any>(`${environment.apiUrl}/auth/signup`,
         objAcc, { observe: 'response' });
     }
+
+    getUser(id: any) {
+        return this.http.get<any>(`${environment.apiUrl}/user/${id}`);
+    }
 }

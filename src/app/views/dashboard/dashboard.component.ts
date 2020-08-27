@@ -1,17 +1,22 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import {Router} from '@angular/router';
 import { DashboardService } from './dashboard.service';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { formatDate } from '@angular/common';
+import {AuthenticationService} from '../../service/authentication.service';
+import {Subscription} from 'rxjs';
 
 @Component({
-  templateUrl: 'dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+    templateUrl: 'dashboard.component.html',
+    styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
 
+  public currentUser;
+  public subscription;
   public faPlus;
   public imageUrl;
   public lstAllCourse: any[];
@@ -22,7 +27,9 @@ export class DashboardComponent implements OnInit {
 
   constructor (private dashBoardService: DashboardService,
               private iconLoading: NgxUiLoaderService,
-              private fb: FormBuilder
+              private fb: FormBuilder,
+              private router: Router,
+              private authenticationService: AuthenticationService
   ) {
   }
 
@@ -106,4 +113,12 @@ export class DashboardComponent implements OnInit {
     return date.getTime();
   }
 
+  logout() {
+      this.authenticationService.logout();
+      this.router.navigate(['login']);
+  }
+
+  ngOnDestroy() {
+      this.subscription.close();
+  }
 }
