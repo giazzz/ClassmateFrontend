@@ -18,7 +18,7 @@ export class RegisterComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
               private resService: RegisterService,
-              private ngxService: NgxUiLoaderService
+              private iconLoading: NgxUiLoaderService
   ) {
   }
   ngOnInit(): void {
@@ -59,12 +59,12 @@ export class RegisterComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    this.ngxService.start();
+    this.iconLoading.start();
     this.blnIsMailExisted = false;
     this.blnIsNameExisted = false;
     // Stop here if form is invalid
     if (this.frmRegister.invalid) {
-      this.ngxService.stop();
+      this.iconLoading.stop();
       return;
     }
     const username = this.f.inputUsername.value;
@@ -79,8 +79,8 @@ export class RegisterComponent implements OnInit {
           const successMsg = 'User registered successfully!';
           if (response.status === 200 && response.body.message === successMsg) {
             // Success:
-            this.ngxService.stop();
           }
+          this.iconLoading.stop();
         },
         error => {
           // Error:
@@ -91,7 +91,7 @@ export class RegisterComponent implements OnInit {
           } else if (error.error.message === errEmail) {
             this.blnIsMailExisted = true;
           }
-          this.ngxService.stop();
+          this.iconLoading.stop();
         });
   }
 }
