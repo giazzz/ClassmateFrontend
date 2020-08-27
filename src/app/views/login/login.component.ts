@@ -13,7 +13,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     loginForm: FormGroup;
     loading = false;
     submitted = false;
-    returnUrl: string;
+    returnUrl= 'login';
     error = '';
 
     constructor(
@@ -47,16 +47,16 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.submitted = true;
 
         // stop here if form is invalid
-        if (this.loginForm.invalid) {
-            return;
-        }
-
+        // if (this.loginForm.invalid) {
+        //     return;
+        // }
+        
         this.loading = true;
         this.authenticationService.login(this.f.username.value, this.f.password.value)
-            .pipe(first())
             .subscribe(
                 data => {
-                    this.router.navigate([this.returnUrl]);
+                    console.log(data);
+                    this.router.navigateByUrl('/dashboard');
                 },
                 error => {
                     this.error = error;

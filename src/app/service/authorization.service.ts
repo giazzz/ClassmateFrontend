@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {IAuthorizationService} from './interface/authorization-service.interface';
+import { LoginResponseModel } from '../model/response/login-response.model';
 
 @Injectable()
 export class AuthorizationService implements IAuthorizationService {
@@ -16,10 +17,10 @@ export class AuthorizationService implements IAuthorizationService {
     }
 
     // get token from local storage
-    const token = localStorage.getItem('token');
+    const user = sessionStorage.getItem('currentUser') as unknown as LoginResponseModel;
 
     // decode token to read the payload details
-    const decodeToken = this.jwtHelperService.decodeToken(token);
+    const decodeToken = this.jwtHelperService.decodeToken(user.token);
 
     // check if it was decoded successfully, if not the token is not valid, deny access
     if (!decodeToken) {

@@ -56,7 +56,7 @@ export const routes: Routes = [
         path: '',
         component: DefaultLayoutComponent,
         canActivate: [AuthenticationGuard],
-        canActivateChild: [AuthorizationGuard],
+        // canActivateChild: [AuthorizationGuard],
         data: {
             title: 'Home'
         },

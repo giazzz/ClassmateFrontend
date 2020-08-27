@@ -15,10 +15,12 @@ export class AuthenticationGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     const allowedRoles = next.data.allowedRoles;
+    console.log(allowedRoles);
+    
     const isAuthorized = this.authorizationService.isAuthorized(allowedRoles);
 
     if (!isAuthorized) {
-      this.router.navigate(['accessdenied']);
+      this.router.navigate(['login']);
     }
 
     return isAuthorized;

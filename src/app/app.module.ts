@@ -49,13 +49,13 @@ import { ChartsModule } from 'ng2-charts';
 import { ClassRoomComponent } from './views/class-room/class-room.component';
 import {AttendanceByTeacherComponent} from './views/attendance/attendance-by-teacher/attendance-by-teacher.component';
 import {AttendanceByStudentComponent} from './views/attendance/attendance-by-student/attendance-by-student.component';
-import {ErrorInterceptor} from './service/errorIntercepter.interceptor';
 import {AUTHENTICATION_SERVICE_PROVIDER, AUTHORIZATION_SERVICE_PROVIDER} from './service/service.constant';
 import {JwtInterceptor, JwtModule} from '@auth0/angular-jwt';
 import {AuthorizationService} from './service/authorization.service';
 import {AuthenticationService} from './service/authentication.service';
 import {DashboardModule} from './views/dashboard/dashboard.module';
 import { AuthenticationGuard } from './guard/authentication.guard';
+import { environment } from '../environments/environment';
 
 @NgModule({
   imports: [
@@ -77,7 +77,12 @@ import { AuthenticationGuard } from './guard/authentication.guard';
     PerfectScrollbarModule,
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
-    JwtModule.forRoot({}),
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: () => sessionStorage.getItem('currentUser'),
+        authScheme: 'JWT '
+      }
+  }),
     AppRoutingModule,
     ChartsModule,
       DashboardModule
@@ -95,8 +100,7 @@ import { AuthenticationGuard } from './guard/authentication.guard';
   ],
   providers: [
       // {provide: LocationStrategy, useClass: HashLocationStrategy},
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+      { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}
     ],
   bootstrap: [ AppComponent ]
 })
