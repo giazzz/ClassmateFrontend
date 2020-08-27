@@ -55,6 +55,7 @@ import {JwtInterceptor, JwtModule} from '@auth0/angular-jwt';
 import {AuthorizationService} from './service/authorization.service';
 import {AuthenticationService} from './service/authentication.service';
 import {DashboardModule} from './views/dashboard/dashboard.module';
+import { AuthenticationGuard } from './guard/authentication.guard';
 
 @NgModule({
   imports: [
@@ -96,8 +97,6 @@ import {DashboardModule} from './views/dashboard/dashboard.module';
       // {provide: LocationStrategy, useClass: HashLocationStrategy},
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    { provide: AUTHENTICATION_SERVICE_PROVIDER, useClass: AuthenticationService},
-    { provide: AUTHORIZATION_SERVICE_PROVIDER, useClass: AuthorizationService}
     ],
   bootstrap: [ AppComponent ]
 })

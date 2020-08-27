@@ -15,6 +15,8 @@ import {AttendanceByStudentComponent} from './views/attendance/attendance-by-stu
 import {AttendanceByTeacherComponent} from './views/attendance/attendance-by-teacher/attendance-by-teacher.component';
 import {ERoles} from './helper/roles.constants';
 import {AuthorizationGuard} from './guard/authorization.guard';
+import { AuthenticationService } from './service/authentication.service';
+import { AuthorizationService } from './service/authorization.service';
 
 export const routes: Routes = [
     {
@@ -76,7 +78,12 @@ export const routes: Routes = [
 
 @NgModule({
     imports: [RouterModule.forRoot(routes)],
-    exports: [RouterModule]
+    exports: [RouterModule],
+    providers: [
+        AuthenticationService,
+        AuthorizationService,
+        AuthenticationGuard, 
+        AuthorizationGuard],
 })
 export class AppRoutingModule {
 }
