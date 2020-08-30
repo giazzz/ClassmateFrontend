@@ -4,7 +4,6 @@ import { DashboardService } from './dashboard.service';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { formatDate } from '@angular/common';
 
 @Component({
   templateUrl: 'dashboard.component.html',

@@ -12,6 +12,12 @@ import { DashboardComponent } from './views/dashboard/dashboard.component';
 import { ClassRoomComponent } from './views/class-room/class-room.component';
 import { AttendanceByStudentComponent } from './views/attendance/attendance-by-student/attendance-by-student.component';
 import { AttendanceByTeacherComponent } from './views/attendance/attendance-by-teacher/attendance-by-teacher.component';
+import { PeopleComponent } from './views/people/people.component';
+import { ClassworkComponent } from './views/classwork/classwork.component';
+import { MarkComponent } from './views/mark/mark.component';
+import { SettingComponent } from './views/setting/setting.component';
+import { ScheduleComponent } from './views/schedule/schedule.component';
+import { TodoComponent } from './views/todo/todo.component';
 
 export const routes: Routes = [
   {
@@ -57,7 +63,13 @@ export const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent},
       { path: 'class/:id/stream', component: ClassRoomComponent },
       { path: 'student/:id/attendance', component: AttendanceByStudentComponent },
-      { path: 'class/:id/attendance', component: AttendanceByTeacherComponent }
+      { path: 'class/:id/attendance', component: AttendanceByTeacherComponent },
+      { path: 'class/:id/people', component: PeopleComponent },
+      { path: 'class/:id/classwork', component: ClassworkComponent },
+      { path: 'class/:id/mark', component: MarkComponent },
+      { path: 'student/:id/todo', component: TodoComponent },
+      { path: 'setting', component: SettingComponent },
+      { path: 'schedule', component: ScheduleComponent }
     ]
   },
   { path: '**', component: P404Component }

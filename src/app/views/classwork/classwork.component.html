@@ -1,0 +1,71 @@
+<div class="animated fadeIn">
+    <div class="card col-md-10 col-12" style="margin: auto;">
+        <div class="card-body ">
+            <button type="button" class="btn btn-brand btn-lg btn-stack-overflow mr-1" style="margin-bottom: 4px">
+                <i class="fa fa-plus"></i>
+                <span>Tạo bài tập</span>
+            </button>
+        </div>
+        <div class="card-body work-info" *ngIf="lstClasswork.length == 0">
+            <h1>Chỉ định bài tập cho lớp học tại đây</h1>
+            <div class="row margin-left-30">
+                <i class="icon-book-open icons font-xl"></i> 
+                <p>Tạo bài tập và câu hỏi</p>
+            </div>
+            <div class="row margin-left-30">
+                <i class="icon-list icons font-xl"></i>
+                <p>Sử dụng chủ đề để sắp xếp bài tập trên lớp vào các mô-đun hoặc đơn vị</p>
+            </div>
+            <div class="row margin-left-30">
+                <i class="icon-layers icons font-xl"></i>
+                <p>Sắp xếp bài tập theo cách bạn muốn học sinh nhìn thấy</p>
+            </div>
+        </div>
+        <div class="card-body no-content text-center" *ngIf="lstClasswork.length == 0">
+           <img src="../../../assets/img/no_assignments.png" alt="">
+        </div>
+
+        <!-- List classwork -->
+        <!-- <div class="col-12 list-class-work">
+            <div class="col-9">
+                <div class="row">
+                    <i class="icon-list icons font-xl"></i>
+                    <p>Title</p>
+                </div>
+            </div>
+            <div class="col-3">
+                <p>time</p>
+            </div>
+        </div> -->
+        <table class="table table-exam">
+            <tbody>
+
+                <tr *ngFor="let exam of lstClasswork" (mouseover)="exam.isHover = true" (mouseout)="exam.isHover = false" [ngClass]="{'is-hover' : exam.isHover }">
+                    <td class="row text-left list" >
+                        <div class="row">
+                            <div class="wrapper-icon">
+                                <i class="icon-note icons font-xl"></i>
+                            </div>
+                            <p>{{exam.title}}</p>
+                        </div>
+                    </td>
+                    <td class="text-right action">
+                        <div class="row">
+                            <p>{{exam.createAt}}</p>
+                            <div class="wrapper-action" [ngClass]="{'d-none' : !exam.isHover }" dropdown placement="bottom right">
+                                <i dropdownToggle class="icon-options-vertical icons font-xl"></i>
+                                <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+                                    <li role="menuitem"><a class="dropdown-item" href="#">Chỉnh sửa</a></li>
+                                    <li role="menuitem"><a class="dropdown-item" href="#">Xóa</a></li>
+                                    <li role="menuitem"><a class="dropdown-item" href="#">Sao chép liên kiết</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+    </div>
+</div>

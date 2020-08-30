@@ -1,0 +1,90 @@
+.work-info {
+    border: 1px solid #e4d5d5;
+    border-radius: 8px;
+    margin: 10px 20px 30px;
+}
+.work-info h1 {
+    color: #1967d2;
+    font-weight: 450;
+    margin-bottom: 20px;
+}
+.work-info div i {
+    margin-right: 10px;
+    padding-top: 3px;
+}
+.work-info div p {
+    font-weight: 500;
+}
+.margin-left-30 {
+    margin-left: 30px;
+}
+.no-content img {
+    width: 300px;
+    border-radius: 100%;
+    background-color: #a29494;
+}
+.list-class-work {
+
+}
+.list p {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-left: 15px;
+    font-weight: 600;
+    font-size: 15px;
+}
+.table th, .table td {
+    border-bottom: 1px solid #c8ced3;
+    border-top: none;
+}
+.table-exam .row {
+    margin-left: 0;
+    margin-right: 0;
+}
+.wrapper-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    background-color: #84ea84;
+    padding-top: 9px;
+}
+.wrapper-icon i {
+    color: #ffffff;
+    margin: 11px;
+    font-weight: 600;
+}
+.table-exam {
+    width: 98%;
+    margin-left: 10px;
+}
+.action p {
+    margin-top: 9px;
+    margin-bottom: 8px;
+    margin-left: auto;
+    font-weight: 500;
+    font-size: 14px;
+    color: rgba(0,0,0,0.549);
+}
+.action i {
+    margin-top: 11px;
+    margin: 11px;
+    color: rgba(0,0,0,0.549);
+}
+.wrapper-action {
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    padding-top: 11px;
+    margin-left: 15px;
+}
+.wrapper-action:hover {
+    background-color: aliceblue;
+    cursor: pointer;
+}
+.is-hover {
+    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.302), 0 2px 6px 2px rgba(60,64,67,0.149);
+    border-radius: 8px;
+}
+.is-hover td {
+    border-bottom: none;
+}
