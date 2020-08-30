@@ -9,13 +9,13 @@ h2{
 }
 .add-card{
     height: 237px;
-    border: 4px dashed #ccc4ff;
+    border: 4px dashed #7aeba1;
     cursor: pointer;
 }
 .add-card .brand-card-body{
     display: block;
     font-size: 75px;
-    color: #ccc4ff;
+    color: #7aeba1;
     padding-top: 25px;
 }
 .add-card .brand-card-body > *:not(:last-child) {
@@ -23,4 +23,17 @@ h2{
 }
 .add-char{
     font-size: 20px;
+}
+.close{
+    color: #ffffff;
+}
+.modal-title{
+    margin-left: auto;
+}
+.help-block{
+    color: red;
+}
+.form-control.is-invalid {
+    background-image: none;
+    padding: 0.375rem 0.75rem;
 }
