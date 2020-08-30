@@ -23,9 +23,6 @@
     border-radius: 100%;
     background-color: #a29494;
 }
-.list-class-work {
-
-}
 .list p {
     margin-top: 8px;
     margin-bottom: 8px;
@@ -33,10 +30,10 @@
     font-weight: 600;
     font-size: 15px;
 }
-.table th, .table td {
-    border-bottom: 1px solid #c8ced3;
-    border-top: none;
-}
+// .table th, .table td {
+//     border-bottom: 1px solid #c8ced3;
+//     border-top: none;
+// }
 .table-exam .row {
     margin-left: 0;
     margin-right: 0;
@@ -85,6 +82,59 @@
     box-shadow: 0 1px 2px 0 rgba(60,64,67,0.302), 0 2px 6px 2px rgba(60,64,67,0.149);
     border-radius: 8px;
 }
-.is-hover td {
-    border-bottom: none;
+.is-hover .td {
+    border-top: none;
+}
+.dropdown-menu {
+    border-radius: 8px;
+}
+.dropdown-menu li a {
+    font-weight: 500;
+}
+.exam .td {
+    position: relative;
+}
+.exam {
+    padding: 15px;
+    margin: 0 15px;
+    border-bottom: 1px solid rgb(230 209 209 / 55%);
+}
+.btn-create {
+    padding-left: 15px;
+}
+.dropdown-menu-right {
+    right: -15px;
+}
+.exam-content {
+    margin-top: 10px;
+    height: 120px;
+    border-top: 1px solid rgb(230 209 209 / 55%);
+    font-weight: 500;
+}
+.exam-footer {
+    height: 50px;
+    border-top: 1px solid rgb(230 209 209 / 55%);
+    padding-top: 10px;
+}
+.expried {
+    height: 40%;
+    padding-top: 5px;
+    color: rgba(0, 0, 0, 0.549);
+}
+.count {
+    height: 60%;
+}
+.count-num {
+    border-left: 1px solid rgb(230 209 209 / 55%);
+    margin-bottom: 10px;
+}
+.count-num p {
+    margin-bottom: 0px;
+    color: rgba(0, 0, 0, 0.549);
+}
+.exam-done {
+    margin-left: auto;
+}
+.list-exam {
+    cursor: pointer; 
 }

@@ -1,1 +1,31 @@
-<p>mark works!</p>
+<div class="animated fadeIn">
+    <div class="card col-12" style="margin: auto;">
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Sinh viên</th>
+                        <th *ngFor="let exam of lstClasswork">
+                            {{exam.title}}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td>Điểm trung bình của lớp</td>
+                        <td *ngFor="let item of lstClasswork">
+                        </td>
+                    </tr>
+                    <tr *ngFor="let s of lstStudent">
+                        <td>{{s.name}}</td>
+                        <td *ngFor="let score of s.lstScore">
+                            {{score.score}}
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
