@@ -54,7 +54,6 @@ export const routes: Routes = [
         path: '',
         component: DefaultLayoutComponent,
         canActivate: [AuthenticationGuard],
-        canActivateChild: [AuthorizationGuard],
         data: {
             title: 'Home'
         },
@@ -66,9 +65,21 @@ export const routes: Routes = [
                     allowedRoles: [ERoles.ALL]
                 }
             },
-            {path: 'class/:id/stream', component: ClassRoomComponent},
-            {path: 'student/:id/attendance', component: AttendanceByStudentComponent},
-            {path: 'class/:id/attendance', component: AttendanceByTeacherComponent}
+            {
+                path: 'class/:id/stream',
+                component: ClassRoomComponent,
+                canActivate: [AuthorizationGuard]
+            },
+            {
+                path: 'student/:id/attendance',
+                component: AttendanceByStudentComponent,
+                canActivate: [AuthorizationGuard]
+            },
+            {
+                path: 'class/:id/attendance',
+                component: AttendanceByTeacherComponent,
+                canActivate: [AuthorizationGuard]
+            }
         ]
     },
     {path: '**', component: P404Component}
@@ -76,7 +87,11 @@ export const routes: Routes = [
 
 @NgModule({
     imports: [RouterModule.forRoot(routes)],
-    exports: [RouterModule]
+    exports: [RouterModule],
+    providers: [
+        AuthenticationGuard,
+        AuthorizationGuard
+    ]
 })
 export class AppRoutingModule {
 }
