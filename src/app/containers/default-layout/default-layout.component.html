@@ -5,19 +5,19 @@
   [navbarBrandMinimized]="{src: 'assets/img/brand/sygnet.svg', width: 30, height: 30, alt: 'CoreUI Logo'}"
   [sidebarToggler]="'lg'"
   [asideMenuToggler]="'lg'">
-  <div class="text-center top-menu" *ngIf="router.url.includes('class') || router.url.includes('student')">
+  <div class="text-center top-menu" *ngIf="(router.url.includes('class') || router.url.includes('student')) && !router.url.includes('transcript')">
     <ul class="nav navbar-nav d-md-down-none">
       <li class="nav-item px-3">
-        <a class="nav-link" [ngClass]="{'active' : router.url === ('/class/'+classId+'/stream') }" [routerLink]="['/class', classId, 'stream']">Luồng</a>
+        <a class="nav-link" [ngClass]="{'active' : router.url === ('/class/'+classId+'/stream') }" [routerLink]="['/class', classId, 'stream']">Bàn luận</a>
       </li>
       <li class="nav-item px-3">
-        <a class="nav-link" href="#">Bài tập trên lớp</a>
+        <a class="nav-link" [ngClass]="{'active' : router.url === ('/class/'+classId+'/classwork') }" [routerLink]="['/class', classId, 'classwork']" href="#">Bài tập</a>
       </li>
       <li class="nav-item px-3">
-        <a class="nav-link" href="#">Mọi người</a>
+        <a class="nav-link" [ngClass]="{'active' : router.url === ('/class/'+classId+'/people') }" [routerLink]="['/class', classId, 'people']" href="#">Mọi người</a>
       </li>
       <li class="nav-item px-3">
-        <a class="nav-link" href="#">Số điểm</a>
+        <a class="nav-link" [ngClass]="{'active' : router.url === ('/class/'+classId+'/mark') }" [routerLink]="['/class', classId, 'mark']" href="#">Điểm số</a>
       </li>
       <li class="nav-item px-3">
         <!-- Dành cho giáo viên: -->
@@ -29,15 +29,12 @@
       </li>
     </ul>
   </div>
-  <ul class="nav navbar-nav" [ngClass]="{'ml' : (!router.url.includes('class') && !router.url.includes('student'))}">
+  <ul class="nav navbar-nav" [ngClass]="{'ml' : (!router.url.includes('class') && !router.url.includes('student')) || router.url.includes('transcript')}">
     <li class="nav-item dropdown" dropdown placement="bottom right">
       <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" dropdownToggle (click)="false">
         <img src="assets/img/avatars/6.jpg" class="img-avatar" alt="admin@bootstrapmaster.com"/>
       </a>
     </li>
-    <!-- <li class="nav-item d-md-down-none">
-      <a class="nav-link" href="#"><i class="icon-bell"></i><span class="badge badge-pill badge-danger">5</span></a>
-    </li> -->
   </ul>
 </app-header>
 <div class="app-body">
@@ -45,20 +42,20 @@
     <app-sidebar-nav [navItems]="navItems" [perfectScrollbar] [disabled]="appSidebar.minimized"></app-sidebar-nav>
     <app-sidebar-minimizer></app-sidebar-minimizer>
   </app-sidebar>
+
   <!-- Main content -->
-  <main class="main">
+  <main class="main" style="padding-top: 20px;">
     <!-- Breadcrumb -->
-    <!-- breaking change 'cui-breadcrumb' -->
-    <cui-breadcrumb *ngIf="!router.url.includes('attendance')">
-      <!-- Breadcrumb Menu-->
+    <!-- <cui-breadcrumb *ngIf="!router.url.includes('attendance')">
       <li class="breadcrumb-menu d-md-down-none">
         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
           <a class="btn"><i class="icon-speech"></i></a>
           <a class="btn"><i class="icon-graph"></i> &nbsp;Dashboard</a>
         </div>
       </li>
-    </cui-breadcrumb>
-    <div class="container-fluid" [ngStyle]="router.url === ('/student/'+userId+'/attendance') ? {'height': '100%'} : null">
+    </cui-breadcrumb> -->
+    <!-- <div class="container-fluid col-md-10 col-12" [ngStyle]="router.url === (router.url.includes('student') && router.url.includes('attendance')) ? {'height': '100%'} : null"> -->
+    <div class="container-fluid col-md-10 col-12" style="height: 100%;">
       <router-outlet></router-outlet>
     </div><!-- /.container-fluid -->
   </main>

@@ -1,0 +1,60 @@
+// .container-fluid {
+//     padding: 0 10%;
+// }
+.table th, .table td {
+    border-top: none;
+}
+.list {
+    margin-left: 20px;
+}
+.role h1 {
+    margin-left: 20px;
+}
+.avatar {
+    width: 40px;
+    height: 40px;
+}
+.list p {
+    font-weight: 500;
+    font-size: 15px;
+    margin-top: 8px;
+    margin-left: 20px;
+}
+.action {
+    padding-right: 20px;
+}
+.wrapper-icon {
+    margin-left: auto;
+    width: 45px;
+    height: 45px;
+    text-align: center;
+    padding: auto;
+    border-radius: 100%;
+    cursor: pointer;
+}
+.wrapper-icon:hover {
+    background-color: aliceblue;
+}
+.wrapper-icon i{
+    line-height: 1.8;
+}
+.icon-mail i{
+    line-height: 2.3;
+}
+.card-body {
+    padding: 0 5%;
+}
+tbody tr {
+    border-bottom: 1px solid #eee7e7;
+}
+.action {
+    padding-top: 20px;
+}
+.form-group {
+    margin-bottom: 0;
+}
+.form-control {
+    border: 1px solid #b6bdc5;
+}
+
+

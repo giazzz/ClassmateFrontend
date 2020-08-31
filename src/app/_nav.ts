@@ -2,16 +2,6 @@ import { INavData } from '@coreui/angular';
 
 export const navItems: INavData[] = [
   {
-    name: 'Danh sách lớp',
-    url: '/dashboard',
-    icon: 'icon-home',
-  },
-  {
-    name: 'Thời khóa biểu',
-    url: '/theme/typography',
-    icon: 'icon-calendar'
-  },
-  {
     title: true,
     name: 'Lớp học'
   },
@@ -34,5 +24,29 @@ export const navItems: INavData[] = [
     name: 'T1907E',
     url: '/class/4/stream',
     icon: 'icon-graduation'
-  }
+  },
+  {
+    title: true,
+    name: 'Chức năng'
+  },
+  {
+    name: 'Danh sách lớp',
+    url: '/dashboard',
+    icon: 'icon-briefcase',
+  },
+  {
+    name: 'Thời khóa biểu',
+    url: '/schedule',
+    icon: 'icon-calendar'
+  },
+  {
+    name: 'To do',
+    url: '/student/1/todo',
+    icon: 'icon-notebook'
+  },
+  {
+    name: 'Cài đặt',
+    url: '/setting',
+    icon: 'icon-settings'
+  },
 ];

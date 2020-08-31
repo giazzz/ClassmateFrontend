@@ -1,0 +1,147 @@
+<div class="animated fadeIn">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-teacher">
+                    <thead>
+                        <tr>
+                            <th class="role">
+                                <h1>Giáo viên</h1>
+                            </th>
+                            <th class="text-right action">
+                                <div class="wrapper-icon">
+                                    <i class="icon-user-follow icons font-2xl d-block mt-4"></i>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="row text-left list">
+                                <div class="avatar">
+                                    <img src="assets/img/avatars/4.jpg" class="img-avatar" alt="">
+                                    <span class="avatar-status badge-secondary"></span>
+                                </div>
+                                <p>Trần Văn Nguyên (Nguyentv)</p>
+                            </td>
+                            <td class="text-right action">
+                                <div class="wrapper-icon icon-mail">
+                                    <i class="icon-envelope icons font-xl d-block"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                    </tbody>
+                </table>
+
+                <table class="table table-student">
+                    <thead>
+                        <tr>
+                            <th class="role">
+                                <h1>Sinh viên</h1>
+                            </th>
+                            <th class="text-right action">
+                                <div class="wrapper-icon">
+                                    <i class="icon-user-follow icons font-2xl d-block mt-4"></i>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="row text-left list">
+
+                                <input type="checkbox" id="checkall" />
+                                <label for="checkall" class="check-box"></label> 
+
+                                <div class="btn-group" dropdown [autoClose]="true">
+                                    <button dropdownToggle type="button" class="btn dropdown-toggle btn-action">
+                                      Tác vụ <span class="caret"></span>
+                                    </button>
+                                    <ul *dropdownMenu class="dropdown-menu" role="menu">
+                                      <li role="menuitem"><a class="dropdown-item" href="#">Gửi mail</a></li>
+                                      <li role="menuitem"><a class="dropdown-item" href="#">Ẩn</a>
+                                      </li>
+                                      <li role="menuitem"><a class="dropdown-item" href="#">Xóa</a></li>
+                                    </ul>
+                                  </div>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="row text-left list">
+
+                                <input type="checkbox" id="cbtest" />
+                                <label for="cbtest" class="check-box"></label> 
+
+                                <div class="avatar">
+                                    <img src="assets/img/avatars/4.jpg" class="img-avatar"
+                                        alt="admin@bootstrapmaster.com">
+                                    <span class="avatar-status badge-secondary"></span>
+                                </div>
+                                <p [ngStyle]="!blnNotConfirm && {'margin-top': '8px'}">
+                                    <span>Trần Văn Nguyên (Nguyentv)</span>
+                                    <br>
+                                    <span *ngIf="blnNotConfirm" class="confirm">(đã được mời)</span>
+                                </p>
+                            </td>
+                            <td class="text-right action">
+                                <div class="wrapper-icon icon-mail">
+                                    <i class="icon-envelope icons font-xl d-block"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="row text-left list">
+
+                                <input type="checkbox" id="cbtest1" />
+                                <label for="cbtest1" class="check-box"></label> 
+
+                                <div class="avatar">
+                                    <img src="assets/img/avatars/4.jpg" class="img-avatar"
+                                        alt="admin@bootstrapmaster.com">
+                                    <span class="avatar-status badge-secondary"></span>
+                                </div>
+                                <p [ngStyle]="!blnNotConfirm && {'margin-top': '8px'}">
+                                    <span>Trần Văn Nguyên (Nguyentv)</span>
+                                    <br>
+                                    <span *ngIf="blnNotConfirm" class="confirm">(đã được mời)</span>
+                                </p>
+                            </td>
+                            <td class="text-right action">
+                                <div class="wrapper-icon icon-mail">
+                                    <i class="icon-envelope icons font-xl d-block"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="row text-left list">
+
+                                <input type="checkbox" id="cbtest2" />
+                                <label for="cbtest2" class="check-box"></label> 
+
+                                <div class="avatar">
+                                    <img src="assets/img/avatars/4.jpg" class="img-avatar"
+                                        alt="admin@bootstrapmaster.com">
+                                    <span class="avatar-status badge-secondary"></span>
+                                </div>
+                                <p [ngStyle]="true && {'margin-top': '8px'}">
+                                    <span>Trần Văn Nguyên (Nguyentv)</span>
+                                    <br>
+                                    <span *ngIf="false" class="confirm">(đã được mời)</span>
+                                </p>
+                            </td>
+                            <td class="text-right action">
+                                <div class="wrapper-icon icon-mail">
+                                    <i class="icon-envelope icons font-xl d-block"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>

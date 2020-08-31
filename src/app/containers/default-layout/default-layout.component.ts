@@ -11,14 +11,15 @@ export class DefaultLayoutComponent implements OnInit {
   public sidebarMinimized = false;
   public navItems = navItems;
   public classId: string;
-  public userId: string;
+  public userId: number;
 
   constructor(private routeActive: ActivatedRoute, private router: Router
   ) {}
 
   public ngOnInit(): void {
     // Get id user logged from session storage:
-    this.userId = sessionStorage.id || '0';
+    // this.userId = sessionStorage.id || 0;
+    this.userId = 0;
 
     this.classId = this.router.url.substr(7, 1);
     this.router.events.subscribe((events) => {

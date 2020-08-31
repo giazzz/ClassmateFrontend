@@ -1,0 +1,84 @@
+<div class="animated fadeIn">
+    <div class="card col-md-10 col-12" style="margin: auto;">
+        <div class="card-body btn-create">
+            <button type="button" class="btn btn-brand btn-lg btn-stack-overflow mr-1" style="margin-bottom: 4px">
+                <i class="fa fa-plus"></i>
+                <span>Tạo bài tập</span>
+            </button>
+        </div>
+        <div class="card-body work-info" *ngIf="lstClasswork.length == 0">
+            <h1>Chỉ định bài tập cho lớp học tại đây</h1>
+            <div class="row margin-left-30">
+                <i class="icon-book-open icons font-xl"></i>
+                <p>Tạo bài tập và câu hỏi</p>
+            </div>
+            <div class="row margin-left-30">
+                <i class="icon-list icons font-xl"></i>
+                <p>Sử dụng chủ đề để sắp xếp bài tập trên lớp vào các mô-đun hoặc đơn vị</p>
+            </div>
+            <div class="row margin-left-30">
+                <i class="icon-layers icons font-xl"></i>
+                <p>Sắp xếp bài tập theo cách bạn muốn học sinh nhìn thấy</p>
+            </div>
+        </div>
+        <div class="card-body no-content text-center" *ngIf="lstClasswork.length == 0">
+            <img src="../../../assets/img/no_assignments.png" alt="">
+        </div>
+
+        <!-- List classwork -->
+        <div *ngFor="let exam of lstClasswork" class="row exam" id="exam-{{exam.id}}" (mouseover)="exam.isHover = true"
+            (mouseout)="exam.isHover = false" [ngClass]="{'is-hover' : exam.isHover || exam.isCollapsed }">
+            <div class="row col-12 list-exam" (click)="exam.isCollapsed = !exam.isCollapsed; collapse(exam.isCollapsed, exam.id, $event)">
+                <div class="td text-left list col-9">
+                    <div class="row click-col">
+                        <div class="wrapper-icon">
+                            <i class="icon-note icons font-xl"></i>
+                        </div>
+                        <p>{{exam.title}}</p>
+                    </div>
+                </div>
+                <div class="td text-right action col-3">
+                    <div class="row">
+                        <p>{{exam.createAt}}</p>
+                        <div class="wrapper-action" [ngClass]="{'d-none' : !exam.isHover && !exam.isCollapsed}" dropdown
+                            placement="bottom right">
+                            <i dropdownToggle class="icon-options-vertical icons font-xl"></i>
+                            <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+                                <li role="menuitem"><a class="dropdown-item" href="#">Chỉnh sửa</a></li>
+                                <li role="menuitem"><a class="dropdown-item" href="#">Xóa</a></li>
+                                <li role="menuitem"><a class="dropdown-item" href="#">Sao chép liên kiết</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 div-collapse d-none" id="col-{{exam.id}}">
+                <div class="col-12 exam-content">
+                    <div class="col-12 expried">
+                        <p>Không có ngày đến hạn</p>
+                    </div>
+                    <div class="row col-12 count">
+                        <div class="col-lg-2 col-md-4 col-6 count-num exam-done">
+                            <h2>2</h2>
+                            <p>đã nộp</p>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-6 count-num">
+                            <h2>20</h2>
+                            <p>đã giao</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 exam-footer">
+                    <div class="td text-left list col-9">
+                        <div class="row">
+                            <p>
+                                <a href="#">Xem bài tập</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

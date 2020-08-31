@@ -12,7 +12,7 @@
 
     <div class="col-sm-6 col-lg-3" *ngFor="let c of lstAllCourse">
       <div class="brand-card">
-        <div class="brand-card-header bg-facebook" [style.backgroundImage]="'url('+ imageUrl +')'">
+        <div class="brand-card-header bg-facebook" [style.backgroundImage]="'url('+ imageUrl +')'" [routerLink]="['/class', c.id, 'stream']">
           <h2>{{c.name}}</h2>
         </div>
         <div class="brand-card-body">
