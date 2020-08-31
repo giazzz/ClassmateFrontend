@@ -14,12 +14,12 @@ export class DashboardService {
     }
 
     getAllCourse() {
-        return this.http.get<any>(`${environment.herokuUrl}/data/course/all`,
+        return this.http.get<any>(`${environment.apiUrl}/data/course/all`,
             { headers: this.headers, observe: 'response' });
     }
 
     addCourse(pObjCourse) {
-        return this.http.post(`${environment.herokuUrl}/data/course/add`,
+        return this.http.post(`${environment.apiUrl}/data/course/add`,
         pObjCourse, { headers: this.headers, observe: 'response', responseType: 'text' as 'json' });
     }
 }

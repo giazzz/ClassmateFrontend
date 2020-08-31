@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import { navItems } from '../../_nav';
 import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
+import { AuthenticationService } from '../../_services';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,8 +14,11 @@ export class DefaultLayoutComponent implements OnInit {
   public classId: string;
   public userId: number;
 
-  constructor(private routeActive: ActivatedRoute, private router: Router
-  ) {}
+  constructor(private routeActive: ActivatedRoute,
+              private router: Router,
+              private authenService: AuthenticationService
+  ) {
+  }
 
   public ngOnInit(): void {
     // Get id user logged from session storage:
@@ -36,6 +40,11 @@ export class DefaultLayoutComponent implements OnInit {
 
   toggleMinimize(e) {
     this.sidebarMinimized = e;
+  }
+
+  logout() {
+    this.authenService.logout();
+    this.router.navigateByUrl('/login');
   }
 
 }

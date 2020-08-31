@@ -26,6 +26,7 @@ import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
 import { LoginComponent } from './views/login/login.component';
 import { RegisterComponent } from './views/register/register.component';
+import { JwtInterceptor, ErrorInterceptor } from './_helpers';
 
 const APP_CONTAINERS = [
   DefaultLayoutComponent
@@ -97,10 +98,11 @@ import { TodoComponent } from './views/todo/todo.component';
     ScheduleComponent,
     TodoComponent
   ],
-  providers: [{
-    provide: LocationStrategy,
-    useClass: HashLocationStrategy
-  }],
+  providers: [
+    {provide: LocationStrategy, useClass: HashLocationStrategy},
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }
