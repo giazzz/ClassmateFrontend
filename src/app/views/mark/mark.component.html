@@ -4,23 +4,58 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Sinh viên</th>
-                        <th *ngFor="let exam of lstClasswork">
-                            {{exam.title}}
+                        <th class="text-center fs-15">Sinh viên</th>
+                        <th *ngFor="let exam of lstClasswork" class="text-center">
+                            <div>
+                                <h4 class="exam-title">
+                                    {{exam.title}}
+                                </h4>
+                            </div>
+                            <div class="count-done">
+                                (Đã nộp: 10/20)
+                            </div>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
 
                     <tr>
-                        <td>Điểm trung bình của lớp</td>
+                        <td class="avg">
+                            <div class="row click-col">
+                                <div class="wrapper-icon">
+                                    <i class="icon-people icons font-2xl"></i>
+                                </div>
+                                <p>Điểm trung bình của lớp</p>
+                            </div>
+                        </td>
                         <td *ngFor="let item of lstClasswork">
                         </td>
                     </tr>
+
                     <tr *ngFor="let s of lstStudent">
-                        <td>{{s.name}}</td>
+                        <td class="text-left td-score">
+                            <div class="row student-info">
+                                <div class="avatar">
+                                    <img src="assets/img/avatars/4.jpg" class="img-avatar" alt="">
+                                </div>
+                                <p>{{s.name}}</p>
+                            </div>
+                        </td>
                         <td *ngFor="let score of s.lstScore">
-                            {{score.score}}
+                            <!-- {{score.score}} -->
+                            <div class="row">
+                                <div class="input-score">
+                                    <input type="text" />
+                                </div>
+                                <div class="wrapper-action" dropdown placement="bottom right">
+                                    <i dropdownToggle class="icon-options-vertical icons font-xl"></i>
+                                    <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+                                        <li role="menuitem"><a class="dropdown-item" href="#">Chỉnh sửa</a></li>
+                                        <li role="menuitem"><a class="dropdown-item" href="#">Xóa</a></li>
+                                        <li role="menuitem"><a class="dropdown-item" href="#">Sao chép liên kiết</a></li>
+                                    </ul>
+                                </div>
+                            </div>
                         </td>
                     </tr>
 

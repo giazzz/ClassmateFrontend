@@ -1,0 +1,69 @@
+.exam-title {
+    color: blueviolet;
+    cursor: pointer;
+}
+.exam-title:hover {
+    text-decoration: underline;
+}
+.fs-15 {
+    font-size: 15px;
+    color: #3c4043;
+}
+
+tr th {
+    height: 80px;
+}
+.avg {
+    height: 60.5px;
+    padding-top: 19px;
+}
+.click-col {
+    margin-left: 10px;
+}
+.click-col p, .student-info p {
+    margin-bottom: 0; 
+}
+.click-col p {
+    margin-left: 15px;
+}
+.avatar {
+    width: 36px;
+    height: 36px;
+}
+.student-info {
+    margin-left: 2px;
+}
+.student-info p {
+    margin-top: 7px;
+    margin-left: 10px;
+}
+.count-done {
+    font-weight: 500;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.549);
+}
+.wrapper-action {
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    padding-top: 11px;
+    margin-left: 5px;
+}
+.wrapper-action:hover {
+    background-color: aliceblue;
+    cursor: pointer;
+}
+.wrapper-action i{
+    margin-left: 10px;
+}
+.input-score {
+    width: 65%;
+    margin-left: 3%;
+}
+.input-score input {
+    width: -webkit-fill-available;
+    height: 40px;
+}
+.wrapper-action {
+
+}
