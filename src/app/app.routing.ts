@@ -61,16 +61,16 @@ export const routes: Routes = [
       title: 'Home'
     },
     children: [
-      { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
-      { path: 'class/:id/stream', component: ClassRoomComponent, canActivate: [AuthGuard] },
-      { path: 'student/:id/attendance', component: AttendanceByStudentComponent, canActivate: [AuthGuard] },
-      { path: 'class/:id/attendance', component: AttendanceByTeacherComponent, canActivate: [AuthGuard] },
-      { path: 'class/:id/people', component: PeopleComponent, canActivate: [AuthGuard] },
-      { path: 'class/:id/classwork', component: ClassworkComponent, canActivate: [AuthGuard] },
-      { path: 'class/:id/mark', component: MarkComponent, canActivate: [AuthGuard] },
-      { path: 'student/:id/todo', component: TodoComponent, canActivate: [AuthGuard] },
-      { path: 'setting', component: SettingComponent, canActivate: [AuthGuard] },
-      { path: 'schedule', component: ScheduleComponent, canActivate: [AuthGuard] }
+      { path: 'dashboard', component: DashboardComponent},
+      { path: 'class/:id/stream', component: ClassRoomComponent },
+      { path: 'student/:id/attendance', component: AttendanceByStudentComponent},
+      { path: 'class/:id/attendance', component: AttendanceByTeacherComponent},
+      { path: 'class/:id/people', component: PeopleComponent},
+      { path: 'class/:id/classwork', component: ClassworkComponent },
+      { path: 'class/:id/mark', component: MarkComponent},
+      { path: 'student/:id/todo', component: TodoComponent},
+      { path: 'setting', component: SettingComponent },
+      { path: 'schedule', component: ScheduleComponent}
     ]
   },
   { path: '**', component: P404Component }

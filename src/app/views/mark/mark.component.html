@@ -1,10 +1,10 @@
 <div class="animated fadeIn">
     <div class="card col-12" style="margin: auto;">
         <div class="card-body">
-            <table class="table table-bordered">
+            <table class="table table-bordered" style="width: 100%;">
                 <thead>
                     <tr>
-                        <th class="text-center fs-15">Sinh viên</th>
+                        <th width="22%" class="text-center fs-15 fw-500">Sinh viên</th>
                         <th *ngFor="let exam of lstClasswork" class="text-center">
                             <div>
                                 <h4 class="exam-title">
@@ -20,20 +20,20 @@
                 <tbody>
 
                     <tr>
-                        <td class="avg">
+                        <td class="avg" style="padding-top: 19px;">
                             <div class="row click-col">
                                 <div class="wrapper-icon">
                                     <i class="icon-people icons font-2xl"></i>
                                 </div>
-                                <p>Điểm trung bình của lớp</p>
+                                <p class="fw-500">Điểm trung bình của lớp</p>
                             </div>
                         </td>
                         <td *ngFor="let item of lstClasswork">
                         </td>
                     </tr>
 
-                    <tr *ngFor="let s of lstStudent">
-                        <td class="text-left td-score">
+                    <tr *ngFor="let s of lstStudent; let i = index">
+                        <td class="text-left td-score fw-500">
                             <div class="row student-info">
                                 <div class="avatar">
                                     <img src="assets/img/avatars/4.jpg" class="img-avatar" alt="">
@@ -41,14 +41,18 @@
                                 <p>{{s.name}}</p>
                             </div>
                         </td>
-                        <td *ngFor="let score of s.lstScore">
+                        <td *ngFor="let score of s.lstScore; let j = index" class="div-score" [ngClass]="{'td-hover' : score.isHover}" (click)="score.isClick = true; onTdScoreClick(i, j, $event);" (mouseenter)="score.isHover = true" (mouseleave)="score.isHover = false">
                             <!-- {{score.score}} -->
-                            <div class="row">
+                            <div class="row" *ngIf="score.isHover || score.isClick || score.score != null">
                                 <div class="input-score">
-                                    <input type="text" />
+                                    <input type="number" id="{{'input-' + i.toString() + j.toString()}}" value="{{score.score}}"/>
+                                    <h4 class="j4">
+                                        <span *ngIf="!score.isClick" class="under-input">_</span>
+                                        /100
+                                    </h4>
                                 </div>
-                                <div class="wrapper-action" dropdown placement="bottom right">
-                                    <i dropdownToggle class="icon-options-vertical icons font-xl"></i>
+                                <div class="wrapper-action" dropdown dropdownToggle placement="bottom right">
+                                    <i class="icon-options-vertical icons font-xl"></i>
                                     <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
                                         <li role="menuitem"><a class="dropdown-item" href="#">Chỉnh sửa</a></li>
                                         <li role="menuitem"><a class="dropdown-item" href="#">Xóa</a></li>
