@@ -24,7 +24,7 @@ export class ExerciseService {
     }
 
     public updateExerciseAsync(id: number, updateExerciseModel: UpdateExerciseModel): Observable<any> {
-        return this._http.post<any>(`${environment.apiUrl}/data/exercise/detail?${id}`, updateExerciseModel);
+        return this._http.post<any>(`${environment.apiUrl}api/data/exercise/edit?${id}`, updateExerciseModel);
     }
 
     public postExerciseAsync(exerciseId: number, postExercise: PostExerciseModel): Observable<any> {
