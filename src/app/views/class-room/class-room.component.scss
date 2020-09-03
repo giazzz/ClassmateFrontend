@@ -1,17 +1,21 @@
 .container-fluid {
     padding: 0 10%;
 }
+.animated {
+    font-size: 15px;
+    font-weight: 500;
+}
 .card{
     border-radius: 10px;
 }
 .card-header-class{
-    height: 250px;
+    height: 270px;
 }
 .ex-div{
     height: 238px;
 }
 .cmt-div{
-    height: 60px;
+    height: 80px;
     box-shadow: 0 1px 2px 0 rgba(60,64,67,0.302), 0 2px 6px 2px rgba(60,64,67,0.149);
 }
 .intro-div{
@@ -20,5 +24,48 @@
 .header-class {
     background-size: cover;
     background-repeat: no-repeat;
-    back
+    border-radius: 8px;
+    color: #ffffff;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+.pos-relative {
+    position: relative;
+}
+.pos-absolute {
+    position: absolute;
+}
+.cate-name {
+    font-size: 24px;
+    top: 26%;
+
+}
+.class-code {
+    font-size: 16px;
+    top: 43%;
+}
+.select-img {
+    right: 3%;
+    bottom: 9%;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.upload-img {
+    right: 3%;
+    bottom: 0;
+    cursor: pointer;
+}
+.ex-div .card-body {
+    padding: 1.5rem;
+}
+.font-light {
+    color: rgba(0,0,0,0.549);
+    font-weight: 400;
+}
+.view-all-work {
+    right: 10%;
+    bottom: 5%;
+    color: blueviolet;
+    text-decoration: underline;
+    cursor: pointer;
 }

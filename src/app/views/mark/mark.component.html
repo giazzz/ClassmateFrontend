@@ -1,15 +1,15 @@
 <div class="animated fadeIn">
     <div class="card col-12" style="margin: auto;">
         <div class="card-body">
-            <table class="table table-bordered" style="width: 100%;">
+            <table class="table table-bordered" style="width: 1142px;">
                 <thead>
                     <tr>
-                        <th width="22%" class="text-center fs-15 fw-500">Sinh viên</th>
-                        <th *ngFor="let exam of lstClasswork" class="text-center">
+                        <th style="width: 250px;" class="text-center fs-15 fw-500">Sinh viên</th>
+                        <th style="width: 178px;" *ngFor="let exam of lstClasswork" class="text-center">
                             <div>
-                                <h4 class="exam-title">
+                                <h5 class="exam-title">
                                     {{exam.title}}
-                                </h4>
+                                </h5>
                             </div>
                             <div class="count-done">
                                 (Đã nộp: 10/20)
@@ -29,6 +29,7 @@
                             </div>
                         </td>
                         <td *ngFor="let item of lstClasswork">
+                            <div class="fw-500 fs-18 text-center pd-t-8">80</div>
                         </td>
                     </tr>
 
@@ -41,22 +42,23 @@
                                 <p>{{s.name}}</p>
                             </div>
                         </td>
-                        <td *ngFor="let score of s.lstScore; let j = index" class="div-score" [ngClass]="{'td-hover' : score.isHover}" (click)="score.isClick = true; onTdScoreClick(i, j, $event);" (mouseenter)="score.isHover = true" (mouseleave)="score.isHover = false">
+                        <td *ngFor="let score of s.lstScore; let j = index" class="div-score" [ngClass]="{'td-hover' : score.isFocus}" (click)="score.isClick = true; onTdScoreClick(i, j, $event);" (mouseenter)="score.isHover = true" (mouseleave)="score.isHover = false">
                             <!-- {{score.score}} -->
                             <div class="row" *ngIf="score.isHover || score.isClick || score.score != null">
                                 <div class="input-score">
-                                    <input type="number" id="{{'input-' + i.toString() + j.toString()}}" value="{{score.score}}"/>
-                                    <h4 class="j4">
+                                    <input class="fw-500" type="number" id="{{'input-' + i.toString() + j.toString()}}" value="{{score.score}}" (focus)="score.isFocus = true" (focusout)="score.isFocus = false"/>
+                                    <h4 class="j4" *ngIf="score.score == null || score.isFocus">
                                         <span *ngIf="!score.isClick" class="under-input">_</span>
                                         /100
                                     </h4>
                                 </div>
-                                <div class="wrapper-action" dropdown dropdownToggle placement="bottom right">
+                                <div class="wrapper-action fake-div" *ngIf="!score.isHover">
+                                </div>
+                                <div class="wrapper-action" dropdown dropdownToggle placement="bottom right" *ngIf="score.isHover || score.isFocus" >
                                     <i class="icon-options-vertical icons font-xl"></i>
                                     <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
                                         <li role="menuitem"><a class="dropdown-item" href="#">Chỉnh sửa</a></li>
-                                        <li role="menuitem"><a class="dropdown-item" href="#">Xóa</a></li>
-                                        <li role="menuitem"><a class="dropdown-item" href="#">Sao chép liên kiết</a></li>
+                                        <li role="menuitem"><a class="dropdown-item" href="#">Xem bài nộp</a></li>
                                     </ul>
                                 </div>
                             </div>

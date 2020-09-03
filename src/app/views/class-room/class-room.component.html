@@ -3,11 +3,14 @@
         <div class="col-sm-12 text-center">
     
                 <div class="card card-header-class">
-                    <div class="card-body header-class" [style.backgroundImage]="'url('+ imgUrl +')'">
-                        <h2>{{className}}</h2>
-                        <p>{{classCategory}}</p>
-                        <p>{{classCode}}</p>
+                    <div class="card-body header-class pos-relative" [style.backgroundImage]="'url('+ imgUrl +')'">
+                        <h1 class="pos-absolute">{{objClass.className}}</h1>
+                        <p class="pos-absolute cate-name">{{objClass.classCategory}}</p>
+                        <p class="pos-absolute class-code">Mã lớp: {{objClass.classCode}}</p>
     
+                        <p class="pos-absolute select-img">Chọn chủ đề</p>
+                        <p class="pos-absolute upload-img">Tải ảnh lên</p>
+
                     </div>
                 </div>
     
@@ -19,24 +22,30 @@
                 <div class="col-sm-3">
                     <div class="card ex-div">
                         <div class="card-body">
-        
-        
+                            <p>Sắp đến hạn</p>
+                            <p class="font-light">Không có bài tập nào sắp đến hạn</p>
+                            <div>
+                                <p class="pos-absolute view-all-work">Xem tất cả</p>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-9 info-div">
+
                     <div class="card cmt-div">
                         <div class="card-body">
         
         
                         </div>
                     </div>
+
                     <div class="card intro-div">
                         <div class="card-body">
         
         
                         </div>
                     </div>
+
                 </div>
     
             </div>

@@ -10,6 +10,7 @@ import { CarouselConfig } from 'ngx-bootstrap/carousel';
 export class ClassRoomComponent implements OnInit {
   public classId;
   public imgUrl: string;
+  public objClass;
 
   constructor(private route: ActivatedRoute,
               private router: Router
@@ -23,7 +24,13 @@ export class ClassRoomComponent implements OnInit {
     }
 
     const imageName = localStorage.classBg || '1.jpg';
-    this.imgUrl = '../../../assets/img/classBg/' + imageName;
+    this.imgUrl = 'assets/img/classBg/' + imageName;
+    this.objClass = {
+      className: 'T1807E',
+      classCategory: 'IT',
+      classCode: '112'
+    }
+
   }
 
 }
