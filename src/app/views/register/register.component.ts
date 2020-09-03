@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { RegisterService } from './register.service';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { AuthenticationService } from '../../_services';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,7 +19,8 @@ export class RegisterComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
               private resService: RegisterService,
-              private iconLoading: NgxUiLoaderService
+              private iconLoading: NgxUiLoaderService,
+              private authenService: AuthenticationService
   ) {
   }
   ngOnInit(): void {
@@ -73,27 +75,27 @@ export class RegisterComponent implements OnInit {
     const role = this.f.radioRole.value;
     const objAcc = {username: username, password: password, email: email, role: [role]};
 
-    this.resService.register(objAcc)
-      .subscribe(
-        response => {
-          const successMsg = 'User registered successfully!';
-          if (response.status === 200 && response.body.message === successMsg) {
-            // Success:
-          }
-          this.iconLoading.stop();
-        },
-        error => {
-          // Error:
-          const errUsername = 'Error: Username is already in use!';
-          const errEmail = 'Error: Email is already in use!';
-          if (error.error.message === errUsername) {
-            this.blnIsNameExisted = true;
-          } else if (error.error.message === errEmail) {
-            this.blnIsMailExisted = true;
-          }
-          this.iconLoading.stop();
-        });
-  }
+    this.resService.register(objAcc).subscribe(
+      response => {
+        const successMsg = 'User registered successfully!';
+        if (response.status === 200 && response.body.message === successMsg) {
+          // Success:
+          this.authenService.login(username, password);
+        }
+        this.iconLoading.stop();
+      },
+      error => {
+        // Error:
+        const errUsername = 'Error: Username is already in use!';
+        const errEmail = 'Error: Email is already in use!';
+        if (error.error.message === errUsername) {
+          this.blnIsNameExisted = true;
+        } else if (error.error.message === errEmail) {
+          this.blnIsMailExisted = true;
+        }
+        this.iconLoading.stop();
+      });
+}
 }
 
 export function mustMatch(controlName: string, matchingControlName: string) {

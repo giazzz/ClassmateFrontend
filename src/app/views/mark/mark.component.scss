@@ -15,7 +15,6 @@ tr th {
 }
 .avg {
     height: 60.5px;
-    padding-top: 19px;
 }
 .click-col {
     margin-left: 10px;
@@ -55,15 +54,69 @@ tr th {
 }
 .wrapper-action i{
     margin-left: 10px;
+    color: rgba(0, 0, 0, 0.549);
 }
 .input-score {
-    width: 65%;
-    margin-left: 3%;
+    width: 80px;
+    margin-left: auto;
+    position: relative;
+    // margin-right: 15px;
 }
 .input-score input {
     width: -webkit-fill-available;
     height: 40px;
+    border: none;
+    cursor: text;
+}
+.input-score h4 {
+    position: absolute;
+    top: 10px;
+    right: 0px;
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.549);
 }
 .wrapper-action {
-
+    margin-right: auto;
 }
+.input-score input {
+    text-align: right;
+    padding-right: 42%;
+    display: flex;
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.549);
+}
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+.table td {
+    height: 66px;
+}
+.under-input {
+    color: rgba(0, 0, 0, 0.549);
+    position: absolute;
+    right: 34px;
+    top: -21px;
+    font-size: 35px;
+}
+.div-score {
+    cursor: pointer;
+}
+.input-score input:focus {
+    border-bottom: 2px solid green;
+    outline: none;
+    padding-top: 4px;
+}
+.fw-500 {
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.549);
+}
+// .td-hover .row{
+//     pointer-events: none;
+// }
