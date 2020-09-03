@@ -1,5 +1,5 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CarouselConfig } from 'ngx-bootstrap/carousel';
 
 @Component({
@@ -9,12 +9,21 @@ import { CarouselConfig } from 'ngx-bootstrap/carousel';
 })
 export class ClassRoomComponent implements OnInit {
   public classId;
+  public imgUrl: string;
 
-  constructor(private route: ActivatedRoute
-  ) { }
+  constructor(private route: ActivatedRoute,
+              private router: Router
+  ) {
+  }
 
   ngOnInit(): void {
     this.classId = this.route.snapshot.paramMap.get('id');
+    if (this.classId == null || this.classId === undefined || this.classId === 'undefined') {
+      this.router.navigateByUrl('/dashboard');
+    }
+
+    const imageName = localStorage.classBg || '1.jpg';
+    this.imgUrl = '../../../assets/img/classBg/' + imageName;
   }
 
 }
