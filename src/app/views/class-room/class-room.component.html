@@ -1,54 +1,231 @@
+<div class="animated fadeIn">
+    <div class="col-sm-12 text-center">
+        <div class="card card-header-class">
+            <div class="card-body header-class pos-relative" [style.backgroundImage]="'url('+ imgUrl +')'">
+                <h1 class="pos-absolute">{{objClass.className}}</h1>
+                <p class="pos-absolute cate-name">{{objClass.classCategory}}</p>
+                <p class="pos-absolute class-code">Mã lớp: {{objClass.classCode}}</p>
+                <p class="pos-absolute select-img" data-toggle="modal" (click)="chooseImgModal.show(); onClickModalChooseImg()">Chọn chủ đề</p>
+                <!-- <p class="pos-absolute upload-img">Tải ảnh lên</p> -->
+            </div>
+        </div>
+    </div>
 
-    <div class="animated fadeIn">
-        <div class="col-sm-12 text-center">
-    
-                <div class="card card-header-class">
-                    <div class="card-body header-class pos-relative" [style.backgroundImage]="'url('+ imgUrl +')'">
-                        <h1 class="pos-absolute">{{objClass.className}}</h1>
-                        <p class="pos-absolute cate-name">{{objClass.classCategory}}</p>
-                        <p class="pos-absolute class-code">Mã lớp: {{objClass.classCode}}</p>
-    
-                        <p class="pos-absolute select-img">Chọn chủ đề</p>
-                        <p class="pos-absolute upload-img">Tải ảnh lên</p>
+    <div class="col-sm-12 content-div">
+        <div class="row">
 
+            <div class="col-sm-3">
+                <div class="card ex-div">
+                    <div class="card-body">
+                        <p>Sắp đến hạn</p>
+                        <p class="font-light">Không có bài tập nào sắp đến hạn</p>
+                        <div>
+                            <p class="pos-absolute view-all-work">Xem tất cả</p>
+                        </div>
                     </div>
                 </div>
-    
-        </div>
-    
-        <div class="col-sm-12 content-div">
-            <div class="row">
-    
-                <div class="col-sm-3">
-                    <div class="card ex-div">
-                        <div class="card-body">
-                            <p>Sắp đến hạn</p>
-                            <p class="font-light">Không có bài tập nào sắp đến hạn</p>
-                            <div>
-                                <p class="pos-absolute view-all-work">Xem tất cả</p>
+            </div>
+
+            <div class="col-sm-9 info-div">
+                <div class="card cmt-div">
+                    <div class="card-body body-first" (click)="blnIsClick = true" *ngIf="!blnIsClick">
+                        <div class="row col-12 list-exam pd-r-0">
+                            <div class="text-left list col-10 pd-r-0">
+                                <div class="row click-col">
+                                    <div class="avatar">
+                                        <img src="{{objLoggedUser.imgUrl}}" class="img-avatar" alt="">
+                                    </div>
+                                    <p>Chia sẻ đôi điều với lớp học...</p>
+                                </div>
+                            </div>
+                            <div class="text-right action col-2 pd-r-0">
+                                <div class="wrapper-action">
+                                    <i class="icon-cup icons font-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body" *ngIf="blnIsClick">
+                        <div class="col-12 content-cmt">
+                            <p>Dành cho:</p>
+                            <div class="col-6 col-sm-4 col-md-2 col-xl-3 mb-3 mb-xl-0 pd-l-0">
+                                <button type="button" class="btn btn-block btn-light btn-dis"
+                                    disabled>{{objClass.className}}</button>
+                            </div>
+                            <div class="form-group pd-l-0">
+                                <textarea id="textarea-input" name="textarea-input" rows="6" class="form-control cmt"
+                                    placeholder="Chia sẻ với lớp học của bạn"></textarea>
+                            </div>
+                            <div class="row pd-l-0 pd-r-0">
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-light">
+                                        <i class="icon-paper-clip icons"></i>
+                                        Đính kèm
+                                    </button>
+                                </div>
+                                <div class="col-6 text-right">
+                                    <button type="button" class="btn btn-light btn-cancel active" aria-pressed="true"
+                                        (click)="blnIsClick = false">
+                                        <i class="icon-close icons"></i>
+                                        Hủy
+                                    </button>
+                                    <button type="button" class="btn btn-success active" aria-pressed="true">
+                                        <i class="icon-paper-plane icons"></i>
+                                        Đăng
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-9 info-div">
 
-                    <div class="card cmt-div">
-                        <div class="card-body">
-        
-        
+                <!-- List comment -->
+                <div class="card content-cmt-div" *ngFor="let c of lstCmt">
+                    <div class="card-body">
+                        <div class="row col-12 list-exam pd-r-0">
+                            <div class="text-left list col-9">
+                                <div class="row">
+                                    <div class="avatar">
+                                        <img src="{{c.author.imgUrl}}" class="img-avatar" alt="">
+                                    </div>
+                                    <div class="cmt-info">
+                                        <p style="margin-bottom: 0;">{{c.author.name}}</p>
+                                        <p class="create-at">{{c.creatAt}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-right action col-3 pd-r-0">
+                                <div class="wrapper-action">
+                                    <i class="icon-options-vertical icons font-xl"></i>
+                                </div>
+                            </div>
                         </div>
+
+                        <div class="color-gray" [innerHTML]="c.content"></div>
+
+                        <div class="col-sm-12 col-md-6 col-xl-6 file-div">
+                            <!-- File -->
+                            <div class="file-img" [style.backgroundImage]="'url('+ getPreviewImgByFileType(c.urlFile) +')'"></div>
+                            <div class="file-name">
+                                <div style="font-size: 18px; overflow: hidden;">
+                                    {{getFileName(c.urlFile)}}
+                                </div>
+                                <p class="color-gray">
+                                    {{getTypeFile(c.urlFile)}}
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="list-cmt">
+                        <div class="count-cmt" (click)="c.blnIsNotShowSubCmt = !c.blnIsNotShowSubCmt">
+                            <span>{{c.subCmt.length}} bình luận</span>
+                            <span>
+                                <i class="icon-arrow-down icons" *ngIf="c.blnIsNotShowSubCmt"></i>
+                                <i class="icon-arrow-up icons" *ngIf="!c.blnIsNotShowSubCmt"></i>
+                            </span>
+                        </div>
+                        <ng-container *ngIf="!c.blnIsNotShowSubCmt">
+                            <div class="one-cmt row" *ngFor="let cmt of c.subCmt">
+                                <div class="text-left col-9">
+                                    <div class="row">
+                                        <div class="avatar">
+                                            <img src="{{cmt.author.imgUrl}}" class="img-avatar" alt="">
+                                        </div>
+                                        <div class="cmt-info">
+                                            <p style="margin-bottom: 0;">
+                                                {{cmt.author.name}}
+                                                <span class="create-at">&nbsp;&nbsp;{{cmt.creatAt}}</span>
+                                            </p>
+                                            <div [innerHTML]="cmt.content" class="color-gray"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-right action col-3">
+                                    <div class="wrapper-action">
+                                        <i class="icon-options-vertical icons font-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
                     </div>
 
-                    <div class="card intro-div">
-                        <div class="card-body">
-        
-        
+                    <div class="add-cmt">
+                        <div class="row col-12 list-exam pd-r-0">
+                            <div class="text-left list col-12">
+                                <div class="row">
+                                    <div class="avatar" style="margin-top: 9px;">
+                                        <img src="{{objLoggedUser.imgUrl}}" class="img-avatar" alt="">
+                                    </div>
+                                    <div class="input-new-cmt">
+                                        <textarea autosize minRows="1" class="form-control new-cmt"
+                                            placeholder="Thêm nhận xét..."></textarea>
+                                        <div class="wrapper-action">
+                                            <i class="icon-paper-plane icons font-2xl d-block color-gray"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
                 </div>
-    
+
+                <!-- List classwork -->
+                <div class="card class-work-div" *ngFor="let c of lstClassWork">
+                    <div class="card-body">
+                        <div class="text-left col-9">
+                            <div class="row">
+                                <div class="wrapper-icon">
+                                    <i class="icon-calculator icons font-xl d-block"></i>
+                                </div>
+                                <div class="cmt-info">
+                                    <p style="margin-bottom: 0;">{{c.title}}</p>
+                                    <div class="color-gray">{{c.endDate}}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
             </div>
         </div>
-    
     </div>
+</div>
+
+<!-- Choose image modal -->
+<div bsModal #chooseImgModal="bs-modal" class="modal fade modal-choose-img" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Thư viện</h4>
+                <button type="button" class="close" (click)="chooseImgModal.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-6 img-bg" 
+                        *ngFor="let img of lstClassBgImg" 
+                        (click)="idImageBgClass = img.id; img.isClick = true; onClickImg(img.id)" 
+                        (mouseover)="img.isHover = true"
+                        (mouseout)="img.isHover = false">
+                        <div class="img" [style.backgroundImage]="'url(assets/img/classBg/' + img.id +'.jpg)'" [ngClass]="{'border-green' : img.isHover}">
+
+                        </div>
+                        <svg *ngIf="img.isClick" class="checkmark" id="checkmark-{{img.id}}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                            <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                            <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="chooseImgModal.hide(); onCancelModalChooseImg();">Hủy</button>
+                <button type="button" class="btn btn-primary" (click)="chooseImg(); chooseImgModal.hide();">Lưu chủ đề</button>
+            </div>
+        </div>
+    </div>
+</div>

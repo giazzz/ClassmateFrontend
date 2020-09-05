@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CarouselConfig } from 'ngx-bootstrap/carousel';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-class-room',
@@ -10,7 +10,13 @@ import { CarouselConfig } from 'ngx-bootstrap/carousel';
 export class ClassRoomComponent implements OnInit {
   public classId;
   public imgUrl: string;
+  public idImageBgClass: number;
   public objClass;
+  public objLoggedUser;
+  public blnIsClick: boolean = false;
+  public lstClassWork: any[] = [];
+  public lstCmt: any[] = [];
+  public lstClassBgImg: any[] = [];
 
   constructor(private route: ActivatedRoute,
               private router: Router
@@ -23,14 +29,133 @@ export class ClassRoomComponent implements OnInit {
       this.router.navigateByUrl('/dashboard');
     }
 
-    const imageName = localStorage.classBg || '1.jpg';
-    this.imgUrl = 'assets/img/classBg/' + imageName;
+    if (localStorage.classBg == null || localStorage.classBg === undefined || localStorage.classBg === 'undefined') {
+      this.idImageBgClass = 1;
+    } else {
+      this.idImageBgClass = Number(localStorage.classBg);
+    }
+    this.imgUrl = 'assets/img/classBg/' + this.idImageBgClass + '.jpg';
+    this.lstClassBgImg = [
+      {id: 1},
+      {id: 2},
+      {id: 3},
+      {id: 4},
+      {id: 5},
+      {id: 6},
+    ];
+
+    this.objLoggedUser = {
+      id: '1',
+      name: 'CurrentName',
+      imgUrl: 'assets/img/avatars/3.jpg',
+      role: 'Teacher'
+    };
+
     this.objClass = {
       className: 'T1807E',
       classCategory: 'IT',
       classCode: '112'
-    }
+    };
 
+    this.lstClassWork = [
+      {
+        id: '1',
+        title: 'Test1',
+        endDate: '08/08/2020'
+      },
+      {
+        id: '2',
+        title: 'Test2',
+        endDate: '08/08/2020'
+      }
+    ];
+
+    this.lstCmt = [
+      {
+        id: 1,
+        content: 'Test',
+        creatAt: '08:08 08/08/2020',
+        urlFile: 'assets/img/avatars/8.jpg',
+        author: {
+          id: '1',
+          imgUrl: 'assets/img/avatars/4.jpg',
+          name: 'Nguyen'
+        },
+        subCmt: [
+          {
+            id: 1,
+            content: 'Test',
+            creatAt: '08:08 08/08/2020',
+            author: {
+              id: '1',
+              imgUrl: 'assets/img/avatars/4.jpg',
+              name: 'Nguyen'
+            }
+          }
+        ]
+      }
+
+    ];
+
+  }
+
+  getFileName(strUrl: string) {
+    return strUrl.split('/').slice(-1)[0];
+  }
+
+  getTypeFile(strUrl: string) {
+    const extension = strUrl.split('.').pop();
+    if (['png', 'jpg', 'jpeg', 'gif', 'tiff', 'psd'].includes(extension)) {
+      return 'Hình ảnh';
+    } else if (['doc', 'docx'].includes(extension)) {
+      return 'Word';
+    } else if (['xls', 'xlsx'].includes(extension)) {
+      return 'Excel';
+    } else if (['pdf'].includes(extension)) {
+      return 'PDF';
+    }
+    return '';
+  }
+
+  getPreviewImgByFileType(strUrl: string) {
+    const extension = strUrl.split('.').pop();
+    if (['png', 'jpg', 'jpeg', 'gif', 'tiff', 'psd'].includes(extension)) {
+      return strUrl;
+    } else if (['doc', 'docx'].includes(extension)) {
+      return 'assets/img/word-file-icon.jpg';
+    } else if (['xls', 'xlsx'].includes(extension)) {
+      return 'assets/img/excel-icon.png';
+    } else if (['pdf'].includes(extension)) {
+      return 'assets/img/pdf-file-icon-svg.png';
+    }
+    return 'assets/img/document.jpg';
+  }
+
+  chooseImg() {
+    this.imgUrl = this.imgUrl = 'assets/img/classBg/' + this.idImageBgClass + '.jpg';
+    localStorage.setItem('classBg', this.idImageBgClass.toString());
+  }
+
+  onClickImg(id: string) {
+    this.lstClassBgImg.forEach(item => {
+      if (item.id !== id) {
+        item.isClick = false;
+      }
+    });
+  }
+
+  onClickModalChooseImg() {
+    this.lstClassBgImg.forEach(item => {
+      if (item.id === this.idImageBgClass) {
+        item.isClick = true;
+      } else {
+        item.isClick = false;
+      }
+    });
+  }
+
+  onCancelModalChooseImg() {
+    this.idImageBgClass = Number(localStorage.classBg) || 1;
   }
 
 }

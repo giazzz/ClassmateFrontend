@@ -18,6 +18,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgxUiLoaderModule } from 'ngx-ui-loader';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { WebcamModule } from 'ngx-webcam';
+import { AutosizeModule } from 'ngx-autosize';
 
 // Import containers
 import { DefaultLayoutComponent } from './containers';
@@ -78,7 +79,8 @@ import { TodoComponent } from './views/todo/todo.component';
     PerfectScrollbarModule,
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
-    ChartsModule
+    ChartsModule,
+    AutosizeModule
   ],
   declarations: [
     AppComponent,
