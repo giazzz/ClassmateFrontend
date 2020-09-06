@@ -5,6 +5,9 @@
 .exam-title:hover {
     text-decoration: underline;
 }
+.table {
+    overflow-x:auto;
+}
 .fs-15 {
     font-size: 15px;
     color: #3c4043;
@@ -47,6 +50,8 @@ tr th {
     border-radius: 100%;
     padding-top: 11px;
     margin-left: 5px;
+    margin-right: auto;
+    position: relative;
 }
 .wrapper-action:hover {
     background-color: aliceblue;
@@ -60,7 +65,6 @@ tr th {
     width: 80px;
     margin-left: auto;
     position: relative;
-    // margin-right: 15px;
 }
 .input-score input {
     width: -webkit-fill-available;
@@ -75,21 +79,20 @@ tr th {
     font-size: 18px;
     color: rgba(0, 0, 0, 0.549);
 }
-.wrapper-action {
-    margin-right: auto;
-}
 .input-score input {
     text-align: right;
     padding-right: 42%;
     display: flex;
     font-size: 18px;
     color: rgba(0, 0, 0, 0.549);
+    background: transparent;
+    margin: auto;
 }
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 /* Firefox */
 input[type=number] {
@@ -109,7 +112,7 @@ input[type=number] {
     cursor: pointer;
 }
 .input-score input:focus {
-    border-bottom: 2px solid green;
+    border-bottom: 2px solid #c2cbc2;
     outline: none;
     padding-top: 4px;
 }
@@ -117,6 +120,19 @@ input[type=number] {
     font-weight: 500;
     color: rgba(0, 0, 0, 0.549);
 }
-// .td-hover .row{
-//     pointer-events: none;
-// }
+.fake-div {
+    width: 0;
+}
+.fs-18 {
+    font-size: 18px;
+}
+.pd-t-8 {
+    padding-top: 8px;
+}
+.td-hover {
+    border: 2px solid #c2cbc2;
+}
+.dropdown-menu {
+    min-width: 150px;
+    width: 150px;
+}

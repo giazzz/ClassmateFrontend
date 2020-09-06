@@ -40,8 +40,7 @@
                 <div class="td text-right action col-3">
                     <div class="row">
                         <p>{{exam.createAt}}</p>
-                        <div class="wrapper-action" [ngClass]="{'d-none' : !exam.isHover && !exam.isCollapsed}" dropdown
-                            placement="bottom right">
+                        <div class="wrapper-action" [ngClass]="{'d-none' : !exam.isHover && !exam.isCollapsed}" dropdown placement="bottom right">
                             <i dropdownToggle class="icon-options-vertical icons font-xl"></i>
                             <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
                                 <li role="menuitem"><a class="dropdown-item" href="#">Chỉnh sửa</a></li>
