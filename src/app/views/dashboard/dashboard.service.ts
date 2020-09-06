@@ -9,7 +9,6 @@ export class DashboardService {
     constructor(private http: HttpClient) {
         this.headers = new HttpHeaders({
             'Content-Type': 'application/json',
-            'Authorization': environment.token
           });
     }
 
@@ -21,5 +20,10 @@ export class DashboardService {
     addCourse(pObjCourse) {
         return this.http.post(`${environment.apiUrl}/data/course/add`,
         pObjCourse, { headers: this.headers, observe: 'response', responseType: 'text' as 'json' });
+    }
+
+    getAllCourseCategory() {
+        return this.http.get<any>(`${environment.apiUrl}/data/courseCategory/all`,
+            { headers: this.headers, observe: 'response' });
     }
 }

@@ -72,10 +72,8 @@
               <label class="col-md-3 col-form-label" for="select1">Chuyên ngành</label>
               <div class="col-md-9">
                 <select formControlName="selectCategory" id="select1" name="select1" class="form-control" [ngClass]="{ 'is-invalid': (submitted || f.selectCategory.touched)  && f.selectCategory.errors }">
-                  <option value="0">Please select</option>
-                  <option value="1">Option #1</option>
-                  <option value="2">Option #2</option>
-                  <option value="3">Option #3</option>
+                  <option value="">Chọn chuyên ngành</option>
+                  <option *ngFor="let item of lstAllCourseCtgr" value="{{item.id}}">{{item.name}}</option>
                 </select>
                 <span *ngIf="(submitted || f.selectCategory.touched)  && f.selectCategory.errors?.required" class="help-block">Hãy chọn một chuyên ngành!</span>
               </div>
@@ -100,8 +98,8 @@
         </div>
         
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="addModal.hide()">Bỏ</button>
-          <button type="submit" class="btn btn-success">Lưu</button>
+          <button type="button" class="btn btn-secondary" (click)="addModal.hide()">Hủy</button>
+          <button type="submit" class="btn btn-success">Thêm lớp học</button>
         </div>
 
       </form>
