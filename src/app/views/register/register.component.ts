@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { RegisterService } from './register.service';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { AuthenticationService } from '../../_services';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,7 +21,8 @@ export class RegisterComponent implements OnInit {
   constructor(private fb: FormBuilder,
               private resService: RegisterService,
               private iconLoading: NgxUiLoaderService,
-              private authenService: AuthenticationService
+              private authenService: AuthenticationService,
+              private router: Router
   ) {
   }
   ngOnInit(): void {
@@ -72,15 +74,18 @@ export class RegisterComponent implements OnInit {
     const username = this.f.inputUsername.value;
     const email = this.f.inputEmail.value;
     const password = this.f.inputPwd.value;
-    const role = this.f.radioRole.value;
+    let role = this.f.radioRole.value;
+    role = role.charAt(0).toUpperCase() + role.slice(1);
     const objAcc = {username: username, password: password, email: email, role: [role]};
-
     this.resService.register(objAcc).subscribe(
       response => {
         const successMsg = 'User registered successfully!';
         if (response.status === 200 && response.body.message === successMsg) {
           // Success:
-          this.authenService.login(username, password);
+          this.authenService.login(username, password).subscribe(
+            data => {
+              this.router.navigateByUrl('/dashboard');
+            });
         }
         this.iconLoading.stop();
       },
@@ -88,9 +93,10 @@ export class RegisterComponent implements OnInit {
         // Error:
         const errUsername = 'Error: Username is already in use!';
         const errEmail = 'Error: Email is already in use!';
-        if (error.error.message === errUsername) {
+        console.log(error)
+        if (error === errUsername) {
           this.blnIsNameExisted = true;
-        } else if (error.error.message === errEmail) {
+        } else if (error === errEmail) {
           this.blnIsMailExisted = true;
         }
         this.iconLoading.stop();

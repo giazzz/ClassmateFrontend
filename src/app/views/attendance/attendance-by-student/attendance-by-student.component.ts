@@ -99,7 +99,6 @@ export class AttendanceByStudentComponent implements OnInit {
   }
 
   onClickAttendance(){
-    console.log(this.webcamImage?.imageAsDataUrl);
     const imgName = 'tenSinhVienAndDate';
     const data = this.webcamImage?.imageAsDataUrl;
     const fileImg = this.dataURLtoFile(data, imgName + '.png');
@@ -119,7 +118,6 @@ export class AttendanceByStudentComponent implements OnInit {
       if (xhr.readyState === 4 && xhr.status === 200) {
         // File uploaded successfully
         const response = JSON.parse(xhr.responseText);
-        console.log(response.secure_url)
         this.isAttendanced = true;
 
       }

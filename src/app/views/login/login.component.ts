@@ -50,14 +50,12 @@ export class LoginComponent implements OnInit {
         return;
     }
 
-    this.authenService.login(this.f.inputUsername.value, this.f.inputPassword.value)
-        .subscribe(
-            data => {
-              console.log(data);
-              this.router.navigateByUrl('/dashboard');
-            },
-            error => {
-            });
+    this.authenService.login(this.f.inputUsername.value, this.f.inputPassword.value).subscribe(
+      data => {
+        this.router.navigateByUrl('/dashboard');
+      },
+      error => {
+      });
   }
 
 }
