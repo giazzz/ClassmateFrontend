@@ -3,6 +3,7 @@ import { navItems } from '../../_nav';
 import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
 import { AuthenticationService } from '../../_services';
 import { DashboardService } from '../../views/dashboard/dashboard.service';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,6 +15,7 @@ export class DefaultLayoutComponent implements OnInit {
   public navItems = navItems;
   public classId: string;
   public userId: string;
+  public currentUser;
 
   constructor(private routeActive: ActivatedRoute,
               public router: Router,
@@ -24,7 +26,8 @@ export class DefaultLayoutComponent implements OnInit {
 
   public ngOnInit(): void {
     // Get id user logged from session storage:
-    this.userId = JSON.parse(localStorage.currentUser).id || '';
+    this.currentUser = JSON.parse(localStorage.currentUser);
+    this.userId = this.currentUser.id;
     this.classId = this.router.url.split('/')[2];
 
     this.router.events.subscribe((events) => {
@@ -35,6 +38,7 @@ export class DefaultLayoutComponent implements OnInit {
       }
     });
 
+    console.log($('.navbar-toggler'))
     // this.courseService.getAllCourse().subscribe(
     //   response => {
     //     if (response.body != null && response.body !== undefined) {

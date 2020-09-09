@@ -6,6 +6,6 @@
 export const environment = {
   production: false,
   // apiUrl: 'http://localhost:8080/api',
-  apiUrl: 'https://classmate-api-server.herokuapp.com/api',
-  // apiUrl: 'http://52.165.229.168:8080/api',
+  // apiUrl: 'https://classmate-api-server.herokuapp.com/api',
+  apiUrl: 'http://35.221.225.55/api',
 };

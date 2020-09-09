@@ -17,6 +17,7 @@ export class DashboardComponent implements OnInit {
   public lstAllCourseCtgr: any[];
   public frmAdd: FormGroup;
   public submitted: boolean;
+  public currentUser;
 
   @ViewChild('addModal') public addModal: ModalDirective;
 
@@ -33,7 +34,10 @@ export class DashboardComponent implements OnInit {
     this.faPlus = faPlus;
     this.lstAllCourse = [];
     this.lstAllCourseCtgr = [];
+    this.currentUser = JSON.parse(localStorage.currentUser);
+
     this.getLstAllCourse();
+
     this.dashBoardService.getAllCourseCategory().subscribe(
       response => {
         if (response.body !== null && response.body !== undefined) {
@@ -63,16 +67,30 @@ export class DashboardComponent implements OnInit {
   get f() { return this.frmAdd.controls; }
 
   getLstAllCourse() {
-    this.dashBoardService.getAllCourse().subscribe(
-      response => {
-        if (response.body !== null && response.body !== undefined) {
-          this.lstAllCourse = response.body;
-        }
-        this.iconLoading.stop();
-      },
-      error => {
-        this.iconLoading.stop();
-      });
+    const date = new Date();
+    if (this.currentUser.roles.includes('ROLE_TEACHER')) {
+      this.dashBoardService.getTeacherCourse(date.getTime()).subscribe(
+        response => {
+          if (response.body !== null && response.body !== undefined) {
+            this.lstAllCourse = response.body;
+          }
+          this.iconLoading.stop();
+        },
+        error => {
+          this.iconLoading.stop();
+        });
+    } else if (this.currentUser.roles.includes('ROLE_STUDENT')) {
+      this.dashBoardService.getStudentCourse(this.currentUser.id, date.getTime()).subscribe(
+        response => {
+          if (response.body !== null && response.body !== undefined) {
+            this.lstAllCourse = response.body;
+          }
+          this.iconLoading.stop();
+        },
+        error => {
+          this.iconLoading.stop();
+        });
+    }
   }
 
   onSubmitFormAdd() {
