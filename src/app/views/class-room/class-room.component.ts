@@ -1,6 +1,9 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ClassMateService } from '../classmate.service';
 import * as $ from 'jquery';
+import { EndpointsConfig } from '../../config/config';
+import { ClassRoomService } from './class-room.service';
 
 @Component({
   selector: 'app-class-room',
@@ -17,9 +20,12 @@ export class ClassRoomComponent implements OnInit {
   public lstClassWork: any[] = [];
   public lstCmt: any[] = [];
   public lstClassBgImg: any[] = [];
+  public defaultAvatar = EndpointsConfig.user.defaultAvatar;
 
   constructor(private route: ActivatedRoute,
-              private router: Router
+              private router: Router,
+              private classService: ClassMateService,
+              private classRoomService: ClassRoomService,
   ) {
   }
 
@@ -44,18 +50,30 @@ export class ClassRoomComponent implements OnInit {
       {id: 6},
     ];
 
-    this.objLoggedUser = {
-      id: '1',
-      name: 'CurrentName',
-      imgUrl: 'assets/img/avatars/3.jpg',
-      role: 'Teacher'
-    };
+    // Get info user:
+    const userId = JSON.parse(localStorage.currentUser).id;
+    this.classService.getUserDetail(userId).subscribe(
+      response => {
+        if (response.body != null && response.body !== undefined) {
+          this.objLoggedUser = response.body;
+        }
+      });
 
-    this.objClass = {
-      className: 'T1807E',
-      classCategory: 'IT',
-      classCode: '112'
-    };
+    // Get class detail:
+    this.classService.getClassDetail(this.classId).subscribe(
+      response => {
+        if (response.body != null && response.body !== undefined) {
+          this.objClass = response.body;
+        }
+      });
+
+    // Get all cmt:
+    this.classRoomService.getAllComment(this.classId).subscribe(
+      response => {
+        if (response.body != null && response.body !== undefined) {
+          console.log(response.body)
+        }
+      });
 
     this.lstClassWork = [
       {
@@ -158,4 +176,7 @@ export class ClassRoomComponent implements OnInit {
     this.idImageBgClass = Number(localStorage.classBg) || 1;
   }
 
+  getInfoFromDescription(des: string, index: number) {
+    return des == null ? '' : des.split(',')[index].split(':')[1];
+  }
 }

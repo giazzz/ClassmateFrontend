@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -13,5 +13,12 @@ export class ClassRoomService {
     getAllCourse() {
         return this.http.get<any>(`${environment.apiUrl}/data/course/all`,
             { observe: 'response' });
+    }
+
+    getAllComment(course_id: string) {
+        let params = new HttpParams();
+        params = params.append('course_id', course_id);
+        return this.http.get<any>(`${environment.apiUrl}/data/message/all`,
+            { params, observe: 'response' });
     }
 }
