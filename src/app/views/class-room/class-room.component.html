@@ -2,9 +2,9 @@
     <div class="col-sm-12 text-center">
         <div class="card card-header-class">
             <div class="card-body header-class pos-relative" [style.backgroundImage]="'url('+ imgUrl +')'">
-                <h1 class="pos-absolute">{{objClass.className}}</h1>
-                <p class="pos-absolute cate-name">{{objClass.classCategory}}</p>
-                <p class="pos-absolute class-code">Mã lớp: {{objClass.classCode}}</p>
+                <h1 class="pos-absolute">{{objClass?.name}}</h1>
+                <p class="pos-absolute cate-name">Giáo viên: {{getInfoFromDescription(objClass?.description, 0)}}</p>
+                <p class="pos-absolute class-code">Chuyên ngành: {{getInfoFromDescription(objClass?.description, 1)}}</p>
                 <p class="pos-absolute select-img" data-toggle="modal" (click)="chooseImgModal.show(); onClickModalChooseImg()">Chọn chủ đề</p>
                 <!-- <p class="pos-absolute upload-img">Tải ảnh lên</p> -->
             </div>
@@ -33,7 +33,7 @@
                             <div class="text-left list col-10 pd-r-0">
                                 <div class="row click-col">
                                     <div class="avatar">
-                                        <img src="{{objLoggedUser.imgUrl}}" class="img-avatar" alt="">
+                                        <img src="{{objLoggedUser?.avatar_uri || defaultAvatar}}" class="img-avatar" alt="">
                                     </div>
                                     <p>Chia sẻ đôi điều với lớp học...</p>
                                 </div>
@@ -51,7 +51,7 @@
                             <p>Dành cho:</p>
                             <div class="col-6 col-sm-4 col-md-2 col-xl-3 mb-3 mb-xl-0 pd-l-0">
                                 <button type="button" class="btn btn-block btn-light btn-dis"
-                                    disabled>{{objClass.className}}</button>
+                                    disabled>{{objClass?.name}}</button>
                             </div>
                             <div class="form-group pd-l-0">
                                 <textarea id="textarea-input" name="textarea-input" rows="6" class="form-control cmt"
@@ -156,7 +156,7 @@
                             <div class="text-left list col-12">
                                 <div class="row">
                                     <div class="avatar" style="margin-top: 9px;">
-                                        <img src="{{objLoggedUser.imgUrl}}" class="img-avatar" alt="">
+                                        <img src="{{objLoggedUser?.avatar_uri || defaultAvatar}}" class="img-avatar" alt="">
                                     </div>
                                     <div class="input-new-cmt">
                                         <textarea autosize minRows="1" class="form-control new-cmt"
