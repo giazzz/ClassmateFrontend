@@ -16,15 +16,16 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="icon-user"></i></span>
                     </div>
-                    <input formControlName="inputUsername" type="text" class="form-control" placeholder="Username" autocomplete="username" required>
+                    <input formControlName="inputUsername" type="text" class="form-control" placeholder="Tên" autocomplete="username" required>
                   </div>
                   <div class="input-group mb-4">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="icon-lock"></i></span>
                     </div>
-                    <input formControlName="inputPassword" type="password" class="form-control" placeholder="Password" autocomplete="current-password" required>
+                    <input formControlName="inputPassword" type="password" class="form-control" placeholder="Mật khẩu" autocomplete="current-password" required>
                   </div>
                   <div class="row">
+                    <p *ngIf="blnWrong" style="color: red; font-size: 12px; margin-left: 15px;">Tên hoặc mật khẩu không chính xác!</p>
                     <div class="col-6">
                       <button type="submit" class="btn btn-primary px-4">Đăng nhập</button>
                     </div>

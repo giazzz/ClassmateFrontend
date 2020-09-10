@@ -80,7 +80,7 @@ export class RegisterComponent implements OnInit {
     this.resService.register(objAcc).subscribe(
       response => {
         const successMsg = 'User registered successfully!';
-        if (response.status === 200 && response.body.message === successMsg) {
+        if (response.status === 200 && response.body.description === successMsg) {
           // Success:
           this.authenService.login(username, password).subscribe(
             data => {
@@ -93,7 +93,6 @@ export class RegisterComponent implements OnInit {
         // Error:
         const errUsername = 'Error: Username is already in use!';
         const errEmail = 'Error: Email is already in use!';
-        console.log(error)
         if (error === errUsername) {
           this.blnIsNameExisted = true;
         } else if (error === errEmail) {
