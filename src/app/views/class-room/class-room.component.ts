@@ -1,9 +1,10 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
 import { ClassMateService } from '../classmate.service';
 import * as $ from 'jquery';
 import { EndpointsConfig } from '../../config/config';
 import { ClassRoomService } from './class-room.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-class-room',
@@ -15,21 +16,29 @@ export class ClassRoomComponent implements OnInit {
   public imgUrl: string;
   public idImageBgClass: number;
   public objClass;
+  public strClassDes = '';
   public objLoggedUser;
   public blnIsClick: boolean = false;
   public lstClassWork: any[] = [];
-  public lstCmt: any[] = [];
+  public lstPost = [];
+  public lstCmtByPostId: any[] = [];
   public lstClassBgImg: any[] = [];
   public defaultAvatar = EndpointsConfig.user.defaultAvatar;
+  public strCmtContent: string;
+  public strPostContent: string;
+  public blnDisableClick: boolean = false;
+  public lstSelectedFile = [];
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private classService: ClassMateService,
               private classRoomService: ClassRoomService,
   ) {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
 
   ngOnInit(): void {
+
     this.classId = this.route.snapshot.paramMap.get('id');
     if (this.classId == null || this.classId === undefined || this.classId === 'undefined') {
       this.router.navigateByUrl('/dashboard');
@@ -67,54 +76,34 @@ export class ClassRoomComponent implements OnInit {
         }
       });
 
-    // Get all cmt:
-    this.classRoomService.getAllComment(this.classId).subscribe(
+    // Get all post:
+    this.getAllPost();
+
+    // this.lstClassWork = [
+    //   {
+    //     id: '1',
+    //     title: 'Test1',
+    //     endDate: '08/08/2020'
+    //   },
+    //   {
+    //     id: '2',
+    //     title: 'Test2',
+    //     endDate: '08/08/2020'
+    //   }
+    // ];
+
+  }
+
+  getAllPost() {
+    this.classRoomService.getAllPostByCourseId(this.classId).subscribe(
       response => {
         if (response.body != null && response.body !== undefined) {
-          console.log(response.body)
+          this.lstPost = response.body;
+          this.lstPost.sort((val1, val2) => {
+            return Number(val2.created_at) - Number(val1.created_at);
+          });
         }
       });
-
-    this.lstClassWork = [
-      {
-        id: '1',
-        title: 'Test1',
-        endDate: '08/08/2020'
-      },
-      {
-        id: '2',
-        title: 'Test2',
-        endDate: '08/08/2020'
-      }
-    ];
-
-    this.lstCmt = [
-      {
-        id: 1,
-        content: 'Test',
-        creatAt: '08:08 08/08/2020',
-        urlFile: 'assets/img/avatars/8.jpg',
-        author: {
-          id: '1',
-          imgUrl: 'assets/img/avatars/4.jpg',
-          name: 'Nguyen'
-        },
-        subCmt: [
-          {
-            id: 1,
-            content: 'Test',
-            creatAt: '08:08 08/08/2020',
-            author: {
-              id: '1',
-              imgUrl: 'assets/img/avatars/4.jpg',
-              name: 'Nguyen'
-            }
-          }
-        ]
-      }
-
-    ];
-
   }
 
   getFileName(strUrl: string) {
@@ -177,6 +166,69 @@ export class ClassRoomComponent implements OnInit {
   }
 
   getInfoFromDescription(des: string, index: number) {
-    return des == null ? '' : des.split(',')[index].split(':')[1];
+    return des === '' || des == null || des === undefined ? '' : des.split(',')[index].split(':')[1];
   }
+
+  convertTickToDate(tick: string) {
+    const date = new Date(Number(tick));
+    return moment(date).format('D & M YYYY hh:mm').replace('&', 'thg');
+  }
+
+  onClickAddCmt(postId: string) {
+    this.blnDisableClick = true;
+    if (this.strCmtContent == null || this.strCmtContent === undefined || this.strCmtContent === '') {
+      this.blnDisableClick = false;
+      return;
+    }
+    this.classRoomService.addCmtToPost(postId, {content: this.strCmtContent}).subscribe(
+      response => {
+        if (response.body != null && response.body !== undefined) {
+          this.getAllPost();
+          this.strCmtContent = null;
+          this.blnDisableClick = false;
+        }
+      },
+      error => {
+        this.strCmtContent = null;
+        this.blnDisableClick = false;
+      });
+  }
+
+  onSelectFile(event) {
+    if (event.target.files && event.target.files[0]) {
+      for (let i = 0; i < event.target.files.length; i++) {
+        this.lstSelectedFile.push(event.target.files[i]);
+      }
+    }
+  }
+
+  onClickAddPost() {
+    if (this.strPostContent == null || this.strPostContent === undefined || this.strPostContent === '' || this.lstSelectedFile === []) {
+      return;
+    }
+
+    // Upload files:
+    this.classRoomService.uploadFile(this.lstSelectedFile).subscribe(
+      response => {
+        if (response.body != null && response.body !== undefined && response.body.length > 0) {
+
+          // Add post:
+          const objPost = {
+            content: this.strPostContent,
+            attachmentRequests: []
+          };
+          this.classRoomService.addPost(objPost, this.classId).subscribe(
+            data => {
+              if (data.body != null && data.body !== undefined) {
+                this.getAllPost();
+                this.strPostContent = null;
+              }
+            },
+            error => {
+              this.strPostContent = null;
+            });
+        }
+      });
+  }
+
 }

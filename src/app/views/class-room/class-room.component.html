@@ -46,31 +46,30 @@
                         </div>
                     </div>
 
+                    <!-- ADD POST -->
                     <div class="card-body" *ngIf="blnIsClick">
                         <div class="col-12 content-cmt">
                             <p>Dành cho:</p>
                             <div class="col-6 col-sm-4 col-md-2 col-xl-3 mb-3 mb-xl-0 pd-l-0">
-                                <button type="button" class="btn btn-block btn-light btn-dis"
-                                    disabled>{{objClass?.name}}</button>
+                                <button type="button" class="btn btn-block btn-light btn-dis" disabled>{{objClass?.name}}</button>
                             </div>
                             <div class="form-group pd-l-0">
-                                <textarea id="textarea-input" name="textarea-input" rows="6" class="form-control cmt"
-                                    placeholder="Chia sẻ với lớp học của bạn"></textarea>
+                                <textarea [(ngModel)]="strPostContent" id="textarea-input" name="textarea-input" rows="6" class="form-control cmt" placeholder="Chia sẻ với lớp học của bạn"></textarea>
                             </div>
                             <div class="row pd-l-0 pd-r-0">
                                 <div class="col-6">
-                                    <button type="button" class="btn btn-light">
+                                    <button type="button" class="btn btn-light" (click)="inputFile.click()">
                                         <i class="icon-paper-clip icons"></i>
                                         Đính kèm
                                     </button>
+                                    <input #inputFile type="file" (change)="onSelectFile($event)" style="display: none;" multiple>
                                 </div>
                                 <div class="col-6 text-right">
-                                    <button type="button" class="btn btn-light btn-cancel active" aria-pressed="true"
-                                        (click)="blnIsClick = false">
+                                    <button type="button" class="btn btn-light btn-cancel active" aria-pressed="true" (click)="blnIsClick = false">
                                         <i class="icon-close icons"></i>
                                         Hủy
                                     </button>
-                                    <button type="button" class="btn btn-success active" aria-pressed="true">
+                                    <button (click)="onClickAddPost()" type="button" class="btn btn-success active" aria-pressed="true">
                                         <i class="icon-paper-plane icons"></i>
                                         Đăng
                                     </button>
@@ -81,17 +80,17 @@
                 </div>
 
                 <!-- List comment -->
-                <div class="card content-cmt-div" *ngFor="let c of lstCmt">
+                <div class="card content-cmt-div" *ngFor="let c of lstPost">
                     <div class="card-body">
                         <div class="row col-12 list-exam pd-r-0">
                             <div class="text-left list col-9">
                                 <div class="row">
                                     <div class="avatar">
-                                        <img src="{{c.author.imgUrl}}" class="img-avatar" alt="">
+                                        <img src="{{c.userProfileResponse.avatar_uri || defaultAvatar}}" class="img-avatar" alt="">
                                     </div>
                                     <div class="cmt-info">
-                                        <p style="margin-bottom: 0;">{{c.author.name}}</p>
-                                        <p class="create-at">{{c.creatAt}}</p>
+                                        <p style="margin-bottom: 0;">{{c.userProfileResponse.username}}</p>
+                                        <p class="create-at">{{convertTickToDate(c.created_at)}}</p>
                                     </div>
                                 </div>
                             </div>
@@ -102,41 +101,45 @@
                             </div>
                         </div>
 
-                        <div class="color-gray" [innerHTML]="c.content"></div>
+                        <div class="color-gray" [innerHTML]="c.content" style="margin-left: 15px;"></div>
 
-                        <div class="col-sm-12 col-md-6 col-xl-6 file-div">
-                            <!-- File -->
-                            <div class="file-img" [style.backgroundImage]="'url('+ getPreviewImgByFileType(c.urlFile) +')'"></div>
-                            <div class="file-name">
-                                <div style="font-size: 18px; overflow: hidden;">
-                                    {{getFileName(c.urlFile)}}
+                        <div class="row col-12">
+                            <div class="col-sm-12 col-md-6 col-xl-6 " *ngFor="let f of c.attachmentResponses" >
+                                <div class="file-div">
+                                    <!-- File -->
+                                    <div class="file-img" [style.backgroundImage]="'url('+ getPreviewImgByFileType(f.file_url) +')'"></div>
+                                    <div class="file-name">
+                                        <div style="font-size: 18px; overflow: hidden;">
+                                            {{getFileName(f.file_url)}}
+                                        </div>
+                                        <p class="color-gray">
+                                            {{getTypeFile(f.file_url)}}
+                                        </p>
+                                    </div>
                                 </div>
-                                <p class="color-gray">
-                                    {{getTypeFile(c.urlFile)}}
-                                </p>
                             </div>
                         </div>
 
                     </div>
                     <div class="list-cmt">
                         <div class="count-cmt" (click)="c.blnIsNotShowSubCmt = !c.blnIsNotShowSubCmt">
-                            <span>{{c.subCmt.length}} bình luận</span>
+                            <span>{{c.commentResponses.length}} bình luận</span>
                             <span>
                                 <i class="icon-arrow-down icons" *ngIf="c.blnIsNotShowSubCmt"></i>
                                 <i class="icon-arrow-up icons" *ngIf="!c.blnIsNotShowSubCmt"></i>
                             </span>
                         </div>
                         <ng-container *ngIf="!c.blnIsNotShowSubCmt">
-                            <div class="one-cmt row" *ngFor="let cmt of c.subCmt">
+                            <div class="one-cmt row" *ngFor="let cmt of c.commentResponses">
                                 <div class="text-left col-9">
                                     <div class="row">
                                         <div class="avatar">
-                                            <img src="{{cmt.author.imgUrl}}" class="img-avatar" alt="">
+                                            <img src="{{cmt.userProfileResponse.avatar_uri || defaultAvatar}}" class="img-avatar" alt="">
                                         </div>
                                         <div class="cmt-info">
                                             <p style="margin-bottom: 0;">
-                                                {{cmt.author.name}}
-                                                <span class="create-at">&nbsp;&nbsp;{{cmt.creatAt}}</span>
+                                                {{cmt.userProfileResponse.username}}
+                                                <span class="create-at">&nbsp;&nbsp;{{convertTickToDate(cmt.created_at)}}</span>
                                             </p>
                                             <div [innerHTML]="cmt.content" class="color-gray"></div>
                                         </div>
@@ -159,9 +162,8 @@
                                         <img src="{{objLoggedUser?.avatar_uri || defaultAvatar}}" class="img-avatar" alt="">
                                     </div>
                                     <div class="input-new-cmt">
-                                        <textarea autosize minRows="1" class="form-control new-cmt"
-                                            placeholder="Thêm nhận xét..."></textarea>
-                                        <div class="wrapper-action">
+                                        <textarea [(ngModel)]="strCmtContent" autosize minRows="1" class="form-control new-cmt" placeholder="Thêm nhận xét..."></textarea>
+                                        <div class="wrapper-action" (click)="!blnDisableClick && onClickAddCmt(c.id)">
                                             <i class="icon-paper-plane icons font-2xl d-block color-gray"></i>
                                         </div>
                                     </div>
@@ -169,6 +171,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
 
                 <!-- List classwork -->
@@ -188,7 +191,6 @@
 
                     </div>
                 </div>
-
 
             </div>
         </div>

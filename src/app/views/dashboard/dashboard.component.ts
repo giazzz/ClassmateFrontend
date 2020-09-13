@@ -4,6 +4,7 @@ import { DashboardService } from './dashboard.service';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { CheckRole } from '../../shared/checkRole';
 
 @Component({
   templateUrl: 'dashboard.component.html',
@@ -17,13 +18,15 @@ export class DashboardComponent implements OnInit {
   public lstAllCourseCtgr: any[];
   public frmAdd: FormGroup;
   public submitted: boolean;
+  public isTeacher: boolean = false;
   public currentUser;
 
   @ViewChild('addModal') public addModal: ModalDirective;
 
   constructor (private dashBoardService: DashboardService,
               private iconLoading: NgxUiLoaderService,
-              private fb: FormBuilder
+              private fb: FormBuilder,
+              private role: CheckRole
   ) {
   }
 
@@ -35,6 +38,7 @@ export class DashboardComponent implements OnInit {
     this.lstAllCourse = [];
     this.lstAllCourseCtgr = [];
     this.currentUser = JSON.parse(localStorage.currentUser);
+    this.isTeacher = this.role.isTeacher();
 
     this.getLstAllCourse();
 
@@ -69,7 +73,7 @@ export class DashboardComponent implements OnInit {
   getLstAllCourse() {
     const date = new Date();
     if (this.currentUser.roles.includes('ROLE_TEACHER')) {
-      this.dashBoardService.getTeacherCourse(date.getTime()).subscribe(
+      this.dashBoardService.getTeacherCourse().subscribe(
         response => {
           if (response.body !== null && response.body !== undefined) {
             this.lstAllCourse = response.body;
@@ -80,7 +84,7 @@ export class DashboardComponent implements OnInit {
           this.iconLoading.stop();
         });
     } else if (this.currentUser.roles.includes('ROLE_STUDENT')) {
-      this.dashBoardService.getStudentCourse(this.currentUser.id, date.getTime()).subscribe(
+      this.dashBoardService.getStudentCourse().subscribe(
         response => {
           if (response.body !== null && response.body !== undefined) {
             this.lstAllCourse = response.body;
