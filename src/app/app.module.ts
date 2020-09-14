@@ -58,6 +58,7 @@ import { MarkComponent } from './views/mark/mark.component';
 import { SettingComponent } from './views/setting/setting.component';
 import { ScheduleComponent } from './views/schedule/schedule.component';
 import { TodoComponent } from './views/todo/todo.component';
+import { NgxDocViewerModule } from 'ngx-doc-viewer';
 
 @NgModule({
   imports: [
@@ -80,7 +81,8 @@ import { TodoComponent } from './views/todo/todo.component';
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
     ChartsModule,
-    AutosizeModule
+    AutosizeModule,
+    NgxDocViewerModule
   ],
   declarations: [
     AppComponent,

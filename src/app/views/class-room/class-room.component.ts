@@ -5,6 +5,7 @@ import * as $ from 'jquery';
 import { EndpointsConfig } from '../../config/config';
 import { ClassRoomService } from './class-room.service';
 import * as moment from 'moment';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-class-room',
@@ -24,15 +25,19 @@ export class ClassRoomComponent implements OnInit {
   public lstCmtByPostId: any[] = [];
   public lstClassBgImg: any[] = [];
   public defaultAvatar = EndpointsConfig.user.defaultAvatar;
+  public driveUrl = EndpointsConfig.google.driveUrl;
   public strCmtContent: string;
   public strPostContent: string;
   public blnDisableClick: boolean = false;
   public lstSelectedFile = [];
+  public loading: boolean = false;
+  public currentFile;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private classService: ClassMateService,
               private classRoomService: ClassRoomService,
+              public sanitizer: DomSanitizer
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
@@ -107,35 +112,44 @@ export class ClassRoomComponent implements OnInit {
   }
 
   getFileName(strUrl: string) {
-    return strUrl.split('/').slice(-1)[0];
+    if (strUrl != null && strUrl !== undefined && strUrl !== '') {
+      return strUrl.split('/').slice(-1)[0];
+    }
   }
 
   getTypeFile(strUrl: string) {
-    const extension = strUrl.split('.').pop();
-    if (['png', 'jpg', 'jpeg', 'gif', 'tiff', 'psd'].includes(extension)) {
-      return 'Hình ảnh';
-    } else if (['doc', 'docx'].includes(extension)) {
-      return 'Word';
-    } else if (['xls', 'xlsx'].includes(extension)) {
-      return 'Excel';
-    } else if (['pdf'].includes(extension)) {
-      return 'PDF';
+    if (strUrl != null && strUrl !== undefined && strUrl !== '') {
+      const extension = strUrl.split('.').pop();
+      if (['png', 'jpg', 'jpeg', 'gif', 'tiff', 'psd', 'svg'].includes(extension)) {
+        return 'Hình ảnh';
+      } else if (['doc', 'docx'].includes(extension)) {
+        return 'Word';
+      } else if (['xls', 'xlsx'].includes(extension)) {
+        return 'Excel';
+      } else if (['pdf'].includes(extension)) {
+        return 'PDF';
+      } else if (['txt'].includes(extension)) {
+        return 'Text';
+      }
     }
     return '';
   }
 
-  getPreviewImgByFileType(strUrl: string) {
-    const extension = strUrl.split('.').pop();
-    if (['png', 'jpg', 'jpeg', 'gif', 'tiff', 'psd'].includes(extension)) {
-      return strUrl;
-    } else if (['doc', 'docx'].includes(extension)) {
-      return 'assets/img/word-file-icon.jpg';
-    } else if (['xls', 'xlsx'].includes(extension)) {
-      return 'assets/img/excel-icon.png';
-    } else if (['pdf'].includes(extension)) {
-      return 'assets/img/pdf-file-icon-svg.png';
+  getPreviewImgByFileType(strUrl: string, fileId: string, blnIsPreview = false) {
+    if (strUrl != null && strUrl !== undefined && strUrl !== '') {
+      const extension = strUrl.split('.').pop();
+      if (['png', 'jpg', 'jpeg', 'gif', 'tiff', 'psd', 'svg'].includes(extension)) {
+        return !blnIsPreview ? this.driveUrl + fileId : fileId;
+      } else if (['doc', 'docx'].includes(extension)) {
+        return 'assets/img/word-file-icon.jpg';
+      } else if (['xls', 'xlsx'].includes(extension)) {
+        return 'assets/img/excel-icon.png';
+      } else if (['pdf'].includes(extension)) {
+        return 'assets/img/pdf-file-icon-svg.png';
+      }
+      return 'assets/img/document.png';
     }
-    return 'assets/img/document.jpg';
+    return 'assets/img/document.png';
   }
 
   chooseImg() {
@@ -194,41 +208,96 @@ export class ClassRoomComponent implements OnInit {
       });
   }
 
-  onSelectFile(event) {
+  async onSelectFile(event) {
     if (event.target.files && event.target.files[0]) {
       for (let i = 0; i < event.target.files.length; i++) {
-        this.lstSelectedFile.push(event.target.files[i]);
+        this.lstSelectedFile.push(
+          {
+            file: event.target.files[i],
+            url: await this.getBase64(event.target.files[i])
+          });
       }
     }
+  }
+
+  onClickRemoveSelectedFile(item) {
+    const index = this.lstSelectedFile.indexOf(item);
+    this.lstSelectedFile.splice(index, 1);
+  }
+
+  getBase64(file: File) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
   }
 
   onClickAddPost() {
     if (this.strPostContent == null || this.strPostContent === undefined || this.strPostContent === '' || this.lstSelectedFile === []) {
       return;
     }
-
+    this.loading = true;
     // Upload files:
-    this.classRoomService.uploadFile(this.lstSelectedFile).subscribe(
+    const lstFileUpload = this.lstSelectedFile.map(item => {
+      return item.file;
+    });
+    this.classRoomService.uploadFile(lstFileUpload).subscribe(
       response => {
         if (response.body != null && response.body !== undefined && response.body.length > 0) {
+          const lstFile = [];
+          response.body.forEach(item => {
+            lstFile.push(
+              {
+                name: item.file_name,
+                description: item.file_name,
+                file_id: item.file_id,
+                file_size: item.file_size
+              });
+          });
 
           // Add post:
           const objPost = {
             content: this.strPostContent,
-            attachmentRequests: []
+            attachmentRequests: lstFile
           };
           this.classRoomService.addPost(objPost, this.classId).subscribe(
             data => {
               if (data.body != null && data.body !== undefined) {
                 this.getAllPost();
                 this.strPostContent = null;
+                this.lstSelectedFile = [];
+                this.blnIsClick = false;
+                this.loading = false;
               }
             },
             error => {
               this.strPostContent = null;
+              this.lstSelectedFile = [];
+              this.blnIsClick = false;
+              this.loading = false;
             });
         }
+        this.loading = false;
+      },
+      error => {
+        this.loading = false;
       });
+  }
+
+  onClickReadFile(file) {
+    this.currentFile = {
+      name: file.name,
+      url: this.sanitizer.bypassSecurityTrustResourceUrl('https://drive.google.com/file/d/' + file.file_id + '/preview?hl=en&pid=explorer&efh=false&a=v&chrome=false&embedded=true')
+    };
+  }
+
+  onClickReadFilePreview(file) {
+    this.currentFile = {
+      name: file.file.name,
+      url: this.sanitizer.bypassSecurityTrustResourceUrl(file.url)
+    };
   }
 
 }
