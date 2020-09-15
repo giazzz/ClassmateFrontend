@@ -20,9 +20,8 @@ export class DashboardService {
     // Get list course on active:
     getStudentCourse() {
         let params = new HttpParams();
-        // params = params.append('user_id', user_id);
-        // params = params.append('end_date', end_date);
-        params = params.append('status', 'ONGOING');
+        params = params.append('statuss[]', 'ONGOING');
+        params = params.append('statuss[]', 'PENDING');
         return this.http.get<any>(`${environment.apiUrl}/data/course/followingCourse`,
             { params, observe: 'response' });
     }
@@ -30,8 +29,8 @@ export class DashboardService {
     // Get list course on active:
     getTeacherCourse() {
         let params = new HttpParams();
-        // params = params.append('end_date', end_date);
-        params = params.append('status', 'ONGOING');
+        params = params.append('statuss[]', 'ONGOING');
+        params = params.append('statuss[]', 'PENDING');
         return this.http.get<any>(`${environment.apiUrl}/data/course/yourCourse`,
             { params, observe: 'response' });
     }

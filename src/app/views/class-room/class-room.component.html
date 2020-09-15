@@ -20,7 +20,7 @@
                         <p>Sắp đến hạn</p>
                         <p class="font-light">Không có bài tập nào sắp đến hạn</p>
                         <div>
-                            <p class="pos-absolute view-all-work">Xem tất cả</p>
+                            <p class="pos-absolute view-all-work" [routerLink]="['/class', classId, 'classwork']">Xem tất cả</p>
                         </div>
                     </div>
                 </div>
@@ -28,7 +28,8 @@
 
             <div class="col-sm-9 info-div">
                 <div class="card cmt-div">
-                    <div class="card-body body-first" (click)="blnIsClick = true" *ngIf="!blnIsClick">
+
+                    <div class="card-body body-first" (click)="blnIsClick = true" *ngIf="!isUpdate && !blnIsClick">
                         <div class="row col-12 list-exam pd-r-0">
                             <div class="text-left list col-10 pd-r-0">
                                 <div class="row click-col">
@@ -40,14 +41,14 @@
                             </div>
                             <div class="text-right action col-2 pd-r-0">
                                 <div class="wrapper-action">
-                                    <i class="icon-cup icons font-xl"></i>
+                                    <i class="icon-cup icons font-xl" style="margin: 10px; line-height: 1.8;"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- ADD POST -->
-                    <div class="card-body" *ngIf="blnIsClick">
+                    <div class="card-body" *ngIf="!isUpdate && blnIsClick">
                         <div class="col-12 content-cmt">
                             <p>Dành cho:</p>
                             <div class="col-6 col-sm-4 col-md-2 col-xl-3 mb-3 mb-xl-0 pd-l-0">
@@ -69,7 +70,7 @@
                                 </div>
                                 <div class="file-remove">
                                     <div class="wrapper-action" (click)="onClickRemoveSelectedFile(f)">
-                                        <i class="cui-trash icons font-xl"></i>
+                                        <i class="cui-trash icons font-xl" style="line-height: 2;"></i>
                                     </div>
                                 </div>
                             </div>
@@ -95,6 +96,79 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- UPDATE POST -->
+                    <div class="card-body" *ngIf="isUpdate">
+                        <div class="col-12 content-cmt">
+                            <p>Dành cho:</p>
+                            <div class="col-6 col-sm-4 col-md-2 col-xl-3 mb-3 mb-xl-0 pd-l-0">
+                                <button type="button" class="btn btn-block btn-light btn-dis" disabled>{{objClass?.name}}</button>
+                            </div>
+                            <div class="form-group pd-l-0">
+                                <textarea [(ngModel)]="currentPost.content" id="textarea-input" name="textarea-input" rows="6" class="form-control cmt" placeholder="Chia sẻ với lớp học của bạn"></textarea>
+                            </div>
+
+                            <!-- Uploaded file: -->
+                            <div class="file-div preview-file" *ngFor="let f of currentPost?.attachmentResponses" >
+                                <div class="file-img" [style.backgroundImage]="'url('+ getPreviewImgByFileType(f.name, f.file_id) +')'" (click)="onClickReadFile(f); readFileModal.show();" ></div>
+                                <div class="file-name" (click)="onClickReadFile(f); readFileModal.show();" >
+                                    <div style="font-size: 18px; overflow: hidden; display: flex;">
+                                        {{f.name}}
+                                    </div>
+                                    <p class="color-gray">
+                                        {{getTypeFile(f.name)}}
+                                    </p>
+                                </div>
+                                <div class="file-remove">
+                                    <div class="wrapper-action" (click)="onClickRemoveSelectedFile(f, true)">
+                                        <i class="cui-trash icons font-xl" style="line-height: 2;"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Preview file: -->
+                            <div class="file-div preview-file" *ngFor="let f of lstSelectedFile" (click)="onClickReadFilePreview(f); readFileModal.show();">
+                                <div class="file-img" [style.backgroundImage]="'url('+ getPreviewImgByFileType(f.file.name, f.url, true) +')'" ></div>
+                                <div class="file-name">
+                                    <div style="font-size: 18px; overflow: hidden; display: flex;">
+                                        {{f.file.name}}
+                                    </div>
+                                    <p class="color-gray">
+                                        {{getTypeFile(f.file.name)}}
+                                    </p>
+                                </div>
+                                <div class="file-remove">
+                                    <div class="wrapper-action" (click)="onClickRemoveSelectedFile(f)">
+                                        <i class="cui-trash icons font-xl" style="line-height: 2;"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row pd-l-0 pd-r-0">
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-light" (click)="inputFile.click()">
+                                        <i class="icon-paper-clip icons"></i>
+                                        Đính kèm
+                                    </button>
+                                    <input #inputFile type="file" (change)="onSelectFile($event)" style="display: none;" multiple>
+                                </div>
+                                <div class="col-6 text-right">
+                                    <button type="button" class="btn btn-light btn-cancel active" aria-pressed="true" (click)="blnIsClick = false; lstSelectedFile = []; strPostContent = null;">
+                                        <i class="icon-close icons"></i>
+                                        Hủy
+                                    </button>
+                                    <button (click)="onSubmitUpdatePost()" type="button" class="btn btn-success active" aria-pressed="true">
+                                        <i *ngIf="!loading" class="icon-paper-plane icons"></i>
+                                        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                                        Đăng
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
 
                 <!-- List post -->
@@ -113,10 +187,10 @@
                                 </div>
                             </div>
                             <div class="text-right action col-3 pd-r-0">
-                                <div *ngIf="isTeacher || objLoggedUser?.id == c.user_id" class="wrapper-action" dropdown placement="bottom right">
-                                    <i dropdownToggle class="icon-options-vertical icons font-xl"></i>
-                                    <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
-                                        <li *ngIf="objLoggedUser?.id == c.user_id" role="menuitem"><a class="dropdown-item">Chỉnh sửa</a></li>
+                                <div *ngIf="isTeacher || objLoggedUser?.id == c.user_id" class="wrapper-action" dropdown dropdownToggle placement="bottom right">
+                                    <i class="icon-options-vertical icons font-xl"></i>
+                                    <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" >
+                                        <li *ngIf="objLoggedUser?.id == c.user_id" role="menuitem" (click)="onClickUpdatePost(c.id)"><a class="dropdown-item">Chỉnh sửa</a></li>
                                         <li *ngIf="isTeacher || objLoggedUser?.id == c.user_id" role="menuitem" (click)="onClickDeletePost(c.id)" ><a class="dropdown-item">Xóa</a></li>
                                     </ul>
                                 </div>
@@ -141,8 +215,8 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
+                    
                     <div class="list-cmt">
                         <div class="count-cmt" (click)="c.blnIsNotShowSubCmt = !c.blnIsNotShowSubCmt">
                             <span>{{c.commentResponses.length}} bình luận</span>
@@ -168,13 +242,10 @@
                                     </div>
                                 </div>
                                 <div class="text-right action col-3">
-                                    <!-- <div class="wrapper-action">
+                                    <div *ngIf="isTeacher || objLoggedUser?.id == cmt.user_id" class="wrapper-action" dropdown dropdownToggle placement="bottom right">
                                         <i class="icon-options-vertical icons font-xl"></i>
-                                    </div> -->
-                                    <div *ngIf="isTeacher || objLoggedUser?.id == cmt.user_id" class="wrapper-action" dropdown placement="bottom right">
-                                        <i dropdownToggle class="icon-options-vertical icons font-xl"></i>
                                         <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
-                                            <li *ngIf="objLoggedUser?.id == cmt.user_id" role="menuitem"><a class="dropdown-item" >Chỉnh sửa</a></li>
+                                            <li *ngIf="objLoggedUser?.id == cmt.user_id" role="menuitem" (click)="onClickUpdateCmt(c, cmt)"><a class="dropdown-item" >Chỉnh sửa</a></li>
                                             <li *ngIf="isTeacher || objLoggedUser?.id == cmt.user_id" role="menuitem" (click)="onClickDeleteCmt(cmt.id)" ><a class="dropdown-item" >Xóa</a></li>
                                         </ul>
                                     </div>
@@ -190,10 +261,21 @@
                                     <div class="avatar" style="margin-top: 9px;">
                                         <img src="{{objLoggedUser?.avatar_uri || defaultAvatar}}" class="img-avatar" alt="">
                                     </div>
-                                    <div class="input-new-cmt">
-                                        <textarea [(ngModel)]="strCmtContent" autosize minRows="1" class="form-control new-cmt" placeholder="Thêm nhận xét..."></textarea>
-                                        <div class="wrapper-action" (click)="!blnDisableClick && onClickAddCmt(c.id)">
-                                            <i *ngIf="!loading" class="icon-paper-plane icons font-2xl d-block color-gray" style="top: 8px; position: absolute;"></i>
+
+                                    <!-- Create: -->
+                                    <div *ngIf="!c.isUpdate" class="input-new-cmt">
+                                        <textarea [(ngModel)]="c.strCmtContent" autosize minRows="1" class="form-control new-cmt" placeholder="Thêm nhận xét..."></textarea>
+                                        <div class="wrapper-action" (click)="!blnDisableClick && onClickAddCmt(c)">
+                                            <i *ngIf="!loading" class="icon-paper-plane icons font-2xl d-block color-gray"></i>
+                                            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Update: -->
+                                    <div *ngIf="c.isUpdate" class="input-new-cmt">
+                                        <textarea [(ngModel)]="c.strCmtContent" id="cmt-{{c.id}}" autosize minRows="1" class="form-control new-cmt" placeholder="Thêm nhận xét..."></textarea>
+                                        <div class="wrapper-action" (click)="!blnDisableClick && onSubmitUpdateCmt(c)">
+                                            <i *ngIf="!loading" class="icon-paper-plane icons font-2xl d-block color-gray"></i>
                                             <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
                                         </div>
                                     </div>
@@ -218,7 +300,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
 

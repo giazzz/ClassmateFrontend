@@ -22,6 +22,13 @@ export class ClassRoomService {
             { params, observe: 'response' });
     }
 
+    getPostDetail(postId: string) {
+        let params = new HttpParams();
+        params = params.append('id', postId);
+        return this.http.get<any>(`${environment.apiUrl}/data/post/detail`,
+            { params, observe: 'response' });
+    }
+
     getAllCmtbyPostId(post_id: string) {
         let params = new HttpParams();
         params = params.append('post_id', post_id);
@@ -40,6 +47,13 @@ export class ClassRoomService {
         let params = new HttpParams();
         params = params.append('course_id', course_id);
         return this.http.post<any>(`${environment.apiUrl}/data/post/save`,
+            objPost, { params, observe: 'response' });
+    }
+
+    updatePost(objPost, post_id) {
+        let params = new HttpParams();
+        params = params.append('post_id', post_id);
+        return this.http.post<any>(`${environment.apiUrl}/data/post/edit`,
             objPost, { params, observe: 'response' });
     }
 
@@ -63,5 +77,12 @@ export class ClassRoomService {
     deleteCmt(cmtId) {
         return this.http.post<any>(`${environment.apiUrl}/data/comment/delete?id=${cmtId}`,
             { observe: 'response' });
+    }
+
+    updateCmt(comment_id: string, objCmt) {
+        let params = new HttpParams();
+        params = params.append('comment_id', comment_id);
+        return this.http.post<any>(`${environment.apiUrl}/data/comment/edit`,
+            objCmt, { params, observe: 'response' });
     }
 }

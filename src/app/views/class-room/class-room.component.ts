@@ -35,7 +35,9 @@ export class ClassRoomComponent implements OnInit {
   public loading: boolean = false;
   public blnCanEditCmt: boolean = false;
   public isTeacher: boolean = false;
+  public isUpdate: boolean = false;
   public currentFile;
+  public currentPost;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -194,29 +196,6 @@ export class ClassRoomComponent implements OnInit {
     return moment(date).format('D & M YYYY hh:mm').replace('&', 'thg');
   }
 
-  onClickAddCmt(postId: string) {
-    this.blnDisableClick = true;
-    if (this.strCmtContent == null || this.strCmtContent === undefined || this.strCmtContent === '') {
-      this.blnDisableClick = false;
-      return;
-    }
-    this.loading = true;
-    this.classRoomService.addCmtToPost(postId, {content: this.strCmtContent}).subscribe(
-      response => {
-        if (response.body != null && response.body !== undefined) {
-          this.getAllPost();
-          this.strCmtContent = null;
-          this.blnDisableClick = false;
-          this.loading = false;
-        }
-      },
-      error => {
-        this.strCmtContent = null;
-        this.blnDisableClick = false;
-        this.loading = false;
-      });
-  }
-
   async onSelectFile(event) {
     if (event.target.files && event.target.files[0]) {
       for (let i = 0; i < event.target.files.length; i++) {
@@ -229,9 +208,14 @@ export class ClassRoomComponent implements OnInit {
     }
   }
 
-  onClickRemoveSelectedFile(item) {
-    const index = this.lstSelectedFile.indexOf(item);
-    this.lstSelectedFile.splice(index, 1);
+  onClickRemoveSelectedFile(item, blnDeleteFileUploaded = false) {
+    if (!blnDeleteFileUploaded) {
+      const index = this.lstSelectedFile.indexOf(item);
+      this.lstSelectedFile.splice(index, 1);
+    } else {
+      const index = this.currentPost.attachmentResponses.indexOf(item);
+      this.currentPost.attachmentResponses.splice(index, 1);
+    }
   }
 
   getBase64(file: File) {
@@ -295,6 +279,29 @@ export class ClassRoomComponent implements OnInit {
       });
   }
 
+  onClickAddCmt(objPost) {
+    this.blnDisableClick = true;
+    if (objPost.strCmtContent == null || objPost.strCmtContent === undefined || objPost.strCmtContent === '') {
+      this.blnDisableClick = false;
+      return;
+    }
+    this.loading = true;
+    this.classRoomService.addCmtToPost(objPost.id, {content: objPost.strCmtContent}).subscribe(
+      response => {
+        if (response.body != null && response.body !== undefined) {
+          this.getAllPost();
+          objPost.strCmtContent = null;
+          this.blnDisableClick = false;
+          this.loading = false;
+        }
+      },
+      error => {
+        objPost.strCmtContent = null;
+        this.blnDisableClick = false;
+        this.loading = false;
+      });
+  }
+
   onClickDeletePost(postId: string) {
     this.classRoomService.deletePost(postId).subscribe(
       response => {
@@ -331,5 +338,96 @@ export class ClassRoomComponent implements OnInit {
     };
   }
 
+  onClickUpdateCmt(objPost, cmt) {
+    objPost.strCmtContent = cmt.content;
+    objPost.isUpdate = true;
+    objPost.cmtIdUpdate = cmt.id;
+    setTimeout(() => {
+      $('#cmt-' + objPost.id).trigger('focus');
+    }, 300);
+  }
+
+  onSubmitUpdateCmt(objPost) {
+    this.loading = true;
+    this.classRoomService.updateCmt(objPost.cmtIdUpdate, {content: objPost.strCmtContent}).subscribe(
+      response => {
+        if (response.body != null && response.body !== undefined) {
+          this.getAllPost();
+          objPost.strCmtContent = null;
+          this.blnDisableClick = false;
+          this.loading = false;
+        }
+      },
+      error => {
+        objPost.strCmtContent = null;
+        this.blnDisableClick = false;
+        this.loading = false;
+      });
+  }
+
+  onClickUpdatePost(postId) {
+    this.classRoomService.getPostDetail(postId).subscribe(
+      response => {
+        if (response.body != null && response.body !== undefined) {
+          this.currentPost = response.body;
+          this.isUpdate = true;
+        }
+      },
+      error => {
+      });
+  }
+
+  onSubmitUpdatePost() {
+    if (this.currentPost.content == null || this.currentPost.content === undefined
+        || this.currentPost.content === '' || this.lstSelectedFile === []) {
+      return;
+    }
+    this.loading = true;
+    // Upload files:
+    const lstFileUpload = this.lstSelectedFile.map(item => {
+      return item.file;
+    });
+    this.classRoomService.uploadFile(lstFileUpload).subscribe(
+      response => {
+        if (response.body != null && response.body !== undefined && response.body.length > 0) {
+          const lstFile = this.currentPost.attachmentResponses;
+          response.body.forEach(item => {
+            lstFile.push(
+              {
+                name: item.file_name,
+                description: item.file_name,
+                file_id: item.file_id,
+                file_size: item.file_size
+              });
+          });
+
+          // Update post:
+          const objPost = {
+            content: this.currentPost.content,
+            attachmentRequests: lstFile
+          };
+          this.classRoomService.updatePost(objPost, this.currentPost.id).subscribe(
+            data => {
+              if (data.body != null && data.body !== undefined) {
+                this.getAllPost();
+                this.currentPost = null;
+                this.lstSelectedFile = [];
+                this.isUpdate = false;
+                this.loading = false;
+              }
+            },
+            error => {
+              this.currentPost = null;
+              this.lstSelectedFile = [];
+              this.isUpdate = false;
+              this.loading = false;
+            });
+        }
+        this.loading = false;
+      },
+      error => {
+        this.loading = false;
+      });
+  }
 
 }
