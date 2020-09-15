@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as $ from 'jquery';
+import { CheckRole } from '../../shared/checkRole';
 
 @Component({
   selector: 'app-mark',
@@ -12,12 +13,16 @@ export class MarkComponent implements OnInit {
   public lstStudent: any[];
   public isHover: boolean;
   public isClick: boolean;
+  public isTeacher: boolean = false;
+  public isStudent: boolean = false;
 
-  constructor() { }
+  constructor(private role: CheckRole) { }
 
   ngOnInit(): void {
     this.isHover = false;
     this.isClick = false;
+    this.isStudent = this.role.isStudent();
+    this.isTeacher = this.role.isTeacher();
     this.lstClasswork = [
       {id: '1', title: 'Test1', createAt: '09:00 28/08/2020'},
       {id: '2', title: 'Test2', createAt: '09:00 28/08/2020'},

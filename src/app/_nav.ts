@@ -6,26 +6,6 @@ export const navItems: INavData[] = [
     name: 'Lớp học'
   },
   {
-    name: 'T1807E',
-    url: '/class/1/stream',
-    icon: 'icon-graduation'
-  },
-  {
-    name: 'T1907E',
-    url: '/class/2/stream',
-    icon: 'icon-graduation'
-  },
-  {
-    name: 'T1907E',
-    url: '/class/3/stream',
-    icon: 'icon-graduation'
-  },
-  {
-    name: 'T1907E',
-    url: '/class/4/stream',
-    icon: 'icon-graduation'
-  },
-  {
     title: true,
     name: 'Chức năng'
   },
