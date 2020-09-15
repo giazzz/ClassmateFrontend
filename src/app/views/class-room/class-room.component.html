@@ -97,7 +97,7 @@
                     </div>
                 </div>
 
-                <!-- List comment -->
+                <!-- List post -->
                 <div class="card content-cmt-div" *ngFor="let c of lstPost">
                     <div class="card-body">
                         <div class="row col-12 list-exam pd-r-0">
@@ -113,8 +113,12 @@
                                 </div>
                             </div>
                             <div class="text-right action col-3 pd-r-0">
-                                <div class="wrapper-action">
-                                    <i class="icon-options-vertical icons font-xl"></i>
+                                <div *ngIf="isTeacher || objLoggedUser?.id == c.user_id" class="wrapper-action" dropdown placement="bottom right">
+                                    <i dropdownToggle class="icon-options-vertical icons font-xl"></i>
+                                    <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+                                        <li *ngIf="objLoggedUser?.id == c.user_id" role="menuitem"><a class="dropdown-item">Chỉnh sửa</a></li>
+                                        <li *ngIf="isTeacher || objLoggedUser?.id == c.user_id" role="menuitem" (click)="onClickDeletePost(c.id)" ><a class="dropdown-item">Xóa</a></li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -164,8 +168,15 @@
                                     </div>
                                 </div>
                                 <div class="text-right action col-3">
-                                    <div class="wrapper-action">
+                                    <!-- <div class="wrapper-action">
                                         <i class="icon-options-vertical icons font-xl"></i>
+                                    </div> -->
+                                    <div *ngIf="isTeacher || objLoggedUser?.id == cmt.user_id" class="wrapper-action" dropdown placement="bottom right">
+                                        <i dropdownToggle class="icon-options-vertical icons font-xl"></i>
+                                        <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+                                            <li *ngIf="objLoggedUser?.id == cmt.user_id" role="menuitem"><a class="dropdown-item" >Chỉnh sửa</a></li>
+                                            <li *ngIf="isTeacher || objLoggedUser?.id == cmt.user_id" role="menuitem" (click)="onClickDeleteCmt(cmt.id)" ><a class="dropdown-item" >Xóa</a></li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -182,7 +193,8 @@
                                     <div class="input-new-cmt">
                                         <textarea [(ngModel)]="strCmtContent" autosize minRows="1" class="form-control new-cmt" placeholder="Thêm nhận xét..."></textarea>
                                         <div class="wrapper-action" (click)="!blnDisableClick && onClickAddCmt(c.id)">
-                                            <i class="icon-paper-plane icons font-2xl d-block color-gray"></i>
+                                            <i *ngIf="!loading" class="icon-paper-plane icons font-2xl d-block color-gray" style="top: 8px; position: absolute;"></i>
+                                            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
                                         </div>
                                     </div>
                                 </div>

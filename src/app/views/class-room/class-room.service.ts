@@ -54,4 +54,14 @@ export class ClassRoomService {
         return this.http.post<any>(`${environment.apiUrl}/data/upload/googleDrive`,
         formdata, { headers, observe: 'response' });
     }
+
+    deletePost(postId) {
+        return this.http.post<any>(`${environment.apiUrl}/data/post/delete?id=${postId}`,
+            { observe: 'response' });
+    }
+
+    deleteCmt(cmtId) {
+        return this.http.post<any>(`${environment.apiUrl}/data/comment/delete?id=${cmtId}`,
+            { observe: 'response' });
+    }
 }

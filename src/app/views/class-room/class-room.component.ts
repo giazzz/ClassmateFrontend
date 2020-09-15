@@ -6,6 +6,7 @@ import { EndpointsConfig } from '../../config/config';
 import { ClassRoomService } from './class-room.service';
 import * as moment from 'moment';
 import { DomSanitizer } from '@angular/platform-browser';
+import { CheckRole } from '../../shared/checkRole';
 
 @Component({
   selector: 'app-class-room',
@@ -28,16 +29,20 @@ export class ClassRoomComponent implements OnInit {
   public driveUrl = EndpointsConfig.google.driveUrl;
   public strCmtContent: string;
   public strPostContent: string;
+  public userId: string;
   public blnDisableClick: boolean = false;
   public lstSelectedFile = [];
   public loading: boolean = false;
+  public blnCanEditCmt: boolean = false;
+  public isTeacher: boolean = false;
   public currentFile;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private classService: ClassMateService,
               private classRoomService: ClassRoomService,
-              public sanitizer: DomSanitizer
+              public sanitizer: DomSanitizer,
+              public role: CheckRole
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
@@ -55,6 +60,7 @@ export class ClassRoomComponent implements OnInit {
       this.idImageBgClass = Number(localStorage.classBg);
     }
     this.imgUrl = 'assets/img/classBg/' + this.idImageBgClass + '.jpg';
+    this.isTeacher = this.role.isTeacher();
     this.lstClassBgImg = [
       {id: 1},
       {id: 2},
@@ -65,8 +71,8 @@ export class ClassRoomComponent implements OnInit {
     ];
 
     // Get info user:
-    const userId = JSON.parse(localStorage.currentUser).id;
-    this.classService.getUserDetail(userId).subscribe(
+    this.userId = JSON.parse(localStorage.currentUser).id;
+    this.classService.getUserDetail(this.userId).subscribe(
       response => {
         if (response.body != null && response.body !== undefined) {
           this.objLoggedUser = response.body;
@@ -194,17 +200,20 @@ export class ClassRoomComponent implements OnInit {
       this.blnDisableClick = false;
       return;
     }
+    this.loading = true;
     this.classRoomService.addCmtToPost(postId, {content: this.strCmtContent}).subscribe(
       response => {
         if (response.body != null && response.body !== undefined) {
           this.getAllPost();
           this.strCmtContent = null;
           this.blnDisableClick = false;
+          this.loading = false;
         }
       },
       error => {
         this.strCmtContent = null;
         this.blnDisableClick = false;
+        this.loading = false;
       });
   }
 
@@ -286,6 +295,28 @@ export class ClassRoomComponent implements OnInit {
       });
   }
 
+  onClickDeletePost(postId: string) {
+    this.classRoomService.deletePost(postId).subscribe(
+      response => {
+        if (response != null && response !== undefined && response.success) {
+          this.getAllPost();
+        }
+      },
+      error => {
+      });
+  }
+
+  onClickDeleteCmt(cmtId: string) {
+    this.classRoomService.deleteCmt(cmtId).subscribe(
+      response => {
+        if (response != null && response !== undefined && response.success) {
+          this.getAllPost();
+        }
+      },
+      error => {
+      });
+  }
+
   onClickReadFile(file) {
     this.currentFile = {
       name: file.name,
@@ -299,5 +330,6 @@ export class ClassRoomComponent implements OnInit {
       url: this.sanitizer.bypassSecurityTrustResourceUrl(file.url)
     };
   }
+
 
 }

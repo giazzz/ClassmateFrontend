@@ -134,7 +134,7 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
     width: 40px;
     height: 40px;
     border-radius: 100%;
-    padding-top: 11px;
+    // padding-top: 11px;
     margin-left: auto;
 }
 .wrapper-action:hover {
@@ -143,7 +143,7 @@ $curve: cubic-bezier(0.650, 0.000, 0.450, 1.000);
 }
 .action i {
     margin-top: 11px;
-    margin: 11px;
+    margin: 10px;
     color: rgba(0,0,0,0.549);
     font-weight: 800;
 }
@@ -350,3 +350,11 @@ textarea.cmt::placeholder {
         text-align: center !important;
     }
 }
+.wrapper-action {
+    position: relative;
+}
+.wrapper-action span {
+    margin: 10px;
+    color: #828588 !important;
+}
+
