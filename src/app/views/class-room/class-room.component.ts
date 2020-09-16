@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
 import { ClassMateService } from '../classmate.service';
 import * as $ from 'jquery';
@@ -38,6 +38,8 @@ export class ClassRoomComponent implements OnInit {
   public isUpdate: boolean = false;
   public currentFile;
   public currentPost;
+
+  @ViewChild('inputPost', {static: true}) InputPost: ElementRef<any>;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -371,6 +373,9 @@ export class ClassRoomComponent implements OnInit {
         if (response.body != null && response.body !== undefined) {
           this.currentPost = response.body;
           this.isUpdate = true;
+          setTimeout(() => {
+            $('#textarea-input-update').trigger('focus');
+          }, 300);
         }
       },
       error => {
