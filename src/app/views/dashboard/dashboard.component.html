@@ -13,16 +13,16 @@
     <div class="col-sm-6 col-lg-3" *ngFor="let c of lstAllCourse">
       <div class="brand-card">
         <div class="brand-card-header bg-facebook" [style.backgroundImage]="'url('+ imageUrl +')'" [routerLink]="['/class', c.id, 'stream']">
-          <h2>{{c.name}}</h2>
+          <h3>{{c.name}}</h3>
         </div>
         <div class="brand-card-body">
           <div>
-            <div class="text-value">40</div>
             <div class="text-uppercase text-muted small">Sinh viên</div>
+            <div class="text-value">{{c.studentCount}}</div>
           </div>
           <div>
-            <div class="text-value">8/10</div>
             <div class="text-uppercase text-muted small">Buổi học</div>
+            <div class="text-value">{{c.sessionCount}}</div>
           </div>
         </div>
       </div>

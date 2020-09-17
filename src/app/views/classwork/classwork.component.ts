@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as $ from 'jquery';
+import { ClassworkService } from './classwork.service';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-classwork',
@@ -9,10 +11,20 @@ import * as $ from 'jquery';
 export class ClassworkComponent implements OnInit {
 
   public lstClasswork: any[];
+  public lstExcercise: any[];
+  public courseId;
 
-  constructor() { }
+  constructor(private classService: ClassworkService,
+              private router: Router,
+              private route: ActivatedRoute
+  ) {
+  }
 
   ngOnInit(): void {
+    this.courseId = this.route.snapshot.paramMap.get('id');
+    if (this.courseId == null || this.courseId === undefined || this.courseId === 'undefined') {
+      this.router.navigateByUrl('/dashboard');
+    }
     this.lstClasswork = [
       {id: '1', title: 'Test1', createAt: '09:00 28/08/2020'},
       {id: '2', title: 'Test1', createAt: '09:00 28/08/2020'},
@@ -20,6 +32,7 @@ export class ClassworkComponent implements OnInit {
       {id: '4', title: 'Test1', createAt: '09:00 28/08/2020'},
       {id: '5', title: 'Test1', createAt: '09:00 28/08/2020'},
     ];
+    
   }
 
   collapse(blnShow: boolean, id: string, e) {
