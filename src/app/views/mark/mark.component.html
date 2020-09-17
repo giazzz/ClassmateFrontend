@@ -12,7 +12,7 @@
                                 </h5>
                             </div>
                             <div class="count-done">
-                                (Đã nộp: 10/20)
+                                (Đã nộp: {{exam.doneCount}}/{{exam.allCount}})
                             </div>
                         </th>
                     </tr>
@@ -37,13 +37,13 @@
                         <td class="text-left td-score fw-500">
                             <div class="row student-info">
                                 <div class="avatar">
-                                    <img src="assets/img/avatars/4.jpg" class="img-avatar" alt="">
+                                    <img src="{{s.avatar}}" class="img-avatar" alt="">
                                 </div>
                                 <p>{{s.name}}</p>
                             </div>
                         </td>
                         <ng-container *ngIf="isTeacher">
-                            <td *ngFor="let score of s.lstScore; let j = index" class="div-score" [ngClass]="{'td-hover' : score.isFocus}" (click)="score.isClick = true; onTdScoreClick(i, j, $event);" (mouseenter)="score.isHover = true" (mouseleave)="score.isHover = false">
+                            <td *ngFor="let score of s.lstExcercise; let j = index" class="div-score" [ngClass]="{'td-hover' : score.isFocus}" (click)="score.isClick = true; onTdScoreClick(i, j, $event);" (mouseenter)="score.isHover = true" (mouseleave)="score.isHover = false">
                                 <div class="row" *ngIf="score.isHover || score.isClick || score.score != null">
                                     <div class="input-score">
                                         <input class="fw-500" type="number" id="{{'input-' + i.toString() + j.toString()}}" value="{{score.score}}" (focus)="score.isFocus = true" (focusout)="score.isFocus = false"/>
@@ -65,7 +65,7 @@
                             </td>
                         </ng-container>
                         <ng-container *ngIf="isStudent">
-                            <td *ngFor="let score of s.lstScore" class="div-score fw-500 s-score" >
+                            <td *ngFor="let score of s.lstExcercise" class="div-score fw-500 s-score" >
                                 {{score.score}}
                             </td>
                         </ng-container>

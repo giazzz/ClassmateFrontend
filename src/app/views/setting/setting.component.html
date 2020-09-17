@@ -1,24 +1,133 @@
 <div class="animated fadeIn">
     <div class="card col-md-10 col-12" style="margin: auto;">
         <div class="card-body">
-            <h1>Hồ sơ</h1>
+            <h1 style="padding-left: 15px;">Hồ sơ</h1>
             <div class="row m-b-r m-t-3">
 				<div class="col-md-2">
-					<img src="https://mdbootstrap.com/images/avatars/img%20(1).jpg" alt="" class="img-circle img-fluid">
+					<img src="{{objProfile?.avatar_uri || defaultAvatar}}" alt="" class="img-circle img-fluid">
+					<div class="edit-avatar" >
+						<div class="wrapper-action" style="margin-left: auto;" popover="Tải ảnh lên" triggers="mouseenter:mouseleave">
+							<i class="icon-cloud-upload icons font-2xl"></i>
+						</div>
+						<div class="wrapper-action" style="margin-right: auto;" popover="Chụp ảnh" triggers="mouseenter:mouseleave">
+							<i class="icon-camera icons font-2xl"></i>
+						</div>
+					</div>
 				</div>
 				<div class="col-md-9 p-t-2">
 					<h2 class="h2-responsive">
-                        @janedoe 
-                        <button type="button" class="btn btn-info-outline waves-effect">Follow</button>
+						{{objProfile?.username}}
+						<div class="wrapper-action" popover="Chỉnh sửa" triggers="mouseenter:mouseleave" (click)="addModal.show()">
+							<i class="cui-pencil icons font-2xl"></i>
+						</div>
                     </h2>
 
-					<ul class="flex-menu">
-						<li><strong>41</strong> posts</li>
-						<li><strong>47k</strong> followers</li>
-						<li><strong>208</strong> following</li>
+					<ul class="flex-menu" style="list-style-type: none;">
+						<li>
+							<i class="icon-user icons"></i>
+							<span *ngIf="objProfile?.fullname == ''" class="empty" >(Trống)</span>
+							<strong>{{objProfile?.fullname}}</strong>
+						</li>
+						<li>
+							<i class="icon-envelope-letter icons"></i>
+							<span *ngIf="objProfile?.email == ''" class="empty" >(Trống)</span>
+							<strong>{{objProfile?.email}} </strong>
+						</li>
+						<li>
+							<i class="icon-phone icons"></i>
+							<span *ngIf="objProfile?.phone == ''" class="empty" >(Trống)</span>
+							<strong>{{objProfile?.phone}} </strong>
+						</li>
+						<li>
+							<i class="icon-location-pin icons"></i>
+							<span *ngIf="objProfile?.address == ''" class="empty" >(Trống)</span>
+							<strong>{{objProfile?.address}} </strong>
+						</li>
+						<li>
+							<i class="icon-calendar icons"></i>
+							<span *ngIf="objProfile?.birthday === ''" class="empty" >(Trống)</span>
+							<strong>{{objProfile?.birthday}} </strong>
+						</li>
+						<li class="gender">
+							<i *ngIf="objProfile?.gender == 'FEMALE'" class="icon-symbol-female icons"></i>
+							<i *ngIf="objProfile?.gender == 'MALE'" class="icon-symbol-male icons"></i>
+							<i *ngIf="objProfile?.gender != 'MALE' && objProfile?.gender != 'FEMALE'" class="icon-emotsmile icons"></i>
+							<strong>{{objProfile?.gender}}</strong>
+						</li>
 					</ul>
 				</div>
 			</div>
         </div>
     </div>
 </div>
+
+<!-- Modal update profile -->
+<div bsModal #addModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-success" role="document">
+	  <div class="modal-content">
+		<form class="form-horizontal" [formGroup]="frmEdit" (ngSubmit)="onSubmitFormEdit()">
+		  <div class="modal-header">
+			<h4 class="modal-title">Chỉnh sửa thông tin cá nhân</h4>
+			<button type="button" class="close" (click)="addModal.hide()" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body" style="padding: 1rem 2rem;">
+  
+			  <div class="form-group row">
+				<label class="col-md-3 col-form-label" for="text-input">Tên</label>
+				<div class="col-md-9" >
+				  <input formControlName="inputName" type="text" id="text-input" name="text-input" class="form-control" [ngClass]="{ 'is-invalid': (submitted || f.inputName.touched)  && f.inputName.errors }">
+				  <span *ngIf="(submitted || f.inputName.touched)  && f.inputName.errors?.required" class="help-block">Tên không được để trống!</span>
+				</div>
+			  </div>
+  
+			  <div class="form-group row">
+				<label class="col-md-3 col-form-label" for="des-input">Số điện thoại</label>
+				<div class="col-md-9" >
+				  <input formControlName="inputPhone" type="number" id="email-input" name="des-input" class="form-control" [ngClass]="{ 'is-invalid': (submitted || f.inputPhone.touched)  && f.inputPhone.errors }">
+				  <span *ngIf="(submitted || f.inputPhone.touched)  && f.inputPhone.errors?.required" class="help-block">Số điện thoại không được để trống!</span>
+				</div>
+			  </div>
+
+			  <div class="form-group row">
+				<label class="col-md-3 col-form-label" for="text-input">Địa chỉ</label>
+				<div class="col-md-9" >
+				  <input formControlName="inputAddress" type="text" id="text-input" name="text-input" class="form-control" [ngClass]="{ 'is-invalid': (submitted || f.inputAddress.touched)  && f.inputAddress.errors }">
+				  <span *ngIf="(submitted || f.inputAddress.touched)  && f.inputAddress.errors?.required" class="help-block">Địa chỉ không được để trống!</span>
+				</div>
+			  </div>
+  
+			  <div class="form-group row">
+				<label class="col-md-3 col-form-label" for="begin-input">Ngày sinh</label>
+				<div class="col-md-9">
+				  <input formControlName="selectBirthday" class="form-control" id="begin-input" type="date" placeholder="date" [ngClass]="{ 'is-invalid': (submitted || f.selectBirthday.touched)  && f.selectBirthday.errors }">
+				  <span *ngIf="(submitted || f.selectBirthday.touched)  && f.selectBirthday.errors?.required" class="help-block">Ngày sinh không được để trống!</span>
+				</div>
+			  </div>
+
+			  <div class="form-group row">
+				<label class="col-md-3 col-form-label" for="select1">Giới tính</label>
+				<div class="col-md-9">
+				  <select formControlName="selectGender" id="select1" name="select1" class="form-control" [ngClass]="{ 'is-invalid': (submitted || f.selectGender.touched)  && f.selectGender.errors }">
+					<option value="">Chọn giới tính</option>
+					<option value="Male">Nam</option>
+					<option value="Female">Nữ</option>
+					<option value="Other">Khác</option>
+				  </select>
+				  <span *ngIf="(submitted || f.selectGender.touched)  && f.selectGender.errors?.required" class="help-block">Hãy chọn giới tính!</span>
+				</div>
+			  </div>
+  
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" (click)="addModal.hide()">Hủy</button>
+			<button type="submit" class="btn btn-success">
+				<span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+				Lưu
+			</button>
+		  </div>
+		</form>
+	  </div>
+	</div>
+  </div>

@@ -18,7 +18,12 @@ export class SettingService {
     }
 
     updateProfile(objProfile) {
-        return this.http.post<any>(`${environment.apiUrl}/data/user/updateProfile`,
-        objProfile, { observe: 'response' });
+        return this.http.post<any>(`${environment.apiUrl}/data/user/profile/update`,
+            objProfile, { observe: 'response' });
+    }
+
+    faceCheckDefinition(objImg) {
+        return this.http.post<any>(`${environment.apiUrl}/data/user/profile/faceCheckDefinition`,
+            objImg, { observe: 'response' });
     }
 }
