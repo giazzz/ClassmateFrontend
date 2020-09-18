@@ -9,7 +9,10 @@ ul li i {
     margin-right: 15px;
 }
 .img-circle {
-    margin-top: 10px
+    margin-top: 10px;
+    width: 130px;
+    height: 130px;
+    border-radius: 100%;
 }
 .h2-responsive {
     padding-left: 35px;
@@ -50,4 +53,136 @@ ul li i {
 .help-block{
     color: red;
     font-size: 12px;
+}
+.spin-avatar {
+    position: absolute;
+    top: 32%;
+    left: 42%;
+    width: 25px;
+    height: 25px;
+}
+img.loading {
+    opacity: 0.5;
+}
+.w-900 {
+    max-width: 900px;
+}
+
+@import url(//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css);
+@import url(https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500);
+
+.wrapper {
+  
+  &:active {
+    
+    #img-result {
+      margin-top: 2px;
+      box-shadow: 0 1px 2px rgba(0,0,0,.3);
+    }
+  }
+
+  animation: roll 1.5s;
+  position: relative;
+  width: 80px;
+  left: 50%;
+  top: 35%;
+  transform: translate(-50%,-50%);
+  padding: 10px;
+  background: #16a085;
+  border-radius: 50%;
+  box-shadow: 0 3px 5px rgba(0,0,0,.3);
+  
+  #img-result { 
+    cursor: pointer;
+    margin: 0;
+    position: relative;
+    background: #1abc9c;
+    background-size: cover;
+    background-position: center;
+    display: block;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    box-shadow: 0 3px 5px rgba(0,0,0,.3);
+    color: rgba(0,0,0,0);
+    transition: box-shadow .3s, margin .3s, background-image 1.5s;
+    
+    &.no-image:before {
+      font-family: 'FontAwesome';
+      content: "\f030";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      color: #fff;
+      font-size: 36px;
+      opacity: .8;
+      transform: translate(-50%, -50%);
+      text-shadow: 0 0px 5px rgba(0,0,0,.4);
+    }
+  }
+  button {
+    margin-top: 20px;
+    display: block;
+    font-family: 'Open Sans Condensed', sans-serif;
+    background: #1abc9c;
+    width: 100%;
+    border: none;
+    color: #fff;
+    padding: 10px;
+    letter-spacing: 1.3px;
+    font-size: 1.05em;
+    border-radius: 5px;
+    box-shadow: 0 4px 5px rgba(0,0,0,.3);
+    outline: 0;
+    transition: box-shadow .3s,  margin-top .3s, padding .3s;
+    
+    &:active {
+      box-shadow: none;
+      margin-top: 24px;
+      padding: 8px
+    }
+  }
+}
+
+.show-button {
+    background: #264974;
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    float: right;
+    display: none;
+  }
+  
+  .upload-result {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    overflow-y: auto;
+    
+    &__content {
+      word-break: break-all;
+      font-family: 'Source Code Pro';
+      overflow-wrap: break-word;
+    }
+  }
+  
+.wrap-webcam{
+    display: flex;
+    width: 100%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    height: 400px;
+    align-items: center;
+    justify-content: center;
+    // inexplicable/unknown extra space is rendered, causing scrollbars to show up 
+    overflow: hidden;
+}
+.card-footer{
+    background-color: #1abc9c;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }

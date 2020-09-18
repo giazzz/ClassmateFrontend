@@ -27,7 +27,10 @@
                   <div class="row">
                     <p *ngIf="blnWrong" style="color: red; font-size: 12px; margin-left: 15px;">Tên hoặc mật khẩu không chính xác!</p>
                     <div class="col-6">
-                      <button type="submit" class="btn btn-primary px-4">Đăng nhập</button>
+                      <button type="submit" class="btn btn-primary">
+                        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                        Đăng nhập
+                      </button>
                     </div>
                     <!-- <div class="col-6 text-right">
                       <button type="button" class="btn btn-link px-0">Forgot password?</button>

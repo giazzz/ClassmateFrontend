@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import {WebcamImage, WebcamInitError, WebcamUtil} from 'ngx-webcam';
+import { WebcamImage, WebcamInitError, WebcamUtil } from 'ngx-webcam';
 import { Subject, Observable } from 'rxjs';
 
 @Component({

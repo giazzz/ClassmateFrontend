@@ -15,6 +15,7 @@ export class LoginComponent implements OnInit {
   public frmLogin: FormGroup;
   public submitted: boolean;
   public blnWrong = false;
+  public loading = false;
 
   constructor(private fb: FormBuilder,
               private resService: RegisterService,
@@ -47,7 +48,7 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     this.blnWrong = false;
-    this.iconLoading.start();
+    this.loading = true;
 
     // Stop here if form is invalid
     if (this.frmLogin.invalid) {
@@ -56,12 +57,12 @@ export class LoginComponent implements OnInit {
 
     this.authenService.login(this.f.inputUsername.value, this.f.inputPassword.value).subscribe(
       data => {
+        this.loading = false;
         this.router.navigateByUrl('/dashboard');
-        this.iconLoading.stop();
       },
       error => {
         this.blnWrong = true;
-        this.iconLoading.stop();
+        this.loading = false;
       });
   }
 
