@@ -121,6 +121,7 @@ export class SettingComponent implements OnInit {
 
   public handleImage(webcamImage: WebcamImage): void {
     this.webcamImage = webcamImage;
+    console.log(this.webcamImage);
   }
 
   public cameraWasSwitched(deviceId: string): void {
@@ -190,8 +191,20 @@ export class SettingComponent implements OnInit {
 
   onSelectFile(event) {
     if (event.target.files && event.target.files[0]) {
-      this.loading = true;
-      this.classRoomService.uploadFile([event.target.files[0]]).subscribe(
+      this.updateAvatar([event.target.files[0]]);
+    }
+  }
+
+  onClickSaveImage() {
+    const imgName = this.strUserId + (new Date()).getTime();
+    const data = this.webcamImage?.imageAsDataUrl;
+    const fileImg = this.dataURLtoFile(data, imgName + '.png');
+    this.updateAvatar([fileImg]);
+  }
+
+  updateAvatar(lstFile) {
+    this.loading = true;
+      this.classRoomService.uploadFile(lstFile).subscribe(
         response => {
           if (response.body != null && response.body !== undefined && response.body.length > 0) {
             this.objProfile.avatar_file_id = response.body[0].file_id;
@@ -214,7 +227,6 @@ export class SettingComponent implements OnInit {
         error => {
           this.loading = false;
         });
-    }
   }
 
   getTicksFromDateString(dateTime: string) {
@@ -250,6 +262,15 @@ export class SettingComponent implements OnInit {
     }
     return true;
 
+  }
+
+  dataURLtoFile(dataurl, filename) {
+    let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while ( n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, {type: mime});
   }
 
 }
