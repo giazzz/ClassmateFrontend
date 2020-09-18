@@ -75,7 +75,6 @@ export class SettingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.toastr.showToastrSuccess('test', 'test');
     this.strUserId = JSON.parse(localStorage.currentUser).id || '';
     this.isStudent = this.role.isStudent();
     this.getProfile();
@@ -258,7 +257,6 @@ export class SettingComponent implements OnInit {
 
             this.settingService.faceCheckDefinition(lstImgId).subscribe(
               data => {
-                debugger
                 if (data.status === 200 && data.body.success === true) {
                   // Success:
                   this.imageModal.hide();
