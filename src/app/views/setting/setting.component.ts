@@ -255,7 +255,7 @@ export class SettingComponent implements OnInit {
               return item.file_id;
             });
 
-            this.settingService.faceCheckDefinition(lstImgId).subscribe(
+            this.settingService.faceCheckDefinition({file_ids: lstImgId}).subscribe(
               data => {
                 if (data.status === 200 && data.body.success === true) {
                   // Success:
