@@ -5,8 +5,11 @@ import * as moment from 'moment';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { WebcamInitError, WebcamImage, WebcamUtil } from 'ngx-webcam';
+import { error } from 'protractor';
 import { Observable, Subject } from 'rxjs';
 import { EndpointsConfig } from '../../config/config';
+import { CheckRole } from '../../shared/checkRole';
+import { Toastr } from '../../shared/toastr';
 import { ClassRoomService } from '../class-room/class-room.service';
 import { SettingService } from './setting.service';
 
@@ -23,8 +26,10 @@ export class SettingComponent implements OnInit {
   public frmEdit: FormGroup;
   public submitted: boolean;
   public loading: boolean = false;
+  public isStudent: boolean = false;
   public selectedFile: File;
   public driveUrl = EndpointsConfig.google.driveUrl;
+  public blnIsForProfile: boolean = false;
   public vnf_regex: RegExp = /^(0|\+84)(\s|\.)?((3[2-9])|(5[689])|(7[06-9])|(8[1-689])|(9[0-46-9]))(\d)(\s|\.)?(\d{3})(\s|\.)?(\d{3})$/;
 
   // Webcam
@@ -62,14 +67,17 @@ export class SettingComponent implements OnInit {
   constructor(private settingService: SettingService,
               private iconLoading: NgxUiLoaderService,
               private fb: FormBuilder,
-              private classRoomService: ClassRoomService
+              private classRoomService: ClassRoomService,
+              private role: CheckRole,
+              private toastr: Toastr
   ) {
     this.onResize();
   }
 
   ngOnInit(): void {
+    this.toastr.showToastrSuccess('test', 'test');
     this.strUserId = JSON.parse(localStorage.currentUser).id || '';
-
+    this.isStudent = this.role.isStudent();
     this.getProfile();
 
     this.frmEdit = this.fb.group({
@@ -142,6 +150,10 @@ export class SettingComponent implements OnInit {
         if (response.body != null && response.body !== undefined) {
           this.objProfile = response.body;
         }
+        this.loading = false;
+      },
+      () => {
+        this.loading = false;
       });
   }
 
@@ -183,7 +195,7 @@ export class SettingComponent implements OnInit {
           }
           this.loading = false;
         },
-        error => {
+        () => {
           // Error:
           this.loading = false;
         });
@@ -199,7 +211,11 @@ export class SettingComponent implements OnInit {
     const imgName = this.strUserId + (new Date()).getTime();
     const data = this.webcamImage?.imageAsDataUrl;
     const fileImg = this.dataURLtoFile(data, imgName + '.png');
-    this.updateAvatar([fileImg]);
+    if (this.blnIsForProfile) {
+      this.updateAvatar([fileImg]);
+    } else {
+      this.uploadImgFaceCheck([fileImg]);
+    }
   }
 
   updateAvatar(lstFile) {
@@ -213,18 +229,52 @@ export class SettingComponent implements OnInit {
                 if (data.status === 200 && data.body.success === true) {
                   // Success:
                   this.addModal.hide();
+                  this.imageModal.hide();
                   this.getProfile();
+                } else {
+                  this.loading = false;
                 }
-                this.loading = false;
               },
-              error => {
+              () => {
                 // Error:
                 this.loading = false;
               });
           }
           this.loading = false;
         },
-        error => {
+        () => {
+          this.loading = false;
+        });
+  }
+
+  uploadImgFaceCheck(lstFile) {
+    this.loading = true;
+      this.classRoomService.uploadFile(lstFile).subscribe(
+        response => {
+          if (response.body != null && response.body !== undefined && response.body.length > 0) {
+            const lstImgId = response.body.map(item => {
+              return item.file_id;
+            });
+
+            this.settingService.faceCheckDefinition(lstImgId).subscribe(
+              data => {
+                debugger
+                if (data.status === 200 && data.body.success === true) {
+                  // Success:
+                  this.imageModal.hide();
+                  this.toastr.showToastrSuccess('Đã lưu ảnh!', 'Thành công');
+                } else {
+                  this.loading = false;
+                }
+              },
+              () => {
+                // Error:
+                this.loading = false;
+              });
+          }
+          this.loading = false;
+        },
+        () => {
           this.loading = false;
         });
   }

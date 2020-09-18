@@ -19,6 +19,7 @@ import { NgxUiLoaderModule } from 'ngx-ui-loader';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { WebcamModule } from 'ngx-webcam';
 import { AutosizeModule } from 'ngx-autosize';
+import { ToastrModule } from 'ngx-toastr';
 
 // Import containers
 import { DefaultLayoutComponent } from './containers';
@@ -82,7 +83,8 @@ import { NgxDocViewerModule } from 'ngx-doc-viewer';
     TabsModule.forRoot(),
     ChartsModule,
     AutosizeModule,
-    NgxDocViewerModule
+    NgxDocViewerModule,
+    ToastrModule.forRoot()
   ],
   declarations: [
     AppComponent,

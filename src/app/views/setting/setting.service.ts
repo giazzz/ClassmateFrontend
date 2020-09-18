@@ -22,8 +22,8 @@ export class SettingService {
             objProfile, { observe: 'response' });
     }
 
-    faceCheckDefinition(objImg) {
+    faceCheckDefinition(lstId) {
         return this.http.post<any>(`${environment.apiUrl}/data/user/profile/faceCheckDefinition`,
-            objImg, { observe: 'response' });
+            lstId, { observe: 'response' });
     }
 }

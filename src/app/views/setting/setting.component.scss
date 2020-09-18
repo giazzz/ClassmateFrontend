@@ -186,3 +186,92 @@ img.loading {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
 }
+
+
+button.waiting {
+    display: block;
+    margin: 0 auto;
+    position: relative;
+    transform: translateY(-50%);
+    top: 50%;
+    border: 0;
+    background-color: transparent;
+    cursor: pointer;
+
+    line, path, circle {
+      display: block;
+    }
+    
+    p {
+      color: rgba(191,191,191,1);
+      font-family: 'PT Sans', sans-serif;
+      font-size: 17px;
+    //   letter-spacing: 4px;
+      text-indent: 4px;
+      margin: 0 auto;
+      text-align: center;
+      line-height: 20px;
+      margin-top: 5px;
+    }
+    
+    &:focus {
+      outline: 0;
+    }   
+
+    .circle {
+      display: none;
+    }
+    
+    .loader {
+      stroke: rgba(61,176,250,1);
+      opacity: 0;
+      stroke-DashArray: 232;
+      transition: opacity 0s;
+    }
+    
+    .complete {
+      opacity: 0;
+    }
+    
+    #shape, .arrow line, p {
+      transition: color .3s, stroke .3s, letter-spacing .3s, font-size .3s, text-indent .3s;
+    }
+    .arrow path {
+      transition: stroke .3s;
+    }
+    
+    &.active:hover {
+      .arrow path, #shape {
+        stroke: rgba(191,191,191,1);
+        transition: stroke .3s;
+      }
+    }
+    
+    &:hover {
+      .arrow path, #shape {
+        stroke: #62b57f;
+        transition: stroke .3s;
+      }
+      p {
+        // letter-spacing: 6px;
+        color: #62b57f;
+        // font-size: 19px;
+        text-indent: 6px;
+      }
+      line {
+        color: rgba(61,176,250,1);
+        stroke: #62b57f;
+      }
+    }
+}
+
+.image-modal {
+    .card-body {
+        border: 1px solid #1abc9c;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+    .card-footer {
+        padding: 0;
+    }
+}

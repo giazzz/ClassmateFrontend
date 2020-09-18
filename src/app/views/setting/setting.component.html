@@ -3,10 +3,10 @@
 		<div class="card-body">
 			<h1 style="padding-left: 15px;">Hồ sơ</h1>
 			<div class="row m-b-r m-t-3">
-				<div class="col-md-2">
+				<div class="col-md-2" style="text-align: center;">
 					<span *ngIf="loading" class="spinner-border spinner-border-sm mr-1 spin-avatar"></span>
 					<img [ngClass]="{'loading' : loading}"
-						src="{{driveUrl + objProfile?.avatar_file_id || defaultAvatar}}" alt=""
+						src="{{driveUrl + objProfile?.avatar_file_id || defaultAvatar}}" alt="Ảnh cá nhân"
 						class="img-circle img-fluid">
 					<div class="edit-avatar">
 						<div class="wrapper-action" style="margin-left: auto;" popover="Tải ảnh lên"
@@ -15,12 +15,12 @@
 						</div>
 						<input #inputFile type="file" (change)="onSelectFile($event)" style="display: none;">
 						<div class="wrapper-action" style="margin-right: auto;" popover="Chụp ảnh"
-							triggers="mouseenter:mouseleave" (click)="imageModal.show()">
+							triggers="mouseenter:mouseleave" (click)="imageModal.show(); webcamImage = null; blnIsForProfile = true;">
 							<i class="icon-camera icons font-2xl"></i>
 						</div>
 					</div>
 				</div>
-				<div class="col-md-9 p-t-2">
+				<div class="col-md-7 p-t-2">
 					<h2 class="h2-responsive">
 						{{objProfile?.username}}
 						<div class="wrapper-action" popover="Chỉnh sửa" triggers="mouseenter:mouseleave"
@@ -63,6 +63,24 @@
 							<strong>{{objProfile?.gender}}</strong>
 						</li>
 					</ul>
+				</div>
+				<div class="col-md-3" *ngIf="isStudent">
+					<button class="waiting" (click)="webcamImage = null; blnIsForProfile = true; imageModal.show();" >
+						<svg width="110.687px" height="90px" viewBox="-352.439 -334.975 110.687 90">
+						<g class="arrow">
+							<line class="left" fill="none" stroke="rgba(191,191,191,1)" stroke-width="7" stroke-linecap="round" stroke-miterlimit="10" x1="-288.85" y1="-291.152" x2="-280.154" y2="-299.849"/>
+							<line class="right" fill="none" stroke="rgba(191,191,191,1)" stroke-width="7" stroke-linecap="round" stroke-miterlimit="10" x1="-280.154" y1="-299.849" x2="-271.457" y2="-291.152"/>
+						</g>
+						<path id="shape" class="cloud" fill="none" stroke="rgba(191,191,191,1)" stroke-width="5" stroke-miterlimit="10" d="M-326.444-305.524
+						  c-12.976,0-23.495,10.529-23.495,23.504c0,12.976,10.519,23.495,23.495,23.495h45.217c20.421,0,36.975-16.554,36.975-36.975
+						  s-16.554-36.975-36.975-36.975c-16.942,0-31.213,11.408-35.586,26.951H-326.444z"/>
+						<path class="cloud loader" fill="none" stroke="rgba(191,191,191,1)" stroke-width="5" stroke-miterlimit="10" d="M-326.444-305.524
+						  c-12.976,0-23.495,10.529-23.495,23.504c0,12.976,10.519,23.495,23.495,23.495h45.217c20.421,0,36.975-16.554,36.975-36.975
+						  s-16.554-36.975-36.975-36.975c-16.942,0-31.213,11.408-35.586,26.951H-326.444z"/>
+						<circle class="circle" fill="none" stroke="#3DB0FA" stroke-width="5" stroke-miterlimit="10" cx="-297.095" cy="-295.5" r="36.975"/>
+						</svg>
+						<p>Upload ảnh dùng cho điểm danh</p>
+					  </button>
 				</div>
 			</div>
 		</div>
@@ -159,16 +177,16 @@
 <!-- Modal capture image -->
 <div bsModal #imageModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
 	aria-hidden="true">
-	<div class="modal-dialog modal-success w-900" role="document">
+	<div class="modal-dialog modal-success w-900 image-modal" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Chụp ảnh cá nhân</h4>
-				<button type="button" class="close" (click)="imageModal.hide()" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
+				<h4 class="modal-title" style="margin: auto">Chụp ảnh cá nhân</h4>
+				<button type="button" class="close" (click)="imageModal.hide()" aria-label="Close" style="padding: 0; margin: 0;">
+					<span aria-hidden="true" style="color: #ffffff;">&times;</span>
 				</button>
 			</div>
 			<div class="modal-body" style="padding: 1rem 2rem;">
-				<div class="card-body">
+				<div class="card-body" >
 					<div class="wrap-webcam" (window:resize)="onResize($event)">
 						<img *ngIf="!this.showWebcam" style="width: 100%;" [src]="webcamImage?.imageAsDataUrl" />
 						<webcam 
@@ -192,9 +210,9 @@
 					</div>
 				</div>
 			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" (click)="imageModal.hide()">Hủy</button>
-				<button type="button" class="btn btn-success" (click)="onClickSaveImage()">
+			<div class="modal-footer" style="border-top: none;">
+				<button type="button" class="btn btn-secondary" style="margin-left: auto;" (click)="imageModal.hide()">Hủy</button>
+				<button type="button" class="btn btn-success" style="margin-right: auto;" (click)="onClickSaveImage()">
 					<span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
 					Lưu
 				</button>
