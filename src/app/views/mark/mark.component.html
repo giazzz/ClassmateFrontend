@@ -4,8 +4,8 @@
             <table class="table table-bordered" style="width: 1142px;">
                 <thead>
                     <tr>
-                        <th style="width: 250px;" class="text-center fs-15 fw-500">Sinh viên</th>
-                        <th style="width: 178px;" *ngFor="let exam of lstClasswork" class="text-center">
+                        <th style="width: 200px;" class="text-center fs-15 fw-500">Sinh viên</th>
+                        <th style="width: 145px;" *ngFor="let exam of sortListExercise(lstClasswork)" class="text-center">
                             <div>
                                 <h5 class="exam-title">
                                     {{exam.title}}
@@ -37,36 +37,51 @@
                         <td class="text-left td-score fw-500">
                             <div class="row student-info">
                                 <div class="avatar">
-                                    <img src="{{s.avatar}}" class="img-avatar" alt="">
+                                    <img src="{{driveUrl + s.avatar || defaultAvatar}}" class="img-avatar" alt="">
                                 </div>
                                 <p>{{s.name}}</p>
                             </div>
                         </td>
+
                         <ng-container *ngIf="isTeacher">
-                            <td *ngFor="let score of s.lstExcercise; let j = index" class="div-score" [ngClass]="{'td-hover' : score.isFocus}" (click)="score.isClick = true; onTdScoreClick(i, j, $event);" (mouseenter)="score.isHover = true" (mouseleave)="score.isHover = false">
-                                <div class="row" *ngIf="score.isHover || score.isClick || score.score != null">
+                            <td *ngFor="let ex of sortListExercise(s.lstExcercise); let j = index" class="div-score" [ngClass]="{'td-hover' : ex.isFocus}" (click)="onTdScoreClick(ex, i, j, $event);" (mouseenter)="ex.isHover = true" (mouseleave)="ex.isHover = false">
+                                <div class="row" *ngIf="ex.isHover || ex.isClick || ex.marked" >
                                     <div class="input-score">
-                                        <input class="fw-500" type="number" id="{{'input-' + i.toString() + j.toString()}}" value="{{score.score}}" (focus)="score.isFocus = true" (focusout)="score.isFocus = false"/>
-                                        <h4 class="j4" *ngIf="score.score == null || score.isFocus">
-                                            <span *ngIf="!score.isClick" class="under-input">_</span>
-                                            /100
+                                        <input class="fw-500" type="number"
+                                                max="10"
+                                                min="0"
+                                                id="{{'input-' + i.toString() + j.toString()}}" 
+                                                (focus)="ex.isFocus = true; onFocusInputMark(ex.mark);" 
+                                                (focusout)="ex.isFocus = false; onSubmitMark(ex); "
+                                                (keyup.enter)="onSubmitMark(ex)" 
+                                                [(ngModel)]="ex.mark"
+                                                />
+                                        <h4 class="j4" *ngIf="!ex.marked || ex.isFocus">
+                                            <span *ngIf="!ex.isClick" class="under-input">_</span>
+                                            /10.0
                                         </h4>
+                                        <span *ngIf="!ex.submitted" class="not-submmit">Chưa nộp</span>
+                                        <span *ngIf="ex.submitted && ex.isFocus" class="not-submmit">Đã nộp</span>
                                     </div>
-                                    <div class="wrapper-action fake-div" *ngIf="!score.isHover">
-                                    </div>
-                                    <div class="wrapper-action" dropdown dropdownToggle placement="bottom right" *ngIf="score.isHover || score.isFocus" >
+                                    <div class="wrapper-action" dropdown dropdownToggle placement="bottom right" *ngIf="ex.isHover || ex.isFocus" >
                                         <i class="icon-options-vertical icons font-xl"></i>
                                         <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
-                                            <li role="menuitem"><a class="dropdown-item" href="#">Chỉnh sửa</a></li>
-                                            <li role="menuitem"><a class="dropdown-item" href="#">Xem bài nộp</a></li>
+                                            <li (click)="onClickEditMark(i, j);" role="menuitem"><a class="dropdown-item" >Chỉnh sửa</a></li>
+                                            <li (click)="onClickShowEx(ex.exercise_student_id);" role="menuitem"><a class="dropdown-item" >Xem bài nộp</a></li>
                                         </ul>
                                     </div>
                                 </div>
+                                <ng-container *ngIf="!ex.isHover && !ex.isClick && !ex.marked && ex.submitted">
+                                    <span class="submmited">Đã nộp</span>
+                                </ng-container>
                             </td>
                         </ng-container>
+
                         <ng-container *ngIf="isStudent">
-                            <td *ngFor="let score of s.lstExcercise" class="div-score fw-500 s-score" >
-                                {{score.score}}
+                            <td *ngFor="let ex of sortListExercise(s.lstExcercise)" class="div-score fw-500 s-score" >
+                                <span *ngIf="!ex.submitted" >Chưa nộp</span>
+                                <span *ngIf="!ex.marked" >Chưa chấm</span>
+                                <span *ngIf="ex.marked && ex.submitted && ex.marked" >{{ex.mark}}</span>
                             </td>
                         </ng-container>
                     </tr>

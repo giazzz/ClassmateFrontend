@@ -19,6 +19,7 @@ export class MarkService {
             { params, observe: 'response' });
     }
 
+    // For teacher:
     getListAllExcercise(course_id) {
         let params = new HttpParams();
         params = params.append('course_id', course_id);
@@ -26,10 +27,18 @@ export class MarkService {
             { params, observe: 'response' });
     }
 
+    // For student;
+    getListStudentExcercise(course_id) {
+        let params = new HttpParams();
+        params = params.append('course_id', course_id);
+        return this.http.get<any>(`${environment.apiUrl}/data/exercise/gradeListStudent`,
+            { params, observe: 'response' });
+    }
+
     markStudentExercise(exercise_id, objMark) {
         let params = new HttpParams();
         params = params.append('id', exercise_id);
-        return this.http.post<any>(`${environment.apiUrl}/data/exercise/gradeList`,
+        return this.http.post<any>(`${environment.apiUrl}/data/exercise/studentExercise/mark`,
         objMark, { params, observe: 'response' });
     }
 }

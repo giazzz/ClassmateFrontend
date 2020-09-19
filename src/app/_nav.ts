@@ -25,7 +25,7 @@ export const navItems: INavData[] = [
     icon: 'icon-notebook'
   },
   {
-    name: 'Cài đặt',
+    name: 'Cá nhân',
     url: '/setting',
     icon: 'icon-settings'
   },

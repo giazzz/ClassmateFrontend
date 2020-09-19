@@ -63,25 +63,25 @@ tr th {
 }
 .input-score {
     width: 80px;
-    margin-left: auto;
+    margin-left: 35%;
     position: relative;
 }
 .input-score input {
     width: -webkit-fill-available;
-    height: 40px;
+    height: 35px;
     border: none;
     cursor: text;
 }
 .input-score h4 {
     position: absolute;
-    top: 10px;
+    top: 8px;
     right: 0px;
     font-size: 18px;
     color: rgba(0, 0, 0, 0.549);
 }
 .input-score input {
     text-align: right;
-    padding-right: 42%;
+    padding-right: 48%;
     display: flex;
     font-size: 18px;
     color: rgba(0, 0, 0, 0.549);
@@ -104,12 +104,13 @@ input[type=number] {
 .under-input {
     color: rgba(0, 0, 0, 0.549);
     position: absolute;
-    right: 34px;
+    right: 39px;
     top: -21px;
     font-size: 35px;
 }
 .div-score {
     cursor: pointer;
+    position: relative;
 }
 .input-score input:focus {
     border-bottom: 2px solid #c2cbc2;
@@ -141,4 +142,15 @@ input[type=number] {
     color: rgba(0, 0, 0, 0.549);
     text-align: center;
     padding-top: 20px;
+}
+.input-score .not-submmit {
+    position: absolute;
+    left: 10%;
+    top: 30px;
+    color: gray;
+}
+.submmited {
+    line-height: 3;
+    padding-left: 38%;
+    color: gray;
 }
