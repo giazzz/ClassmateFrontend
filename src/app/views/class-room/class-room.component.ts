@@ -7,6 +7,12 @@ import { ClassRoomService } from './class-room.service';
 import * as moment from 'moment';
 import { DomSanitizer } from '@angular/platform-browser';
 import { CheckRole } from '../../shared/checkRole';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { PopoverModule } from 'ngx-smart-popover';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DashboardService } from '../dashboard/dashboard.service';
+import { Toastr } from '../../shared/toastr';
 
 @Component({
   selector: 'app-class-room',
@@ -22,6 +28,8 @@ export class ClassRoomComponent implements OnInit {
   public objLoggedUser;
   public blnIsClick: boolean = false;
   public lstClassWork: any[] = [];
+  public lstClassWorkSoon: any[] = [];
+  public lstAllData = [];
   public lstPost = [];
   public lstCmtByPostId: any[] = [];
   public lstClassBgImg: any[] = [];
@@ -38,21 +46,32 @@ export class ClassRoomComponent implements OnInit {
   public isUpdate: boolean = false;
   public currentFile;
   public currentPost;
+  public frmEdit: FormGroup;
+  public submitted: boolean;
+  public lstAllCourseCtgr = [];
+  public objTeacher;
+
+  public minStartDate = this.convertTickToDateDPicker((new Date()).getTime());
 
   @ViewChild('inputPost', {static: true}) InputPost: ElementRef<any>;
+  @ViewChild('updateModal') public updateModal: ModalDirective;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private classService: ClassMateService,
               private classRoomService: ClassRoomService,
               public sanitizer: DomSanitizer,
-              public role: CheckRole
+              public role: CheckRole,
+              private iconLoading: NgxUiLoaderService,
+              private fb: FormBuilder,
+              private dashBoardService: DashboardService,
+              private toastr: Toastr
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
 
   ngOnInit(): void {
-
+    this.iconLoading.start();
     this.classId = this.route.snapshot.paramMap.get('id');
     if (this.classId == null || this.classId === undefined || this.classId === 'undefined') {
       this.router.navigateByUrl('/dashboard');
@@ -84,40 +103,74 @@ export class ClassRoomComponent implements OnInit {
       });
 
     // Get class detail:
+    this.getCurrentCourse();
+
+    this.dashBoardService.getAllCourseCategory().subscribe(
+      response => {
+        if (response.body !== null && response.body !== undefined) {
+          this.lstAllCourseCtgr = response.body;
+        }
+      });
+
+    this.classRoomService.getAllProfileInCourse(this.classId).subscribe(
+      response => {
+        if (response.body != null && response.body !== undefined) {
+          this.objTeacher = response.body.teacher;
+        }
+      });
+
+    // Get all post:
+    this.getAllPost();
+    // Get all ex:
+    this.getAllExerciseByCourse();
+
+    this.frmEdit = this.fb.group({
+      inputName: ['', [
+        Validators.required
+      ]],
+      inputDes: ['', [
+        Validators.required
+      ]],
+      selectCategory: ['', [
+        Validators.required
+      ]],
+      inputBeginDate: ['', [
+        Validators.required
+      ]],
+      inputEndDate: ['', [
+        Validators.required
+      ]]
+    });
+
+  }
+
+  get f() { return this.frmEdit.controls; }
+
+  getCurrentCourse() {
     this.classService.getClassDetail(this.classId).subscribe(
       response => {
         if (response.body != null && response.body !== undefined) {
           this.objClass = response.body;
         }
       });
-
-    // Get all post:
-    this.getAllPost();
-
-    // this.lstClassWork = [
-    //   {
-    //     id: '1',
-    //     title: 'Test1',
-    //     endDate: '08/08/2020'
-    //   },
-    //   {
-    //     id: '2',
-    //     title: 'Test2',
-    //     endDate: '08/08/2020'
-    //   }
-    // ];
-
   }
 
   getAllPost() {
     this.classRoomService.getAllPostByCourseId(this.classId).subscribe(
       response => {
         if (response.body != null && response.body !== undefined) {
-          this.lstPost = response.body;
-          this.lstPost.sort((val1, val2) => {
+          this.lstPost = response.body.sort((val1, val2) => {
             return Number(val2.created_at) - Number(val1.created_at);
           });
         }
+        setTimeout(() => {
+          this.iconLoading.stop();
+        }, 1000);
+      },
+      error => {
+        setTimeout(() => {
+          this.iconLoading.stop();
+        }, 1000);
       });
   }
 
@@ -193,11 +246,6 @@ export class ClassRoomComponent implements OnInit {
     return des === '' || des == null || des === undefined ? '' : des.split(',')[index].split(':')[1];
   }
 
-  convertTickToDate(tick: string) {
-    const date = new Date(Number(tick));
-    return moment(date).format('D & M YYYY hh:mm').replace('&', 'thg');
-  }
-
   async onSelectFile(event) {
     if (event.target.files && event.target.files[0]) {
       for (let i = 0; i < event.target.files.length; i++) {
@@ -220,6 +268,7 @@ export class ClassRoomComponent implements OnInit {
     }
   }
 
+  // Convert file to base64data:
   getBase64(file: File) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -432,6 +481,105 @@ export class ClassRoomComponent implements OnInit {
       },
       error => {
         this.loading = false;
+      });
+  }
+
+  getAllExerciseByCourse() {
+    this.classRoomService.getAllExcerciseByCourseId(this.classId).subscribe(
+      response => {
+        if (response.body != null && response.body !== undefined) {
+          this.lstClassWork = response.body;
+          this.lstClassWorkSoon = response.body.filter( item => this.oneWeekExpired(item.exercise_end_time) );
+        }
+      });
+  }
+
+  convertTickToDate(tick) {
+    const date = new Date(Number(tick));
+    return moment(date).format('D & M YYYY hh:mm').replace('&', 'thg');
+  }
+
+  convertTickToDateShort(tick) {
+    const date = new Date(Number(tick));
+    return moment(date).format('D & M YYYY').replace('&', 'thg');
+  }
+
+  convertTickToDateDPicker(tick) {
+    const date = new Date(Number(tick));
+    return moment(date).format('YYYY-MM-DD');
+  }
+
+  convertDateToTicks(dateTime) {
+    const date = new Date(dateTime);
+    return date.getTime();
+  }
+
+  oneWeekExpired(endTicks): boolean {
+    const endDate = Number(endTicks);
+    const now = (new Date()).getTime();
+    const addOneWeek = (new Date()).setDate((new Date()).getDate() + 7);
+    return now <= endDate && endDate <= addOneWeek;
+  }
+
+  onClickShowModalEdit() {
+    this.frmEdit.setValue({
+      inputName: this.objClass.name,
+      inputDes: this.objClass.description,
+      selectCategory: this.objClass.course_category_id,
+      inputBeginDate: this.convertTickToDateDPicker(this.objClass.start_date),
+      inputEndDate: this.convertTickToDateDPicker(this.objClass.end_date)
+    });
+  }
+
+  onSubmitFormEditCourse() {
+    this.submitted = true;
+    this.loading = true;
+
+    // Stop here if form is invalid
+    if (this.frmEdit.invalid) {
+      this.loading = false;
+      return;
+    }
+    const name = this.f.inputName.value;
+    const description = this.f.inputDes.value;
+    const start_date = this.convertDateToTicks(this.f.inputBeginDate.value);
+    const end_date = this.convertDateToTicks(this.f.inputEndDate.value);
+    const course_category_id = this.f.selectCategory.value;
+    const objCourse = {course_category_id, name, description, start_date, end_date};
+
+    this.classRoomService.updateCourse(this.objClass.id, objCourse)
+      .subscribe(
+        response => {
+          if (response.status === 200 && response.body.success) {
+            // Success:
+            this.updateModal.hide();
+            this.getCurrentCourse();
+          }
+          this.loading = false;
+        },
+        error => {
+          // Error:
+          this.loading = false;
+          this.updateModal.hide();
+          this.toastr.showToastrWarning('Bạn không thể sửa khi lớp học đang trong trạng thái đang hoạt động', 'Không thành công');
+        });
+  }
+
+  getCtgrname(ctgrId) {
+    return this.lstAllCourseCtgr.find( item => item.id === ctgrId)?.name || null;
+  }
+
+  onChangeStatus() {
+    this.classRoomService.updateCourseStatus(this.objClass.id, this.objClass.status).subscribe(
+      response => {
+        if (response.status === 200 && response.body.success) {
+          // Success:
+          this.toastr.showToastrSuccess('', 'Thành công!');
+        }
+      },
+      error => {
+        // Error:
+        this.toastr.showToastrWarning('', 'Không thành công');
       });
   }
 

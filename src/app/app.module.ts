@@ -60,6 +60,7 @@ import { SettingComponent } from './views/setting/setting.component';
 import { ScheduleComponent } from './views/schedule/schedule.component';
 import { TodoComponent } from './views/todo/todo.component';
 import { NgxDocViewerModule } from 'ngx-doc-viewer';
+import { PopoverModule } from 'ngx-smart-popover';
 
 @NgModule({
   imports: [
@@ -84,7 +85,8 @@ import { NgxDocViewerModule } from 'ngx-doc-viewer';
     ChartsModule,
     AutosizeModule,
     NgxDocViewerModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    PopoverModule
   ],
   declarations: [
     AppComponent,

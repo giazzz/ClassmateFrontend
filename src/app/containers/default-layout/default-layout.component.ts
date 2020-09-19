@@ -6,6 +6,9 @@ import { DashboardService } from '../../views/dashboard/dashboard.service';
 import * as $ from 'jquery';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { INavData } from '@coreui/angular';
+import { SettingService } from '../../views/setting/setting.service';
+import { EndpointsConfig } from '../../config/config';
+import { MarkService } from '../../views/mark/mark.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,11 +20,16 @@ export class DefaultLayoutComponent implements OnInit {
   public navItems = navItems;
   public classId: string;
   public userId: string;
-  public totalCourse: number;
+  public totalCourse: number = 0;
+  public totalEx: number = 0;
   public currentUser;
+  public objProfile;
   public isTeacher: boolean = false;
   public isStudent: boolean = false;
   public lstAllCourse: any[];
+  public driveUrl = EndpointsConfig.google.driveUrl;
+  public defaultAvatar = EndpointsConfig.user.defaultAvatar;
+
   public nav = [
     {
       title: true,
@@ -37,23 +45,25 @@ export class DefaultLayoutComponent implements OnInit {
       url: '/schedule',
       icon: 'icon-calendar'
     },
+    // {
+    //   name: 'To do',
+    //   url: '/student/1/todo',
+    //   icon: 'icon-notebook'
+    // },
     {
-      name: 'To do',
-      url: '/student/1/todo',
-      icon: 'icon-notebook'
-    },
-    {
-      name: 'Cài đặt',
+      name: 'Cá nhân',
       url: '/setting',
       icon: 'icon-settings'
     },
   ];
 
   constructor(private routeActive: ActivatedRoute,
-    public router: Router,
-    private authenService: AuthenticationService,
-    private dashBoardService: DashboardService,
-    private iconLoading: NgxUiLoaderService,
+              public router: Router,
+              private authenService: AuthenticationService,
+              private dashBoardService: DashboardService,
+              private iconLoading: NgxUiLoaderService,
+              private settingService: SettingService,
+              private markService: MarkService
   ) {
   }
 
@@ -68,6 +78,13 @@ export class DefaultLayoutComponent implements OnInit {
     this.isTeacher = JSON.parse(localStorage.currentUser).roles.includes('ROLE_TEACHER');
     this.isStudent = JSON.parse(localStorage.currentUser).roles.includes('ROLE_STUDENT');
 
+    this.settingService.getProfile(JSON.parse(localStorage.currentUser).id || '').subscribe(
+      response => {
+        if (response.body != null && response.body !== undefined) {
+          this.objProfile = response.body;
+        }
+      });
+
     this.router.events.subscribe((events) => {
       if (events instanceof NavigationStart) {
         if (events.url.includes('class') && !this.router.url.includes('student')) {
@@ -76,6 +93,7 @@ export class DefaultLayoutComponent implements OnInit {
       }
     });
     this.getLstAllCourse();
+    this.getTotalExNotSubmmit();
   }
 
   getLstAllCourse() {
@@ -118,12 +136,14 @@ export class DefaultLayoutComponent implements OnInit {
               });
             response.body.forEach(item => {
               this.totalCourse++;
-              this.lstAllCourse.push(
-                {
-                  name: item.name,
-                  url: `/class/${item.id}/stream`,
-                  icon: 'icon-graduation'
-                });
+              if (this.lstAllCourse.length <= 10) {
+                this.lstAllCourse.push(
+                  {
+                    name: item.name,
+                    url: `/class/${item.id}/stream`,
+                    icon: 'icon-graduation'
+                  });
+              }
             });
             this.navItems = this.lstAllCourse.concat(this.nav);
           }
@@ -133,6 +153,19 @@ export class DefaultLayoutComponent implements OnInit {
           this.iconLoading.stop();
         });
     }
+  }
+
+  getTotalExNotSubmmit() {
+    this.markService.getStudentAllExcercise().subscribe(
+      response => {
+        if (response.body !== null && response.body !== undefined) {
+          response.body.forEach(item => {
+            item.gradeRecordResponses.forEach(ex => {
+              this.totalEx += ex.studentExerciseResponse.submitted ? 0 : 1;
+            });
+          });
+        }
+      });
   }
 
   toggleMinimize(e) {

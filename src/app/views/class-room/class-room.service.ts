@@ -85,4 +85,34 @@ export class ClassRoomService {
         return this.http.post<any>(`${environment.apiUrl}/data/comment/edit`,
             objCmt, { params, observe: 'response' });
     }
+
+    getAllExcerciseByCourseId(course_id: string) {
+        let params = new HttpParams();
+        params = params.append('course_id', course_id);
+        return this.http.get<any>(`${environment.apiUrl}/data/exercise/all`,
+            { params, observe: 'response' });
+    }
+
+    updateCourse(course_id, objUpdate) {
+        let params = new HttpParams();
+        params = params.append('id', course_id);
+        return this.http.post<any>(`${environment.apiUrl}/data/course/edit`,
+        objUpdate, { params, observe: 'response' });
+    }
+
+    updateCourseStatus(course_id, status) {
+        let params = new HttpParams();
+        params = params.append('id', course_id);
+        params = params.append('status', status);
+        return this.http.post<any>(`${environment.apiUrl}/data/course/updateStatus`,
+            { params, observe: 'response' });
+    }
+
+    getAllProfileInCourse(course_id) {
+        let params = new HttpParams();
+        params = params.append('course_id', course_id);
+        return this.http.get<any>(`${environment.apiUrl}/data/course/allProfileInCourse`,
+            { params, observe: 'response' });
+    }
+
 }

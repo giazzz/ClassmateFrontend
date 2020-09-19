@@ -4,13 +4,20 @@
         <div class="card">
             <div class="card-body">
 
-                <!-- Chọn ngày: -->
-
-                    <div class="col-lg-4 col-md-6 col-12" style="margin-left: auto; margin-top: 20px;">
-                        <div class="form-group row">
-                                <input class="form-control" id="date-input" type="date" name="date-input" placeholder="date">
-                        </div>
+                <!-- <div class="col-lg-4 col-md-6 col-12" style="margin-left: auto; margin-top: 20px;">
+                    <div class="form-group row">
+                            <input class="form-control" id="date-input" type="date" name="date-input" placeholder="date">
                     </div>
+                </div> -->
+
+                <!-- Active attendance: -->
+                <div class="col-12 session-div" >
+                    <p>Bắt đầu điểm danh  </p>
+                    <label class="switch switch-label switch-danger">
+                        <input type="checkbox" class="switch-input" checked>
+                        <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
+                    </label>
+                </div>
 
                 <!-- Danh sách sinh viên: -->
                 <table class="table table-student">

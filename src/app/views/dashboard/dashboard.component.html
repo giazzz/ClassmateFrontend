@@ -82,7 +82,13 @@
             <div class="form-group row">
               <label class="col-md-3 col-form-label" for="begin-input">Ngày bắt đầu</label>
               <div class="col-md-9">
-                <input formControlName="inputBeginDate" class="form-control" id="begin-input" type="date" placeholder="date" [ngClass]="{ 'is-invalid': (submitted || f.inputBeginDate.touched)  && f.inputBeginDate.errors }">
+                <input formControlName="inputBeginDate" 
+                      class="form-control" id="begin-input" 
+                      type="date" placeholder="date" 
+                      [ngClass]="{ 'is-invalid': (submitted || f.inputBeginDate.touched)  && f.inputBeginDate.errors }"
+                      min="{{minStartDate}}"
+                      max="{{f.inputEndDate.value}}"
+                      >
                 <span *ngIf="(submitted || f.inputBeginDate.touched)  && f.inputBeginDate.errors?.required" class="help-block">Ngày bắt đầu không được để trống!</span>
               </div>
             </div>
@@ -90,7 +96,12 @@
             <div class="form-group row">
               <label class="col-md-3 col-form-label" for="end-input">Ngày kết thúc</label>
               <div class="col-md-9">
-                <input formControlName="inputEndDate" class="form-control" id="end-input" type="date" placeholder="date" [ngClass]="{ 'is-invalid': (submitted || f.inputEndDate.touched)  && f.inputEndDate.errors }">
+                <input formControlName="inputEndDate" 
+                      class="form-control" id="end-input" 
+                      type="date" placeholder="date" 
+                      [ngClass]="{ 'is-invalid': (submitted || f.inputEndDate.touched)  && f.inputEndDate.errors }"
+                      min="{{f.inputBeginDate.value}}"
+                      >
                 <span *ngIf="(submitted || f.inputEndDate.touched)  && f.inputEndDate.errors?.required" class="help-block">Ngày kết thúc không được để trống!</span>
               </div>
             </div>
@@ -104,5 +115,15 @@
 
       </form>
     </div>
+  </div>
+</div>
+
+<!-- Loading -->
+<ngx-ui-loader></ngx-ui-loader>
+<div class="ngx-foreground-spinner spinner-container">
+  <div class="sk-three-strings">
+    <div></div>
+    <div></div>
+    <div></div>
   </div>
 </div>

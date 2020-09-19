@@ -2,23 +2,41 @@
     <div class="col-sm-12 text-center">
         <div class="card card-header-class">
             <div class="card-body header-class pos-relative" [style.backgroundImage]="'url('+ imgUrl +')'">
-                <h1 class="pos-absolute">{{objClass?.name}}</h1>
-                <p class="pos-absolute cate-name">Giáo viên: {{getInfoFromDescription(objClass?.description, 0)}}</p>
-                <p class="pos-absolute class-code">Chuyên ngành: {{getInfoFromDescription(objClass?.description, 1)}}</p>
+                <h1 class="pos-absolute">
+                    {{objClass?.name}}
+                    <span *ngIf="isTeacher">
+                        &nbsp;&nbsp;
+                        <i (click)="updateModal.show(); onClickShowModalEdit();" class="icon-pencil icons font-2xl" style="cursor: pointer;"></i>
+                    </span>
+                </h1>
+                <p class="pos-absolute cate-name">Giáo viên: {{objTeacher?.fullname || null}}</p>
+                <p class="pos-absolute class-code">Chuyên ngành: {{ getCtgrname(objClass?.course_category_id) }}</p>
                 <p class="pos-absolute select-img" data-toggle="modal" (click)="chooseImgModal.show(); onClickModalChooseImg()">Chọn chủ đề</p>
                 <!-- <p class="pos-absolute upload-img">Tải ảnh lên</p> -->
             </div>
         </div>
     </div>
-
     <div class="col-sm-12 content-div">
         <div class="row">
-
             <div class="col-sm-3">
                 <div class="card ex-div">
-                    <div class="card-body">
+                    <div class="card-body color-gray">
                         <p>Sắp đến hạn</p>
-                        <p class="font-light">Không có bài tập nào sắp đến hạn</p>
+                        <p *ngIf="lstClassWorkSoon.length === 0" class="font-light">Không có bài tập nào sắp đến hạn</p>
+                        <div style="display: flex;" 
+                            *ngFor="let ex of lstClassWorkSoon" 
+                            popover="{{convertTickToDateShort(ex.exercise_end_time)}}"
+                            popoverTitle="Hạn nộp:"
+                            popoverPlacement="top"
+                            [popoverOnHover]="true"
+                            [popoverCloseOnClickOutside]="true"
+                            [popoverCloseOnMouseOutside]="false"
+                            [popoverDisabled]="false"
+                            [popoverAnimation]="true"
+                            >
+                            <i class="icon-calculator icons font-2xl d-block" style="margin-right: 5px;"></i>
+                            <p style="overflow: hidden; display: flex; height: 20px;">{{ex.title}}</p>
+                        </div>
                         <div>
                             <p class="pos-absolute view-all-work" [routerLink]="['/class', classId, 'classwork']">Xem tất cả</p>
                         </div>
@@ -34,7 +52,7 @@
                             <div class="text-left list col-10 pd-r-0">
                                 <div class="row click-col">
                                     <div class="avatar">
-                                        <img src="{{objLoggedUser?.avatar_uri || defaultAvatar}}" class="img-avatar" alt="">
+                                        <img src="{{driveUrl + objLoggedUser?.avatar_file_id || defaultAvatar}}" class="img-avatar" alt="">
                                     </div>
                                     <p>Chia sẻ đôi điều với lớp học...</p>
                                 </div>
@@ -170,138 +188,142 @@
 
 
                 </div>
-
-                <!-- List post -->
-                <div class="card content-cmt-div" *ngFor="let c of lstPost">
-                    <div class="card-body">
-                        <div class="row col-12 list-exam pd-r-0">
-                            <div class="text-left list col-9">
-                                <div class="row">
-                                    <div class="avatar">
-                                        <img src="{{c.userProfileResponse.avatar_uri || defaultAvatar}}" class="img-avatar" alt="">
-                                    </div>
-                                    <div class="cmt-info">
-                                        <p style="margin-bottom: 0;">{{c.userProfileResponse.username}}</p>
-                                        <p class="create-at">{{convertTickToDate(c.created_at)}}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-right action col-3 pd-r-0">
-                                <div *ngIf="isTeacher || objLoggedUser?.id == c.user_id" class="wrapper-action" dropdown dropdownToggle placement="bottom right">
-                                    <i class="icon-options-vertical icons font-xl"></i>
-                                    <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" >
-                                        <li *ngIf="objLoggedUser?.id == c.user_id" role="menuitem" (click)="onClickUpdatePost(c.id)"><a class="dropdown-item">Chỉnh sửa</a></li>
-                                        <li *ngIf="isTeacher || objLoggedUser?.id == c.user_id" role="menuitem" (click)="onClickDeletePost(c.id)" ><a class="dropdown-item">Xóa</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="color-gray" [innerHTML]="c.content" style="margin-left: 15px;"></div>
-
-                        <div class="row col-12">
-                            <div class="col-sm-12 col-md-6 col-xl-6 " *ngFor="let f of c.attachmentResponses" >
-                                <div class="file-div" (click)="onClickReadFile(f); readFileModal.show();">
-                                    <!-- File -->
-                                    <div class="file-img" [style.backgroundImage]="'url('+ getPreviewImgByFileType(f.name, f.file_id) +')'"></div>
-                                    <div class="file-name">
-                                        <div style="font-size: 18px; overflow: hidden; display: flex;">
-                                            {{f.name}}
+                <ng-container *ngFor="let c of lstPost">
+                    <ng-container>
+                        <!-- List post -->
+                        <div class="card content-cmt-div" >
+                            <div class="card-body">
+                                <div class="row col-12 list-exam pd-r-0">
+                                    <div class="text-left list col-9">
+                                        <div class="row">
+                                            <div class="avatar">
+                                                <img src="{{driveUrl + c.userProfileResponse.avatar_file_id || defaultAvatar}}" class="img-avatar" alt="">
+                                            </div>
+                                            <div class="cmt-info">
+                                                <p style="margin-bottom: 0;">{{c.userProfileResponse.username}}</p>
+                                                <p class="create-at">{{convertTickToDate(c.created_at)}}</p>
+                                            </div>
                                         </div>
-                                        <p class="color-gray">
-                                            {{getTypeFile(f.name)}}
-                                        </p>
+                                    </div>
+                                    <div class="text-right action col-3 pd-r-0">
+                                        <div *ngIf="isTeacher || objLoggedUser?.id == c.user_id" class="wrapper-action" dropdown dropdownToggle placement="bottom right">
+                                            <i class="icon-options-vertical icons font-xl"></i>
+                                            <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" >
+                                                <li *ngIf="objLoggedUser?.id == c.user_id" role="menuitem" (click)="onClickUpdatePost(c.id)"><a class="dropdown-item">Chỉnh sửa</a></li>
+                                                <li *ngIf="isTeacher || objLoggedUser?.id == c.user_id" role="menuitem" (click)="onClickDeletePost(c.id)" ><a class="dropdown-item">Xóa</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="color-gray" [innerHTML]="c.content" style="margin-left: 15px;"></div>
+
+                                <div class="row col-12">
+                                    <div class="col-sm-12 col-md-6 col-xl-6 " *ngFor="let f of c.attachmentResponses" >
+                                        <div class="file-div" (click)="onClickReadFile(f); readFileModal.show();">
+                                            <!-- File -->
+                                            <div class="file-img" [style.backgroundImage]="'url('+ getPreviewImgByFileType(f.name, f.file_id) +')'"></div>
+                                            <div class="file-name">
+                                                <div style="font-size: 18px; overflow: hidden; display: flex;">
+                                                    {{f.name}}
+                                                </div>
+                                                <p class="color-gray">
+                                                    {{getTypeFile(f.name)}}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="list-cmt">
+                                <div class="count-cmt" (click)="c.blnIsNotShowSubCmt = !c.blnIsNotShowSubCmt">
+                                    <span>{{c.commentResponses.length}} bình luận</span>
+                                    <span>
+                                        <i class="icon-arrow-down icons" *ngIf="c.blnIsNotShowSubCmt"></i>
+                                        <i class="icon-arrow-up icons" *ngIf="!c.blnIsNotShowSubCmt"></i>
+                                    </span>
+                                </div>
+                                <ng-container *ngIf="!c.blnIsNotShowSubCmt">
+                                    <div class="one-cmt row" *ngFor="let cmt of c.commentResponses">
+                                        <div class="text-left col-9">
+                                            <div class="row">
+                                                <div class="avatar">
+                                                    <img src="{{driveUrl + cmt.userProfileResponse.avatar_file_id || defaultAvatar}}" class="img-avatar" alt="">
+                                                </div>
+                                                <div class="cmt-info">
+                                                    <p style="margin-bottom: 0;">
+                                                        {{cmt.userProfileResponse.username}}
+                                                        <span class="create-at">&nbsp;&nbsp;{{convertTickToDate(cmt.created_at)}}</span>
+                                                    </p>
+                                                    <div [innerHTML]="cmt.content" class="color-gray"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="text-right action col-3">
+                                            <div *ngIf="isTeacher || objLoggedUser?.id == cmt.user_id" class="wrapper-action" dropdown dropdownToggle placement="bottom right">
+                                                <i class="icon-options-vertical icons font-xl"></i>
+                                                <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+                                                    <li *ngIf="objLoggedUser?.id == cmt.user_id" role="menuitem" (click)="onClickUpdateCmt(c, cmt)"><a class="dropdown-item" >Chỉnh sửa</a></li>
+                                                    <li *ngIf="isTeacher || objLoggedUser?.id == cmt.user_id" role="menuitem" (click)="onClickDeleteCmt(cmt.id)" ><a class="dropdown-item" >Xóa</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+
+                            <div class="add-cmt">
+                                <div class="row col-12 list-exam pd-r-0">
+                                    <div class="text-left list col-12">
+                                        <div class="row">
+                                            <div class="avatar" style="margin-top: 9px;">
+                                                <img src="{{driveUrl + objLoggedUser?.avatar_file_id || defaultAvatar}}" class="img-avatar" alt="">
+                                            </div>
+
+                                            <!-- Create: -->
+                                            <div *ngIf="!c.isUpdate" class="input-new-cmt">
+                                                <textarea [(ngModel)]="c.strCmtContent" autosize minRows="1" class="form-control new-cmt" placeholder="Thêm nhận xét..."></textarea>
+                                                <div class="wrapper-action" (click)="!blnDisableClick && onClickAddCmt(c)">
+                                                    <i *ngIf="!loading" class="icon-paper-plane icons font-2xl d-block color-gray"></i>
+                                                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                                                </div>
+                                            </div>
+
+                                            <!-- Update: -->
+                                            <div *ngIf="c.isUpdate" class="input-new-cmt">
+                                                <textarea [(ngModel)]="c.strCmtContent" id="cmt-{{c.id}}" autosize minRows="1" class="form-control new-cmt" placeholder="Thêm nhận xét..."></textarea>
+                                                <div class="wrapper-action" (click)="!blnDisableClick && onSubmitUpdateCmt(c)">
+                                                    <i *ngIf="!loading" class="icon-paper-plane icons font-2xl d-block color-gray"></i>
+                                                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="list-cmt">
-                        <div class="count-cmt" (click)="c.blnIsNotShowSubCmt = !c.blnIsNotShowSubCmt">
-                            <span>{{c.commentResponses.length}} bình luận</span>
-                            <span>
-                                <i class="icon-arrow-down icons" *ngIf="c.blnIsNotShowSubCmt"></i>
-                                <i class="icon-arrow-up icons" *ngIf="!c.blnIsNotShowSubCmt"></i>
-                            </span>
-                        </div>
-                        <ng-container *ngIf="!c.blnIsNotShowSubCmt">
-                            <div class="one-cmt row" *ngFor="let cmt of c.commentResponses">
+                    </ng-container>
+
+                    <!-- <ng-container *ngIf="c?.type == 'ex'">
+                        <div class="card class-work-div" *ngFor="let c of lstClassWork">
+                            <div class="card-body">
                                 <div class="text-left col-9">
                                     <div class="row">
-                                        <div class="avatar">
-                                            <img src="{{cmt.userProfileResponse.avatar_uri || defaultAvatar}}" class="img-avatar" alt="">
+                                        <div class="wrapper-icon">
+                                            <i class="icon-calculator icons font-xl d-block"></i>
                                         </div>
                                         <div class="cmt-info">
-                                            <p style="margin-bottom: 0;">
-                                                {{cmt.userProfileResponse.username}}
-                                                <span class="create-at">&nbsp;&nbsp;{{convertTickToDate(cmt.created_at)}}</span>
-                                            </p>
-                                            <div [innerHTML]="cmt.content" class="color-gray"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="text-right action col-3">
-                                    <div *ngIf="isTeacher || objLoggedUser?.id == cmt.user_id" class="wrapper-action" dropdown dropdownToggle placement="bottom right">
-                                        <i class="icon-options-vertical icons font-xl"></i>
-                                        <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
-                                            <li *ngIf="objLoggedUser?.id == cmt.user_id" role="menuitem" (click)="onClickUpdateCmt(c, cmt)"><a class="dropdown-item" >Chỉnh sửa</a></li>
-                                            <li *ngIf="isTeacher || objLoggedUser?.id == cmt.user_id" role="menuitem" (click)="onClickDeleteCmt(cmt.id)" ><a class="dropdown-item" >Xóa</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </ng-container>
-                    </div>
-
-                    <div class="add-cmt">
-                        <div class="row col-12 list-exam pd-r-0">
-                            <div class="text-left list col-12">
-                                <div class="row">
-                                    <div class="avatar" style="margin-top: 9px;">
-                                        <img src="{{objLoggedUser?.avatar_uri || defaultAvatar}}" class="img-avatar" alt="">
-                                    </div>
-
-                                    <!-- Create: -->
-                                    <div *ngIf="!c.isUpdate" class="input-new-cmt">
-                                        <textarea [(ngModel)]="c.strCmtContent" autosize minRows="1" class="form-control new-cmt" placeholder="Thêm nhận xét..."></textarea>
-                                        <div class="wrapper-action" (click)="!blnDisableClick && onClickAddCmt(c)">
-                                            <i *ngIf="!loading" class="icon-paper-plane icons font-2xl d-block color-gray"></i>
-                                            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-                                        </div>
-                                    </div>
-
-                                    <!-- Update: -->
-                                    <div *ngIf="c.isUpdate" class="input-new-cmt">
-                                        <textarea [(ngModel)]="c.strCmtContent" id="cmt-{{c.id}}" autosize minRows="1" class="form-control new-cmt" placeholder="Thêm nhận xét..."></textarea>
-                                        <div class="wrapper-action" (click)="!blnDisableClick && onSubmitUpdateCmt(c)">
-                                            <i *ngIf="!loading" class="icon-paper-plane icons font-2xl d-block color-gray"></i>
-                                            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                                            <p style="margin-bottom: 0;">{{c.title}}</p>
+                                            <div class="color-gray">{{convertTickToDate(c.created_at)}}</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </ng-container> -->
 
-                </div>
-
-                <!-- List classwork -->
-                <div class="card class-work-div" *ngFor="let c of lstClassWork">
-                    <div class="card-body">
-                        <div class="text-left col-9">
-                            <div class="row">
-                                <div class="wrapper-icon">
-                                    <i class="icon-calculator icons font-xl d-block"></i>
-                                </div>
-                                <div class="cmt-info">
-                                    <p style="margin-bottom: 0;">{{c.title}}</p>
-                                    <div class="color-gray">{{c.endDate}}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </ng-container>
 
             </div>
         </div>
@@ -360,5 +382,106 @@
                 >
             </iframe>
         </div>
+    </div>
+</div>
+
+<div bsModal #updateModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-success" role="document">
+      <div class="modal-content">
+        <form class="form-horizontal" [formGroup]="frmEdit" (ngSubmit)="onSubmitFormEditCourse()">
+          <div class="modal-header">
+            <h4 class="modal-title">Chỉnh sửa thông tin</h4>
+            <button type="button" class="close" (click)="updateModal.hide()" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+  
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="text-input">Tên</label>
+                <div class="col-md-9" >
+                  <input formControlName="inputName" type="text" id="text-input" name="text-input" class="form-control" [ngClass]="{ 'is-invalid': (submitted || f.inputName.touched)  && f.inputName.errors }">
+                  <span *ngIf="(submitted || f.inputName.touched)  && f.inputName.errors?.required" class="help-block">Tên không được để trống!</span>
+                </div>
+              </div>
+  
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="des-input">Mô tả</label>
+                <div class="col-md-9" >
+                  <input formControlName="inputDes" type="text" id="email-input" name="des-input" class="form-control" [ngClass]="{ 'is-invalid': (submitted || f.inputDes.touched)  && f.inputDes.errors }">
+                  <span *ngIf="(submitted || f.inputDes.touched)  && f.inputDes.errors?.required" class="help-block">Mô tả không được để trống!</span>
+                </div>
+              </div>
+  
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="select1">Chuyên ngành</label>
+                <div class="col-md-9">
+                  <select formControlName="selectCategory" id="select1" name="select1" class="form-control" [ngClass]="{ 'is-invalid': (submitted || f.selectCategory.touched)  && f.selectCategory.errors }">
+                    <option value="">Chọn chuyên ngành</option>
+                    <option *ngFor="let item of lstAllCourseCtgr" value="{{item.id}}">{{item.name}}</option>
+                  </select>
+                  <span *ngIf="(submitted || f.selectCategory.touched)  && f.selectCategory.errors?.required" class="help-block">Hãy chọn một chuyên ngành!</span>
+                </div>
+              </div>
+  
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="begin-input">Ngày bắt đầu</label>
+                <div class="col-md-9">
+                  <input formControlName="inputBeginDate" 
+                        class="form-control" id="begin-input" 
+                        type="date" placeholder="date" 
+                        [ngClass]="{ 'is-invalid': (submitted || f.inputBeginDate.touched)  && f.inputBeginDate.errors }"
+                        max="{{f.inputEndDate.value}}"
+                        >
+                  <span *ngIf="(submitted || f.inputBeginDate.touched)  && f.inputBeginDate.errors?.required" class="help-block">Ngày bắt đầu không được để trống!</span>
+                </div>
+              </div>
+  
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="end-input">Ngày kết thúc</label>
+                <div class="col-md-9">
+                  <input formControlName="inputEndDate" 
+                        class="form-control" id="end-input" 
+                        type="date" placeholder="date" 
+                        [ngClass]="{ 'is-invalid': (submitted || f.inputEndDate.touched)  && f.inputEndDate.errors }"
+                        min="{{f.inputBeginDate.value}}"
+                        >
+                  <span *ngIf="(submitted || f.inputEndDate.touched)  && f.inputEndDate.errors?.required" class="help-block">Ngày kết thúc không được để trống!</span>
+                </div>
+              </div>
+
+              <!-- <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="select2">Trạng thái</label>
+                <div class="col-md-9">
+                    <select id="select2" name="select2" class="form-control" [(ngModel)]="objClass.status" (change)="onChangeStatus()" >
+                        <option value="ALL">ALL</option>
+                        <option value="PENDING">PENDING</option>
+                        <option value="ONGOING">ONGOING</option>
+                        <option value="CANCEL">CANCEL</option>
+                        <option value="END">END</option>
+                      </select>
+                </div>
+              </div> -->
+  
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="updateModal.hide()">Hủy</button>
+            <button type="submit" class="btn btn-success">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                Lưu
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<!-- Loading -->
+<ngx-ui-loader></ngx-ui-loader>
+<div class="ngx-foreground-spinner spinner-container">
+    <div class="sk-three-strings">
+    <div></div>
+    <div></div>
+    <div></div>
     </div>
 </div>

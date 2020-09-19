@@ -57,4 +57,18 @@ tbody tr {
     border: 1px solid #b6bdc5;
 }
 
+.session-div {
+    display: flex; 
+    padding-right: 20px;
+    margin-top: 15px;
+    p {
+        font-weight: 500;
+        font-size: 15px;
+        margin-left: auto;
+    }
+    label {
+        margin-left: 5px;
+    }
+}
+
 

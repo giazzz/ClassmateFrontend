@@ -27,12 +27,18 @@ export class MarkService {
             { params, observe: 'response' });
     }
 
-    // For student;
+    // For student by course;
     getListStudentExcercise(course_id) {
         let params = new HttpParams();
         params = params.append('course_id', course_id);
         return this.http.get<any>(`${environment.apiUrl}/data/exercise/gradeListStudent`,
             { params, observe: 'response' });
+    }
+
+    // All by student;
+    getStudentAllExcercise() {
+        return this.http.get<any>(`${environment.apiUrl}/data/exercise/gradeListStudent`,
+            { observe: 'response' });
     }
 
     markStudentExercise(exercise_id, objMark) {

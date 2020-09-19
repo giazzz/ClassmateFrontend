@@ -5,6 +5,7 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CheckRole } from '../../shared/checkRole';
+import * as moment from 'moment';
 
 @Component({
   templateUrl: 'dashboard.component.html',
@@ -20,13 +21,14 @@ export class DashboardComponent implements OnInit {
   public submitted: boolean;
   public isTeacher: boolean = false;
   public currentUser;
+  public minStartDate = this.convertTickToDateDPicker((new Date()).getTime());
 
   @ViewChild('addModal') public addModal: ModalDirective;
 
-  constructor (private dashBoardService: DashboardService,
+  constructor(private dashBoardService: DashboardService,
               private iconLoading: NgxUiLoaderService,
               private fb: FormBuilder,
-              private role: CheckRole
+              private role: CheckRole,
   ) {
   }
 
@@ -133,6 +135,11 @@ export class DashboardComponent implements OnInit {
   getTicksFromDateString(dateTime: string) {
     const date = new Date(dateTime);
     return date.getTime();
+  }
+
+  convertTickToDateDPicker(tick) {
+    const date = new Date(Number(tick));
+    return moment(date).format('YYYY-MM-DD');
   }
 
 }

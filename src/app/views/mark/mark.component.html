@@ -11,7 +11,7 @@
                                     {{exam.title}}
                                 </h5>
                             </div>
-                            <div class="count-done">
+                            <div *ngIf="isTeacher" class="count-done">
                                 (Đã nộp: {{exam.doneCount}}/{{exam.allCount}})
                             </div>
                         </th>
@@ -19,7 +19,7 @@
                 </thead>
                 <tbody>
 
-                    <tr>
+                    <tr *ngIf="isTeacher">
                         <td class="avg" style="padding-top: 19px;">
                             <div class="row click-col">
                                 <div class="wrapper-icon">
@@ -29,7 +29,7 @@
                             </div>
                         </td>
                         <td *ngFor="let item of lstClasswork">
-                            <div class="fw-500 fs-18 text-center pd-t-8">80</div>
+                            <div class="fw-500 fs-18 text-center pd-t-8">{{getAverageMarkByIdEx(item.exercise_id)}}</div>
                         </td>
                     </tr>
 
@@ -88,5 +88,15 @@
                 </tbody>
             </table>
         </div>
+    </div>
+</div>
+
+<!-- Loading -->
+<ngx-ui-loader></ngx-ui-loader>
+<div class="ngx-foreground-spinner spinner-container">
+    <div class="sk-three-strings">
+    <div></div>
+    <div></div>
+    <div></div>
     </div>
 </div>

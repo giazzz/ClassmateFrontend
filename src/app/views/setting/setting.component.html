@@ -60,7 +60,7 @@
 							<i *ngIf="objProfile?.gender == 'MALE'" class="icon-symbol-male icons"></i>
 							<i *ngIf="objProfile?.gender != 'MALE' && objProfile?.gender != 'FEMALE'"
 								class="icon-emotsmile icons"></i>
-							<strong>{{objProfile?.gender}}</strong>
+							<strong>{{convertGenderToVN(objProfile?.gender)}}</strong>
 						</li>
 					</ul>
 				</div>

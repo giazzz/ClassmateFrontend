@@ -128,7 +128,6 @@ export class SettingComponent implements OnInit {
 
   public handleImage(webcamImage: WebcamImage): void {
     this.webcamImage = webcamImage;
-    console.log(this.webcamImage);
   }
 
   public cameraWasSwitched(deviceId: string): void {
@@ -231,18 +230,26 @@ export class SettingComponent implements OnInit {
                   this.imageModal.hide();
                   this.getProfile();
                 } else {
-                  this.loading = false;
+                  setTimeout(() => {
+                    this.loading = false;
+                  }, 500);
                 }
               },
               () => {
                 // Error:
-                this.loading = false;
+                setTimeout(() => {
+                  this.loading = false;
+                }, 500);
               });
           }
-          this.loading = false;
+          setTimeout(() => {
+            this.loading = false;
+          }, 500);
         },
         () => {
-          this.loading = false;
+          setTimeout(() => {
+            this.loading = false;
+          }, 500);
         });
   }
 
@@ -262,18 +269,26 @@ export class SettingComponent implements OnInit {
                   this.imageModal.hide();
                   this.toastr.showToastrSuccess('Đã lưu ảnh!', 'Thành công');
                 } else {
-                  this.loading = false;
+                  setTimeout(() => {
+                    this.loading = false;
+                  }, 500);
                 }
               },
               () => {
                 // Error:
-                this.loading = false;
+                setTimeout(() => {
+                  this.loading = false;
+                }, 500);
               });
           }
-          this.loading = false;
+          setTimeout(() => {
+            this.loading = false;
+          }, 500);
         },
         () => {
-          this.loading = false;
+          setTimeout(() => {
+            this.loading = false;
+          }, 500);
         });
   }
 
@@ -300,6 +315,17 @@ export class SettingComponent implements OnInit {
         return '2';
       default:
         return '3';
+    }
+  }
+
+  convertGenderToVN(strGender) {
+    switch (strGender) {
+      case 'MALE':
+        return 'Nam';
+      case 'FEMALE':
+        return 'Nữ';
+      default:
+        return 'Khác';
     }
   }
 

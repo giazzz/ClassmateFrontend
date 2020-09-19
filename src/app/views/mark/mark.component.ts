@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import { EndpointsConfig } from '../../config/config';
 import { Toastr } from '../../shared/toastr';
 import { SettingService } from '../setting/setting.service';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 @Component({
   selector: 'app-mark',
@@ -34,17 +35,12 @@ export class MarkComponent implements OnInit {
               private route: ActivatedRoute,
               private markService: MarkService,
               private toastr: Toastr,
-              private settingService: SettingService
+              private settingService: SettingService,
+              private iconLoading: NgxUiLoaderService,
   ) {
   }
 
   ngOnInit(): void {
-    this.settingService.getProfile(JSON.parse(localStorage.currentUser).id || '').subscribe(
-      response => {
-        if (response.body != null && response.body !== undefined) {
-          this.objProfile = response.body;
-        }
-      });
 
     this.courseId = this.route.snapshot.paramMap.get('id');
     if (this.courseId == null || this.courseId === undefined || this.courseId === 'undefined') {
@@ -56,8 +52,9 @@ export class MarkComponent implements OnInit {
     this.isTeacher = this.role.isTeacher();
     this.lstStudent = [];
     this.lstClasswork = [];
+    this.iconLoading.start();
 
-    if (this.isTeacher) {
+    if (this.role.isTeacher()) {
       this.markService.getListStudentOfCourse(this.route.snapshot.paramMap.get('id')).subscribe(
         response => {
           if (response.body != null && response.body !== undefined) {
@@ -65,27 +62,41 @@ export class MarkComponent implements OnInit {
             this.lstStudent = response.body.students.map( item => {
               return {
                 id: item.id,
-                name: item.username,
+                name: item.fullname,
                 avatar: item.avatar_file_id,
                 lstExcercise: []
               };
             });
             this.getListExcerciseByTeacher();
           }
+          setTimeout(() => {
+            this.iconLoading.stop();
+          }, 2000);
+        },
+        error => {
+          setTimeout(() => {
+            this.iconLoading.stop();
+          }, 2000);
         });
     }
 
-    if (this.isStudent) {
-      this.lstStudent = [];
-      this.lstStudent.push({
-        id: this.objProfile?.id,
-        name: this.objProfile?.username,
-        avatar: this.objProfile?.avatar_file_id,
-        lstExcercise: []
-      });
-      this.getListExcerciseByStudent();
-    }
+    if (this.role.isStudent()) {
+      this.settingService.getProfile(JSON.parse(localStorage.currentUser).id || '').subscribe(
+        response => {
+          if (response.body != null && response.body !== undefined) {
+            this.objProfile = response.body;
+            this.lstStudent = [];
+            this.lstStudent.push({
+              id: this.objProfile?.id,
+              name: this.objProfile?.fullname,
+              avatar: this.objProfile?.avatar_file_id,
+              lstExcercise: []
+            });
+            this.getListExcerciseByStudent();
+          }
+        });
 
+    }
 
   }
 
@@ -104,6 +115,14 @@ export class MarkComponent implements OnInit {
         if (response.body != null && response.body !== undefined) {
           this.getListExFromListAll(response.body);
         }
+        setTimeout(() => {
+          this.iconLoading.stop();
+        }, 2000);
+      },
+      error => {
+        setTimeout(() => {
+          this.iconLoading.stop();
+        }, 2000);
       });
   }
 
@@ -181,6 +200,7 @@ export class MarkComponent implements OnInit {
           ex.marked = true;
           ex.isClick = false;
           ex.isFocus = false;
+          this.getAverageMarkByIdEx(ex.exercise_id);
           this.toastr.showToastrSuccess('Thêm điểm thành công', 'Thành công');
         }
       },
@@ -196,6 +216,17 @@ export class MarkComponent implements OnInit {
 
   onClickShowEx(exId) {
     console.log(exId);
+  }
+
+  getAverageMarkByIdEx(exercise_id) {
+    let total = 0;
+    let count = 0;
+    this.lstStudent.forEach( s => {
+      total += Number(s.lstExcercise.find( ex => ex.exercise_id === exercise_id)?.mark);
+      count += s.lstExcercise.find( ex => ex.exercise_id === exercise_id && ex?.marked) == null ? 0 : 1;
+    });
+    return count === 0 ? null : (total / count).toFixed(1);
+
   }
 
 }
