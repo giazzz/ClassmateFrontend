@@ -6,27 +6,27 @@
                 <span>Tạo bài tập</span>
             </button>
         </div>
-        <div class="card-body work-info" *ngIf="lstClasswork.length == 0">
+        <div class="card-body work-info" *ngIf="lstExcercise.length == 0">
             <h1>Chỉ định bài tập cho lớp học tại đây</h1>
             <div class="row margin-left-30">
                 <i class="icon-book-open icons font-xl"></i>
                 <p>Tạo bài tập và câu hỏi</p>
             </div>
-            <div class="row margin-left-30">
+            <!-- <div class="row margin-left-30">
                 <i class="icon-list icons font-xl"></i>
                 <p>Sử dụng chủ đề để sắp xếp bài tập trên lớp vào các mô-đun hoặc đơn vị</p>
             </div>
             <div class="row margin-left-30">
                 <i class="icon-layers icons font-xl"></i>
                 <p>Sắp xếp bài tập theo cách bạn muốn học sinh nhìn thấy</p>
-            </div>
+            </div> -->
         </div>
-        <div class="card-body no-content text-center" *ngIf="lstClasswork.length == 0">
+        <div class="card-body no-content text-center" *ngIf="lstExcercise.length == 0">
             <img src="../../../assets/img/no_assignments.png" alt="">
         </div>
 
         <!-- List classwork -->
-        <div *ngFor="let exam of lstClasswork" class="row exam" id="exam-{{exam.id}}" (mouseover)="exam.isHover = true"
+        <div *ngFor="let exam of lstExcercise" class="row exam" id="exam-{{exam.id}}" (mouseover)="exam.isHover = true"
             (mouseout)="exam.isHover = false" [ngClass]="{'is-hover' : exam.isHover || exam.isCollapsed }">
             <div class="row col-12 list-exam" (click)="exam.isCollapsed = !exam.isCollapsed; collapse(exam.isCollapsed, exam.id, $event)">
                 <div class="td text-left list col-9">
@@ -43,9 +43,9 @@
                         <div class="wrapper-action" [ngClass]="{'d-none' : !exam.isHover && !exam.isCollapsed}" dropdown placement="bottom right">
                             <i dropdownToggle class="icon-options-vertical icons font-xl"></i>
                             <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
-                                <li role="menuitem"><a class="dropdown-item" href="#">Chỉnh sửa</a></li>
-                                <li role="menuitem"><a class="dropdown-item" href="#">Xóa</a></li>
-                                <li role="menuitem"><a class="dropdown-item" href="#">Sao chép liên kiết</a></li>
+                                <li role="menuitem"><a class="dropdown-item" >Chỉnh sửa</a></li>
+                                <li role="menuitem"><a class="dropdown-item" >Xóa</a></li>
+                                <li role="menuitem"><a class="dropdown-item" >Sao chép liên kiết</a></li>
                             </ul>
                         </div>
                     </div>
@@ -77,7 +77,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

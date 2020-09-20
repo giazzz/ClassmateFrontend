@@ -100,12 +100,9 @@ export class ClassRoomService {
         objUpdate, { params, observe: 'response' });
     }
 
-    updateCourseStatus(course_id, status) {
-        let params = new HttpParams();
-        params = params.append('id', course_id);
-        params = params.append('status', status);
-        return this.http.post<any>(`${environment.apiUrl}/data/course/updateStatus`,
-            { params, observe: 'response' });
+    updateCourseStatus(course_id) {
+        return this.http.post<any>(`${environment.apiUrl}/data/course/updateStatus?id=${course_id}&status=ONGOING`,
+            { observe: 'response' });
     }
 
     getAllProfileInCourse(course_id) {

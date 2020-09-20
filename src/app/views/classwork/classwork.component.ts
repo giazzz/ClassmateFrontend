@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as $ from 'jquery';
 import { ClassworkService } from './classwork.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { ClassMateService } from '../classmate.service';
 
 @Component({
   selector: 'app-classwork',
@@ -10,11 +11,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class ClassworkComponent implements OnInit {
 
-  public lstClasswork: any[];
-  public lstExcercise: any[];
+  public lstExcercise: any[] = [];
   public courseId;
+  public objCourse;
 
-  constructor(private classService: ClassworkService,
+  constructor(private classService: ClassMateService,
+              private exService: ClassworkService,
               private router: Router,
               private route: ActivatedRoute
   ) {
@@ -25,14 +27,28 @@ export class ClassworkComponent implements OnInit {
     if (this.courseId == null || this.courseId === undefined || this.courseId === 'undefined') {
       this.router.navigateByUrl('/dashboard');
     }
-    this.lstClasswork = [
-      {id: '1', title: 'Test1', createAt: '09:00 28/08/2020'},
-      {id: '2', title: 'Test1', createAt: '09:00 28/08/2020'},
-      {id: '3', title: 'Test1', createAt: '09:00 28/08/2020'},
-      {id: '4', title: 'Test1', createAt: '09:00 28/08/2020'},
-      {id: '5', title: 'Test1', createAt: '09:00 28/08/2020'},
-    ];
-    
+    this.getCurrentCourse();
+    this.getListExcercise();
+
+  }
+
+  getCurrentCourse() {
+    this.classService.getClassDetail(this.courseId).subscribe(
+      response => {
+        if (response.body != null && response.body !== undefined) {
+          this.objCourse = response.body;
+        }
+      });
+  }
+
+
+  getListExcercise() {
+    this.exService.getListAllExcercise(this.courseId).subscribe(
+      response => {
+        if (response.body != null && response.body !== undefined) {
+          this.lstExcercise = response.body;
+        }
+      });
   }
 
   collapse(blnShow: boolean, id: string, e) {

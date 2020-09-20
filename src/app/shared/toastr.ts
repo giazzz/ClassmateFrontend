@@ -7,18 +7,18 @@ export class Toastr {
     constructor(private toastr: ToastrService) {
     }
 
-    showToastrSuccess(content: string, title: string) {
+    showToastrSuccess(content: string, title: string, timeOut = 3000) {
         this.toastr.success(content, title, {
-            timeOut: 3000,
+            timeOut: timeOut,
             positionClass: 'toast-top-right',
             easing: 'ease-in',
             closeButton : false
         });
     }
 
-    showToastrWarning(content: string, title: string) {
+    showToastrWarning(content: string, title: string, timeOut = 3000) {
         this.toastr.warning(content, title, {
-            timeOut: 3000,
+            timeOut: timeOut,
             positionClass: 'toast-top-right',
             easing: 'ease-in',
             closeButton : false

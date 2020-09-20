@@ -13,6 +13,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DashboardService } from '../dashboard/dashboard.service';
 import { Toastr } from '../../shared/toastr';
+import { SessionService } from './session.service';
 
 @Component({
   selector: 'app-class-room',
@@ -50,11 +51,13 @@ export class ClassRoomComponent implements OnInit {
   public submitted: boolean;
   public lstAllCourseCtgr = [];
   public objTeacher;
+  public sessionCount = null;
 
   public minStartDate = this.convertTickToDateDPicker((new Date()).getTime());
 
   @ViewChild('inputPost', {static: true}) InputPost: ElementRef<any>;
   @ViewChild('updateModal') public updateModal: ModalDirective;
+  @ViewChild('addSessionModal') public addSessionModal: ModalDirective;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -65,6 +68,7 @@ export class ClassRoomComponent implements OnInit {
               private iconLoading: NgxUiLoaderService,
               private fb: FormBuilder,
               private dashBoardService: DashboardService,
+              private sessionService: SessionService,
               private toastr: Toastr
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
@@ -569,17 +573,64 @@ export class ClassRoomComponent implements OnInit {
     return this.lstAllCourseCtgr.find( item => item.id === ctgrId)?.name || null;
   }
 
-  onChangeStatus() {
-    this.classRoomService.updateCourseStatus(this.objClass.id, this.objClass.status).subscribe(
+  onCheckUpdateCourseStatus(e) {
+    if (!e.target.checked) {
+      return;
+    }
+    this.classRoomService.updateCourseStatus(this.objClass.id).subscribe(
       response => {
-        if (response.status === 200 && response.body.success) {
+        if (response.http_status === 'OK' && response.success) {
           // Success:
-          this.toastr.showToastrSuccess('', 'Thành công!');
+          this.toastr.showToastrSuccess('Lớp học đã bắt đầu hoạt động.', 'Thành công!');
+          this.getCurrentCourse();
         }
       },
       error => {
         // Error:
         this.toastr.showToastrWarning('', 'Không thành công');
+        e.target.checked = false;
+      });
+  }
+
+  onChangeAddSession(e) {
+    if (!e.target.checked) {
+      return;
+    }
+    const now = new Date();
+    const objSession = {
+      course_id: this.objClass.id,
+      name: 'Buổi học ' + moment(now).format('DD/MM/YYYY'),
+      content: this.objClass.name,
+      start_time: now.getTime(),
+      session_duration: 4,
+    };
+    this.sessionService.createSession(objSession).subscribe(
+      response => {
+        if (response.status === 200 && response.body.success) {
+          const sessionId = response.body.content.id;
+          // Update to ONGOING:
+          this.sessionService.updateStatusToGoing(sessionId).subscribe(
+            data => {
+              if (data.http_status === 'OK' && data.success) {
+                // Success:
+                this.getCurrentCourse();
+                this.toastr.showToastrSuccess('Bạn đã bắt đầu một buổi học', 'Thành công!');
+                this.addSessionModal.hide();
+              }
+            },
+            error => {
+              // Error:
+              this.toastr.showToastrWarning('', 'Không thành công');
+              this.addSessionModal.hide();
+            });
+        }
+        this.addSessionModal.hide();
+      },
+      error => {
+        // Error:
+        this.toastr.showToastrWarning('', 'Không thành công');
+        e.target.checked = false;
+        this.addSessionModal.hide();
       });
   }
 

@@ -11,6 +11,12 @@
                 </h1>
                 <p class="pos-absolute cate-name">Giáo viên: {{objTeacher?.fullname || null}}</p>
                 <p class="pos-absolute class-code">Chuyên ngành: {{ getCtgrname(objClass?.course_category_id) }}</p>
+                <div  class="pos-absolute add-session text-deco" *ngIf="objClass?.currentSession.id == null && objClass?.status == 'ONGOING'">
+                    <p data-toggle="modal" (click)="addSessionModal.show();" >Bắt đầu buổi học</p>
+                </div>
+                <div  class="pos-absolute add-session" *ngIf="objClass?.currentSession.course_id == objClass?.id">
+                    <p style="text-decoration: none;">(Một buổi học đang diễn ra)</p>
+                </div>
                 <p class="pos-absolute select-img" data-toggle="modal" (click)="chooseImgModal.show(); onClickModalChooseImg()">Chọn chủ đề</p>
                 <!-- <p class="pos-absolute upload-img">Tải ảnh lên</p> -->
             </div>
@@ -330,7 +336,7 @@
     </div>
 </div>
 
-<!-- Choose image modal -->
+<!-- Modal choose image -->
 <div bsModal #chooseImgModal="bs-modal" class="modal fade modal-choose-img" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -385,6 +391,7 @@
     </div>
 </div>
 
+<!-- Modal update course -->
 <div bsModal #updateModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-success" role="document">
       <div class="modal-content">
@@ -450,6 +457,17 @@
                 </div>
               </div>
 
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="select2">Hoạt động</label>
+                <div class="col-md-9">
+                    <label class="switch switch-label switch-danger">
+                        <input *ngIf="objClass?.status != 'ONGOING'" type="checkbox" class="switch-input" (change)="onCheckUpdateCourseStatus($event)">
+                        <input *ngIf="objClass?.status == 'ONGOING'" type="checkbox" class="switch-input" [checked]="true" [attr.disabled]="true" >
+                        <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
+                    </label>
+                </div>
+              </div>
+
               <!-- <div class="form-group row">
                 <label class="col-md-3 col-form-label" for="select2">Trạng thái</label>
                 <div class="col-md-9">
@@ -462,7 +480,6 @@
                       </select>
                 </div>
               </div> -->
-  
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" (click)="updateModal.hide()">Hủy</button>
@@ -476,7 +493,35 @@
     </div>
   </div>
 
-<!-- Loading -->
+<!-- Modal add session -->
+<div bsModal #addSessionModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Bắt đầu buổi học</h4>
+          <button type="button" class="close" (click)="addSessionModal.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div  class="modal-session" >
+                <p>Bắt đầu buổi học</p>
+                <label class="switch switch-label switch-outline-success-alt">
+                    <input type="checkbox" class="switch-input" [checked]="false" (change)="onChangeAddSession($event)">
+                    <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
+                </label>
+            </div>
+            <p>*Bằng việc bắt dầu một buổi học bạn có thể bắt đầu điểm danh và tạo bài tập.</p>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="addSessionModal.hide()">Hủy</button>
+          <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
 <ngx-ui-loader></ngx-ui-loader>
 <div class="ngx-foreground-spinner spinner-container">
     <div class="sk-three-strings">

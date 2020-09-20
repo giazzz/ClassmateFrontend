@@ -12,16 +12,37 @@ export class ClassworkService {
           });
     }
 
-    // getAllCourse() {
-    //     return this.http.get<any>(`${environment.apiUrl}/data/course/all`,
-    //         { headers: this.headers, observe: 'response' });
-    // }
-
     getListAllExcercise(course_id) {
         let params = new HttpParams();
         params = params.append('course_id', course_id);
         return this.http.get<any>(`${environment.apiUrl}/data/exercise/gradeList`,
             { params, observe: 'response' });
+    }
+
+    getDetailExcercise(ex_id) {
+        let params = new HttpParams();
+        params = params.append('id', ex_id);
+        return this.http.get<any>(`${environment.apiUrl}/data/exercise/detail`,
+            { params, observe: 'response' });
+    }
+
+    createExcercise(objEx) {
+        return this.http.post<any>(`${environment.apiUrl}/data/exercise/save`,
+            objEx, { observe: 'response' });
+    }
+
+    updateExcercise(ex_id, objEx) {
+        let params = new HttpParams();
+        params = params.append('id', ex_id);
+        return this.http.post<any>(`${environment.apiUrl}/data/exercise/edit`,
+            objEx, { observe: 'response' });
+    }
+
+    postExcercise(exercise_id, objEx) {
+        let params = new HttpParams();
+        params = params.append('exercise_id', exercise_id);
+        return this.http.post<any>(`${environment.apiUrl}/data/exercise/studentExercise/save`,
+            objEx, { params, observe: 'response' });
     }
 
 }

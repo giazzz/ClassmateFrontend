@@ -368,3 +368,21 @@ textarea.cmt::placeholder {
 .wrapper-action i {
     line-height: 2;
 }
+.add-session {
+    font-size: 16px;
+    bottom: 0;
+    display: flex;
+    cursor: pointer;
+    p {
+        margin-right: 5px;
+        text-decoration: underline;
+
+    }
+}
+.modal-session {
+    font-size: 16px;
+    display: flex;
+    p {
+        margin-right: 5px;
+    }
+}

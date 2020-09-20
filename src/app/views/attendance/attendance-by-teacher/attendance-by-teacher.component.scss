@@ -70,5 +70,20 @@ tbody tr {
         margin-left: 5px;
     }
 }
-
+.no-content img {
+    width: 300px;
+    border-radius: 100%;
+    background-color: #f1f3f4;
+}
+.no-data {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.modal-session {
+    font-size: 16px;
+    display: flex;
+    p {
+        margin-right: 5px;
+    }
+}
 

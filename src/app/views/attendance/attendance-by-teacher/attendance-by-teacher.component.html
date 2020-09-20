@@ -1,89 +1,155 @@
-
 <div class="animated fadeIn">
     <div class="col-12">
         <div class="card">
             <div class="card-body">
 
-                <!-- <div class="col-lg-4 col-md-6 col-12" style="margin-left: auto; margin-top: 20px;">
-                    <div class="form-group row">
-                            <input class="form-control" id="date-input" type="date" name="date-input" placeholder="date">
+                <!-- If course not ongoing -->
+                <ng-container *ngIf="objCourse?.status != 'ONGOING'">
+                    <div class="no-data">
+                        <div class="card-body no-content text-center">
+                            <img src="../../../assets/img/empty.png" alt="">
+                        </div>
+                        <div class="text-center" style="margin-top: 20px;">
+                            <p>Lớp học của bạn không trong trạng thái hoạt động.</p>
+                            <button data-toggle="modal" (click)="updateStatusCourseModal.show();" type="button" class="btn btn-ghost-success active" aria-pressed="true">
+                                Đổi trạng thái
+                            </button>
+                        </div>
                     </div>
-                </div> -->
+                </ng-container>
 
-                <!-- Active attendance: -->
-                <div class="col-12 session-div" >
-                    <p>Bắt đầu điểm danh  </p>
-                    <label class="switch switch-label switch-danger">
-                        <input type="checkbox" class="switch-input" checked>
+                <!-- If course ongoing but not yet add session-->
+                <ng-container *ngIf="objCourse?.status == 'ONGOING' &&  objCourse?.currentSession.status != 'ONGOING'">
+                    <div class="no-data">
+                        <div class="card-body no-content text-center">
+                            <img src="../../../assets/img/empty.png" alt="">
+                        </div>
+                        <div class="text-center" style="margin-top: 20px;">
+                            <p>Để điểm danh hãy bắt đầu một buổi học.</p>
+                            <button data-toggle="modal" (click)="addSessionModal.show();" type="button"
+                                class="btn btn-ghost-success active" aria-pressed="true">Bắt đầu buổi học</button>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="objCourse?.status == 'ONGOING' &&  objCourse?.currentSession.status == 'ONGOING'">
+                    <ng-container *ngIf="lstStudentResult.length == 0">
+                        <div class="no-data">
+                            <div class="card-body no-content text-center">
+                                <img src="../../../assets/img/empty.png" alt="">
+                            </div>
+                            <div class="text-center" style="margin-top: 20px;">
+                                <p>Lớp học chưa có sinh viên.</p>
+                                <button [routerLink]="['/class', objCourse?.id, 'people']" type="button" class="btn btn-ghost-success active" aria-pressed="true">Thêm sinh viên</button>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="lstStudentResult.length > 0">
+                        <!-- Active attendance: -->
+                        <div class="col-12 session-div">
+                            <p>Bắt đầu điểm danh </p>
+                            <label class="switch switch-label switch-danger">
+                                <input type="checkbox" class="switch-input" [checked]="objCourse?.currentSession.attendance_status == 'ONGOING'" (change)="onChangeAllowAttend($event)" >
+                                <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
+                            </label>
+                        </div>
+
+                        <table class="table table-student">
+                            <thead>
+                                <tr>
+                                    <th class="role">
+                                        <h1>Danh sách sinh viên</h1>
+                                    </th>
+                                    <th class="text-right action">
+                                        {{totalStudent}} sinh viên (Vắng: <span>{{totalStudentAttend}}</span>)
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- List students -->
+                                <tr *ngFor="let s of lstStudentResult">
+                                    <td class="row text-left list">
+                                        <div class="avatar">
+                                            <img src="{{driveUrl + s?.userProfileResponse.avatar_file_id || defaultAvatar}}"
+                                                class="img-avatar" 
+                                                (error)="updateUrl($event)">
+                                        </div>
+                                        <p>{{s.userProfileResponse.fullname}}</p>
+                                    </td>
+                                    <td class="text-right action">
+                                        <label class="switch switch-label switch-danger">
+                                            <input *ngIf="objCourse?.currentSession.attendance_status == 'ONGOING'" type="checkbox" class="switch-input" [checked]="s.status == 'ATTENDANT'" (change)="onChangeAttendance(s, $event)" >
+                                            <input *ngIf="objCourse?.currentSession.attendance_status != 'ONGOING'" type="checkbox" class="switch-input" [checked]="s.status == 'ATTENDANT'" [attr.disabled]="true" >
+                                            <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                            </tbody>
+                        </table>
+                    </ng-container>
+                </ng-container>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal add session -->
+<div bsModal #addSessionModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Bắt đầu buổi học</h4>
+                <button type="button" class="close" (click)="addSessionModal.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-session">
+                    <p>Bắt đầu buổi học</p>
+                    <label class="switch switch-label switch-outline-success-alt">
+                        <input type="checkbox" class="switch-input" [checked]="false"
+                            (change)="onChangeAddSession($event)">
                         <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
                     </label>
                 </div>
+                <p>*Bằng việc bắt dầu một buổi học bạn có thể bắt đầu điểm danh và tạo bài tập.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="addSessionModal.hide()">Hủy</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-                <!-- Danh sách sinh viên: -->
-                <table class="table table-student">
-                    <thead>
-                        <tr>
-                            <th class="role">
-                                <h1>Danh sách sinh viên</h1>
-                            </th>
-                            <th class="text-right action">
-                                21 sinh viên (Vắng: <span>2</span>)
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="row text-left list">
-                                <div class="avatar">
-                                    <img src="assets/img/avatars/4.jpg" class="img-avatar"
-                                        alt="admin@bootstrapmaster.com">
-                                    <span class="avatar-status badge-secondary"></span>
-                                </div>
-                                <p>Trần Văn Nguyên (Nguyentv)</p>
-                            </td>
-                            <td class="text-right action">
-                                <label class="switch switch-label switch-danger">
-                                    <input type="checkbox" class="switch-input" checked>
-                                    <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
-                                </label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="row text-left list">
-                                <div class="avatar">
-                                    <img src="assets/img/avatars/4.jpg" class="img-avatar"
-                                        alt="admin@bootstrapmaster.com">
-                                    <span class="avatar-status badge-secondary"></span>
-                                </div>
-                                <p>Trần Văn Nguyên (Nguyentv)</p>
-                            </td>
-                            <td class="text-right action">
-                                <label class="switch switch-label switch-danger">
-                                    <input type="checkbox" class="switch-input" checked>
-                                    <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
-                                </label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="row text-left list">
-                                <div class="avatar">
-                                    <img src="assets/img/avatars/4.jpg" class="img-avatar"
-                                        alt="admin@bootstrapmaster.com">
-                                    <span class="avatar-status badge-secondary"></span>
-                                </div>
-                                <p>Trần Văn Nguyên (Nguyentv)</p>
-                            </td>
-                            <td class="text-right action">
-                                <label class="switch switch-label switch-danger">
-                                    <input type="checkbox" class="switch-input" checked>
-                                    <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
-                                </label>
-                            </td>
-                        </tr>
-                        <tr>
-                    </tbody>
-                </table>
-
+<!-- Modal add session -->
+<div bsModal #updateStatusCourseModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Đổi trạng thái</h4>
+                <button type="button" class="close" (click)="updateStatusCourseModal.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-session">
+                    <p>Hoạt động</p>
+                    <label class="switch switch-label switch-outline-success-alt">
+                        <input type="checkbox" class="switch-input" [checked]="false"
+                            (change)="onChangeUpdateStatusCourse($event)">
+                        <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
+                    </label>
+                </div>
+                <p>*Bằng việc đổi trạng thái sang hoạt động bạn có thể bắt đầu một lớp học.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="updateStatusCourseModal.hide()">Hủy</button>
             </div>
         </div>
     </div>

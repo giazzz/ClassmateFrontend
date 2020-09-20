@@ -46,6 +46,11 @@ export class DefaultLayoutComponent implements OnInit {
       icon: 'icon-calendar'
     },
     // {
+    //   name: 'Quản lý sinh viên',
+    //   url: '/manage',
+    //   icon: 'icon-folder-alt'
+    // },
+    // {
     //   name: 'To do',
     //   url: '/student/1/todo',
     //   icon: 'icon-notebook'
@@ -117,6 +122,12 @@ export class DefaultLayoutComponent implements OnInit {
                   icon: 'icon-graduation'
                 });
             });
+            this.nav.push(
+              {
+                name: 'Quản lý sinh viên',
+                url: '/manage',
+                icon: 'icon-folder-alt'
+              });
             this.navItems = this.lstAllCourse.concat(this.nav);
           }
           this.iconLoading.stop();
