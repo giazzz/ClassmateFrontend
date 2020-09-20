@@ -133,3 +133,21 @@
 .list-exam {
     cursor: pointer; 
 }
+.list-ex {
+    padding-bottom: 20px;
+}
+.modal-session {
+    font-size: 16px;
+    display: flex;
+    p {
+        margin-right: 5px;
+    }
+}
+.form-control.is-invalid {
+    background-image: none;
+    padding: 0.375rem 0.75rem;
+}
+.help-block{
+    color: red;
+    font-size: 12px;
+}

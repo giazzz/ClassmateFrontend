@@ -31,11 +31,16 @@ export class ClassworkService {
             objEx, { observe: 'response' });
     }
 
-    updateExcercise(ex_id, objEx) {
+    updateExcercise(exId, objEx) {
         let params = new HttpParams();
-        params = params.append('id', ex_id);
+        params = params.append('id', exId);
         return this.http.post<any>(`${environment.apiUrl}/data/exercise/edit`,
-            objEx, { observe: 'response' });
+            objEx, { params, observe: 'response' });
+    }
+
+    updateStatusExcercise(exId, status) {
+        return this.http.post<any>(`${environment.apiUrl}/data/exercise/updateStatus?id=${exId}&&status=${status}`,
+            { observe: 'response' });
     }
 
     postExcercise(exercise_id, objEx) {

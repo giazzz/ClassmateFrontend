@@ -1,7 +1,8 @@
 <div class="animated fadeIn">
     <div class="card col-md-10 col-12" style="margin: auto;">
-        <div class="card-body btn-create">
-            <button type="button" class="btn btn-brand btn-lg btn-stack-overflow mr-1" style="margin-bottom: 4px">
+        <div class="card-body btn-create" *ngIf="isTeacher">
+            <button (click)="onClickShowModalAdd()" type="button" class="btn btn-brand btn-lg btn-stack-overflow mr-1"
+                style="margin-bottom: 4px">
                 <i class="fa fa-plus"></i>
                 <span>Tạo bài tập</span>
             </button>
@@ -26,57 +27,263 @@
         </div>
 
         <!-- List classwork -->
-        <div *ngFor="let exam of lstExcercise" class="row exam" id="exam-{{exam.id}}" (mouseover)="exam.isHover = true"
-            (mouseout)="exam.isHover = false" [ngClass]="{'is-hover' : exam.isHover || exam.isCollapsed }">
-            <div class="row col-12 list-exam" (click)="exam.isCollapsed = !exam.isCollapsed; collapse(exam.isCollapsed, exam.id, $event)">
-                <div class="td text-left list col-9">
-                    <div class="row click-col">
-                        <div class="wrapper-icon">
-                            <i class="icon-note icons font-xl"></i>
-                        </div>
-                        <p>{{exam.title}}</p>
-                    </div>
-                </div>
-                <div class="td text-right action col-3">
-                    <div class="row">
-                        <p>{{exam.createAt}}</p>
-                        <div class="wrapper-action" [ngClass]="{'d-none' : !exam.isHover && !exam.isCollapsed}" dropdown placement="bottom right">
-                            <i dropdownToggle class="icon-options-vertical icons font-xl"></i>
-                            <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
-                                <li role="menuitem"><a class="dropdown-item" >Chỉnh sửa</a></li>
-                                <li role="menuitem"><a class="dropdown-item" >Xóa</a></li>
-                                <li role="menuitem"><a class="dropdown-item" >Sao chép liên kiết</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 div-collapse d-none" id="col-{{exam.id}}">
-                <div class="col-12 exam-content">
-                    <div class="col-12 expried">
-                        <p>Không có ngày đến hạn</p>
-                    </div>
-                    <div class="row col-12 count">
-                        <div class="col-lg-2 col-md-4 col-6 count-num exam-done">
-                            <h2>2</h2>
-                            <p>đã nộp</p>
-                        </div>
-                        <div class="col-lg-2 col-md-4 col-6 count-num">
-                            <h2>20</h2>
-                            <p>đã giao</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 exam-footer">
+        <div class="list-ex">
+            <div *ngFor="let exam of lstExcercise" class="row exam" id="exam-{{exam.id}}"
+                (mouseover)="exam.isHover = true" (mouseout)="exam.isHover = false"
+                [ngClass]="{'is-hover' : exam.isHover || exam.isCollapsed }">
+                <div class="row col-12 list-exam"
+                    (click)="exam.isCollapsed = !exam.isCollapsed; collapse(exam.isCollapsed, exam.id, $event)">
                     <div class="td text-left list col-9">
+                        <div class="row click-col">
+                            <div class="wrapper-icon">
+                                <i class="icon-note icons font-xl"></i>
+                            </div>
+                            <p>{{exam.title}}</p>
+                        </div>
+                    </div>
+                    <div class="td text-right action col-3">
                         <div class="row">
-                            <p>
-                                <a href="#">Xem bài tập</a>
-                            </p>
+                            <p>{{exam.createAt}}</p>
+                            <div class="wrapper-action" [ngClass]="{'d-none' : !exam.isHover && !exam.isCollapsed}" dropdown placement="bottom right">
+                                <i dropdownToggle class="icon-options-vertical icons font-xl"></i>
+                                <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+                                    <ng-container *ngIf="isStudent">
+                                        <li role="menuitem"><a class="dropdown-item">Nộp bài</a></li>
+                                        <li role="menuitem" [routerLink]="['/class', objCourse?.id, 'mark']"><a class="dropdown-item">Xem điểm</a></li>
+                                    </ng-container>
+                                    <ng-container *ngIf="isTeacher">
+                                        <li role="menuitem" (click)="onClickExDetail(exam.id)"><a class="dropdown-item">Chỉnh sửa</a></li>
+                                        <li role="menuitem" (click)="onClickCancelEx(exam)"><a class="dropdown-item">Hủy bài tập</a></li>
+                                        <li role="menuitem" [routerLink]="['/class', objCourse?.id, 'mark']"><a class="dropdown-item">Điểm số</a></li>
+                                    </ng-container>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 div-collapse d-none" id="col-{{exam.id}}">
+                    <div class="col-12 exam-content">
+                        <div class="col-12 expried">
+                            <p *ngIf="exam.exercise_end_time == null || exam.exercise_end_time === 0">Không có ngày đến hạn</p>
+                            <p *ngIf="exam.exercise_end_time != null && exam.exercise_end_time != 0">Hạn nộp: {{convertTickToDateShort(exam.exercise_end_time)}}</p>
+                        </div>
+                        <div class="row col-12 count">
+                            <div class="col-lg-2 col-md-4 col-6 count-num exam-done">
+                                <h2>{{exam.submitedCount}}</h2>
+                                <p>đã nộp</p>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-6 count-num">
+                                <h2>{{exam.markCount}}</h2>
+                                <p>đã chấm</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 exam-footer">
+                        <div class="td text-left list col-9">
+                            <div class="row">
+                                <p>
+                                    <a>Xem bài tập</a>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Modal create excercise -->
+<div bsModal #addModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-success" role="document">
+        <div class="modal-content">
+
+            <form class="form-horizontal" [formGroup]="frmAdd" (ngSubmit)="onSubmitFormAdd()">
+                <div class="modal-header">
+                    <h4 class="modal-title">Thêm bài tập</h4>
+                    <button type="button" class="close" (click)="addModal.hide()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label" for="text-input">Tiêu đề</label>
+                        <div class="col-md-9">
+                            <input formControlName="inputTitle" type="text" id="text-input" name="text-input"
+                                class="form-control"
+                                [ngClass]="{ 'is-invalid': (submitted || f.inputTitle.touched)  && f.inputTitle.errors }">
+                            <span *ngIf="(submitted || f.inputTitle.touched)  && f.inputTitle.errors?.required"
+                                class="help-block">Tiêu đề không được để trống!</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label" for="textarea-input">Nội dung</label>
+                        <div class="col-md-9">
+                            <textarea formControlName="textareaContent" id="textarea-input" name="textarea-input"
+                                rows="5" class="form-control" placeholder="Nội dung đề bài.."
+                                [ngClass]="{ 'is-invalid': (submitted || f.textareaContent.touched)  && f.textareaContent.errors }"></textarea>
+                            <span
+                                *ngIf="(submitted || f.textareaContent.touched)  && f.textareaContent.errors?.required"
+                                class="help-block">Nội dung không được để trống!</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label" for="begin-input">Ngày hết hạn</label>
+                        <div class="col-md-9">
+                            <input formControlName="inputExpiredDate" class="form-control" id="begin-input" type="date"
+                                placeholder="date"
+                                [ngClass]="{ 'is-invalid': (submitted || f.inputExpiredDate.touched)  && f.inputExpiredDate.errors }"
+                                min="{{minExpiredDate}}">
+                            <span
+                                *ngIf="(submitted || f.inputExpiredDate.touched)  && f.inputExpiredDate.errors?.required"
+                                class="help-block">Ngày hết hạn không được để trống!</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="addModal.hide()">Hủy</button>
+                    <button type="submit" class="btn btn-success">
+                        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                        Lưu
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal update excercise -->
+<div bsModal #updateModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-success" role="document">
+        <div class="modal-content">
+            <form class="form-horizontal" [formGroup]="frmUpdate" (ngSubmit)="onSubmitFormUpdate()">
+                <div class="modal-header">
+                    <h4 class="modal-title">Sửa thông tin bài tập</h4>
+                    <button type="button" class="close" (click)="updateModal.hide()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" formControlName="inputId">
+                    <input type="hidden" formControlName="inputSessionId">
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label" for="text-inputE">Tiêu đề</label>
+                        <div class="col-md-9">
+                            <input formControlName="inputTitle" type="text" id="text-inputE" name="text-inputE"
+                                class="form-control"
+                                [ngClass]="{ 'is-invalid': (submitted || u.inputTitle.touched)  && u.inputTitle.errors }">
+                            <span *ngIf="(submitted || u.inputTitle.touched)  && u.inputTitle.errors?.required"
+                                class="help-block">Tiêu đề không được để trống!</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label" for="textarea-inputE">Nội dung</label>
+                        <div class="col-md-9">
+                            <textarea formControlName="textareaContent" id="textarea-inputE" name="textarea-inputE"
+                                rows="5" class="form-control" placeholder="Nội dung đề bài.."
+                                [ngClass]="{ 'is-invalid': (submitted || u.textareaContent.touched)  && u.textareaContent.errors }"></textarea>
+                            <span
+                                *ngIf="(submitted || u.textareaContent.touched)  && u.textareaContent.errors?.required"
+                                class="help-block">Nội dung không được để trống!</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label" for="begin-inputE">Ngày hết hạn</label>
+                        <div class="col-md-9">
+                            <input formControlName="inputExpiredDate" class="form-control" id="begin-inputE" type="date"
+                                placeholder="date"
+                                [ngClass]="{ 'is-invalid': (submitted || u.inputExpiredDate.touched)  && u.inputExpiredDate.errors }"
+                                min="{{minExpiredDate}}">
+                            <span
+                                *ngIf="(submitted || u.inputExpiredDate.touched)  && u.inputExpiredDate.errors?.required"
+                                class="help-block">Ngày hết hạn không được để trống!</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="updateModal.hide()">Hủy</button>
+                    <button type="submit" class="btn btn-success">
+                        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                        Lưu
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal add session -->
+<div bsModal #addSessionModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Bắt đầu buổi học</h4>
+                <button type="button" class="close" (click)="addSessionModal.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Để tạo bài tập mới bạn cần bắt đầu một buổi học.</p>
+                <div class="modal-session">
+                    <p>Bắt đầu buổi học</p>
+                    <label class="switch switch-label switch-outline-success-alt">
+                        <input type="checkbox" class="switch-input" [checked]="false"
+                            (change)="onChangeAddSession($event)">
+                        <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="addSessionModal.hide()">Hủy</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal cancel ex -->
+<div bsModal #cancelModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Hủy bài tập</h4>
+                <button type="button" class="close" (click)="cancelModal.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn hủy bài tập: {{exTitleSelected}}?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="cancelModal.hide()">Bỏ qua</button>
+                <button (click)="onSubmitCancelEx()" type="button" class="btn btn-primary">
+                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                    Hủy bài tập
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Icon loading -->
+<ngx-ui-loader></ngx-ui-loader>
+<div class="ngx-foreground-spinner spinner-container">
+    <div class="sk-three-strings">
+        <div></div>
+        <div></div>
+        <div></div>
     </div>
 </div>

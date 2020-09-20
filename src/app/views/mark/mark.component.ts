@@ -95,7 +95,6 @@ export class MarkComponent implements OnInit {
             this.getListExcerciseByStudent();
           }
         });
-
     }
 
   }
@@ -154,7 +153,7 @@ export class MarkComponent implements OnInit {
         );
       });
     });
-}
+  }
 
   onTdScoreClick(exItem,  index: number, indexChild: number, e) {
     this.lstStudent.forEach( ele => {
@@ -226,7 +225,6 @@ export class MarkComponent implements OnInit {
       count += s.lstExcercise.find( ex => ex.exercise_id === exercise_id && ex?.marked) == null ? 0 : 1;
     });
     return count === 0 ? null : (total / count).toFixed(1);
-
   }
 
 }

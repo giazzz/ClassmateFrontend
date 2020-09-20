@@ -29,7 +29,7 @@
     </div>
 
     <div class="col-sm-6 col-lg-3" *ngIf="isTeacher">
-      <div class="brand-card add-card" (click)="addModal.show()">
+      <div class="brand-card add-card" (click)="addModal.show(); frmAdd.reset();">
         <div class="brand-card-body">
           <fa-icon [icon]="faPlus"></fa-icon>
           <p class="add-char">Thêm lớp học</p>
@@ -110,7 +110,10 @@
         
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="addModal.hide()">Hủy</button>
-          <button type="submit" class="btn btn-success">Thêm lớp học</button>
+          <button type="submit" class="btn btn-success">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Thêm lớp học
+          </button>
         </div>
 
       </form>

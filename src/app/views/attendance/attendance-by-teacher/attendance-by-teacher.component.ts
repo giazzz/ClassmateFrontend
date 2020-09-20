@@ -196,8 +196,4 @@ export class AttendanceByTeacherComponent implements OnInit {
 
   }
 
-  updateUrl(e) {
-    e.target.src = this.defaultAvatar;
-  }
-
 }

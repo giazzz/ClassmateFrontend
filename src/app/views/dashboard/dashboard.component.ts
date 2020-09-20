@@ -19,6 +19,7 @@ export class DashboardComponent implements OnInit {
   public lstAllCourseCtgr: any[];
   public frmAdd: FormGroup;
   public submitted: boolean;
+  public loading: boolean = false;
   public isTeacher: boolean = false;
   public currentUser;
   public minStartDate = this.convertTickToDateDPicker((new Date()).getTime());
@@ -101,11 +102,11 @@ export class DashboardComponent implements OnInit {
 
   onSubmitFormAdd() {
     this.submitted = true;
-    this.iconLoading.start();
+    this.loading = true;
 
     // Stop here if form is invalid
     if (this.frmAdd.invalid) {
-      this.iconLoading.stop();
+      this.loading = false;
       return;
     }
     const name = this.f.inputName.value;
@@ -115,21 +116,20 @@ export class DashboardComponent implements OnInit {
     const course_category_id = this.f.selectCategory.value;
     const objCourse = {course_category_id, name, description, start_date, end_date};
 
-    this.dashBoardService.addCourse(objCourse)
-      .subscribe(
-        response => {
-          const successMsg = 'save course success';
-          if (response.status === 200 && response.body === successMsg) {
-            // Success:
-            this.addModal.hide();
-            this.getLstAllCourse();
-          }
-          this.iconLoading.stop();
-        },
-        error => {
-          // Error:
-          this.iconLoading.stop();
-        });
+    this.dashBoardService.addCourse(objCourse).subscribe(
+      response => {
+        const successMsg = 'save course success';
+        if (response.status === 200 && response.body === successMsg) {
+          // Success:
+          this.addModal.hide();
+          this.getLstAllCourse();
+        }
+        this.loading = false;
+      },
+      error => {
+        // Error:
+        this.loading = false;
+      });
   }
 
   getTicksFromDateString(dateTime: string) {
