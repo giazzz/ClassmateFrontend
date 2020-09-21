@@ -1,15 +1,16 @@
 <div class="animated fadeIn">
     <div class="card col-12" style="margin: auto;">
         <div class="card-body">
-            <div style="display: flex;">
-                <i (click)="onClickNextPage()" class="cui-chevron-right icons font-2xl d-block icon-next"></i>
-            </div>
-            <table class="table table-bordered" style="min-width: 1020px;">
+            <!-- <div style="display: flex;">
+                
+            </div> -->
+            <table class="table table-bordered" style="min-width: 1020px; position: relative;">
+                <i *ngIf="endSlice < totalCountEx" (click)="onClickNextPage()" class="cui-chevron-right icons font-2xl d-block icon-next"></i>
                 <thead>
                     <tr>
                         <th style="width: 200px; position: relative;" class="text-center fs-15 fw-500">
                             Sinh viên
-                            <i (click)="onClickPrevPage()" class="cui-chevron-left icons font-2xl d-block icon-prev"></i>
+                            <i *ngIf="startSlice > 0" (click)="onClickPrevPage()" class="cui-chevron-left icons font-2xl d-block icon-prev"></i>
                         </th>
                         <th style="width: 145px;" *ngFor="let exam of sortListExercise(lstClasswork).slice(startSlice, endSlice)" class="text-center">
                             <div>
@@ -84,9 +85,9 @@
                         </ng-container>
 
                         <ng-container *ngIf="isStudent">
-                            <td *ngFor="let ex of sortListExercise(s.lstExcercise)" class="div-score fw-500 s-score" >
+                            <td *ngFor="let ex of sortListExercise(s.lstExcercise).slice(startSlice, endSlice)" class="div-score fw-500 s-score" >
                                 <span *ngIf="!ex.submitted" >Chưa nộp</span>
-                                <span *ngIf="!ex.marked" >Chưa chấm</span>
+                                <span *ngIf="ex.submitted && !ex.marked" >Chưa chấm</span>
                                 <span *ngIf="ex.marked && ex.submitted && ex.marked" >{{ex.mark}}</span>
                             </td>
                         </ng-container>

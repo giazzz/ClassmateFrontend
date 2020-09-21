@@ -152,3 +152,46 @@
     color: red;
     font-size: 12px;
 }
+.file-div {
+    margin-top: 10px;
+    height: 80px;
+    border: 1px solid #dadce0;;
+    border-radius: 8px;
+    display: flex;
+    cursor: pointer;
+}
+.file-img {
+    width: 22%;
+    border-right: 1px solid #dadce0;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.file-name {
+    width: 78%;
+    padding: 12px 0px 0px 10px;
+}
+.preview-file {
+    margin-top: 0;
+    margin-bottom: 10px;
+    height: 70px;
+    .file-img {
+        width: 10%;
+    }
+    .file-name {
+        width: 80%;
+        padding: 6px 0px 0px 15px;
+    }
+    .file-remove{
+        width: 10%;
+        .wrapper-action {
+            margin-top: 14px;
+            margin-right: 20px;
+            padding-top: 0;
+            .icons {
+                margin: 10px;
+                line-height: 0.54;
+            }
+        }
+    }
+}

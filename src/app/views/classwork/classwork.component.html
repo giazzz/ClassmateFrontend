@@ -43,15 +43,17 @@
                     <div class="td text-right action col-3">
                         <div class="row">
                             <p>{{exam.createAt}}</p>
-                            <div class="wrapper-action" [ngClass]="{'d-none' : !exam.isHover && !exam.isCollapsed}" dropdown placement="bottom right">
+                            <div class="wrapper-action" [ngClass]="{'d-none' : !exam.isHover && !exam.isCollapsed}"
+                                dropdown placement="bottom right">
                                 <i dropdownToggle class="icon-options-vertical icons font-xl"></i>
                                 <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
                                     <ng-container *ngIf="isStudent">
-                                        <li role="menuitem"><a class="dropdown-item">Nộp bài</a></li>
+                                        <li role="menuitem" (click)="onClickPostEx(exam)" ><a class="dropdown-item">Nộp bài</a></li>
                                         <li role="menuitem" [routerLink]="['/class', objCourse?.id, 'mark']"><a class="dropdown-item">Xem điểm</a></li>
                                     </ng-container>
                                     <ng-container *ngIf="isTeacher">
-                                        <li role="menuitem" (click)="onClickExDetail(exam.id)"><a class="dropdown-item">Chỉnh sửa</a></li>
+                                        <li role="menuitem" (click)="onClickExDetail(exam.id)"><a
+                                                class="dropdown-item">Chỉnh sửa</a></li>
                                         <li role="menuitem" (click)="onClickCancelEx(exam)"><a class="dropdown-item">Hủy bài tập</a></li>
                                         <li role="menuitem" [routerLink]="['/class', objCourse?.id, 'mark']"><a class="dropdown-item">Điểm số</a></li>
                                     </ng-container>
@@ -81,7 +83,7 @@
                         <div class="td text-left list col-9">
                             <div class="row">
                                 <p>
-                                    <a>Xem bài tập</a>
+                                    <a (click)="onclickShowDetailEx(exam)" style="color: #20a8d8; text-decoration: underline; cursor: pointer;">Xem bàitập</a>
                                 </p>
                             </div>
                         </div>
@@ -254,7 +256,8 @@
 </div>
 
 <!-- Modal cancel ex -->
-<div bsModal #cancelModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div bsModal #cancelModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -273,6 +276,98 @@
                     Hủy bài tập
                 </button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal detail ex -->
+<div bsModal #detailModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{currentEx?.title}}</h4>
+                <button type="button" class="close" (click)="detailModal.hide()" aria-label="Close">
+                    <span aria-hidden="true" style="color: #ffffff;">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5>Nội dung: </h5>
+                <div [innerHTML]="currentEx?.content" style="padding-left: 10px;">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="detailModal.hide()">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal post ex result -->
+<div bsModal #postExModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-success" role="document" style="max-width: 750px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Nộp bài tập: {{currentEx?.title}}</h4>
+                <button type="button" class="close" (click)="postExModal.hide()" aria-label="Close">
+                    <span aria-hidden="true" style="color: #ffffff;">&times;</span>
+                </button>
+            </div>
+            <form class="form-horizontal" [formGroup]="frmPostExercise" (ngSubmit)="onSubmitFormPostEx()">
+                <div class="modal-body">
+
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label" for="textarea-p">Nội dung</label>
+                        <div class="col-md-10">
+                            <textarea formControlName="textareaContent" id="textarea-p" name="textarea-p"
+                                rows="8" class="form-control" placeholder="Nội dung bài nộp.."
+                                [ngClass]="{ 'is-invalid': (submitted || frmPostEx.textareaContent.touched)  && frmPostEx.textareaContent.errors }"></textarea>
+                            <span *ngIf="(submitted || frmPostEx.textareaContent.touched)  && frmPostEx.textareaContent.errors?.required" class="help-block">Nội dung không được để trống!</span>
+                            <span *ngIf="(submitted || frmPostEx.textareaContent.dirty)  && frmPostEx.textareaContent.errors?.maxLength" class="help-block">Nội dung không được dài quá 2000 ký tự!</span>
+                        </div>
+                    </div>
+
+                    <!-- Preview file -->
+                    <div class="form-group row" style="margin-bottom: 0;">
+                        <label class="col-md-2 col-form-label" for="begin-input"></label>
+                        <div class="col-md-10">
+                            <div class="file-div preview-file" *ngFor="let f of lstSelectedFile" (click)="onClickReadFilePreview(f); readFileModal.show();">
+                                <!-- File -->
+                                <div class="file-img" [style.backgroundImage]="'url('+ getPreviewImgByFileType(f.file.name, f.url, true) +')'" ></div>
+                                <div class="file-name">
+                                    <div style="font-size: 18px; overflow: hidden; display: flex;">
+                                        {{f.file.name}}
+                                    </div>
+                                    <p class="color-gray">
+                                        {{getTypeFile(f.file.name)}}
+                                    </p>
+                                </div>
+                                <div class="file-remove">
+                                    <div class="wrapper-action" (click)="onClickRemoveSelectedFile(f)">
+                                        <i class="cui-trash icons font-xl" style="line-height: 2;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <input #inputFile type="file" (change)="onSelectFile($event)" style="display: none;" multiple>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" (click)="inputFile.click()" style="margin-right: auto;">
+                        <i class="icon-paper-clip icons"></i>
+                        Đính kèm
+                    </button>
+                    <button type="button" class="btn btn-secondary" (click)="postExModal.hide()">Hủy</button>
+                    <button type="submit" class="btn btn-success">
+                        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                        Nộp bài
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

@@ -11,6 +11,8 @@ import * as moment from 'moment';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ClassRoomService } from '../class-room/class-room.service';
 import { SessionService } from '../class-room/session.service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { EndpointsConfig } from '../../config/config';
 
 @Component({
   selector: 'app-classwork',
@@ -26,16 +28,24 @@ export class ClassworkComponent implements OnInit {
   public isStudent = false;
   public frmAdd: FormGroup;
   public frmUpdate: FormGroup;
+  public frmPostExercise: FormGroup;
   public submitted: boolean;
   public loading: boolean = false;
   public minExpiredDate = this.convertTickToDateDPicker((new Date()).getTime());
   public exTitleSelected = '';
   public exIdSelected = '';
+  public currentEx;
+  public lstSelectedFile = [];
+  public currentFile;
+  public defaultAvatar = EndpointsConfig.user.defaultAvatar;
+  public driveUrl = EndpointsConfig.google.driveUrl;
 
   @ViewChild('addModal') public addModal: ModalDirective;
   @ViewChild('updateModal') public updateModal: ModalDirective;
   @ViewChild('addSessionModal') public addSessionModal: ModalDirective;
   @ViewChild('cancelModal') public cancelModal: ModalDirective;
+  @ViewChild('detailModal') public detailModal: ModalDirective;
+  @ViewChild('postExModal') public postExModal: ModalDirective;
 
   constructor(private classService: ClassMateService,
               private exService: ClassworkService,
@@ -47,6 +57,7 @@ export class ClassworkComponent implements OnInit {
               public role: CheckRole,
               private classRoomService: ClassRoomService,
               private sessionService: SessionService,
+              public sanitizer: DomSanitizer,
   ) {
   }
 
@@ -88,11 +99,18 @@ export class ClassworkComponent implements OnInit {
         Validators.required
       ]]
     });
+    this.frmPostExercise = this.fb.group({
+      textareaContent: ['', [
+        Validators.required,
+        Validators.maxLength(2000),
+      ]]
+    });
 
   }
 
   get f() { return this.frmAdd.controls; }
   get u() { return this.frmUpdate.controls; }
+  get frmPostEx() { return this.frmPostExercise.controls; }
 
   getCurrentCourse() {
     this.classService.getClassDetail(this.courseId).subscribe(
@@ -190,13 +208,6 @@ export class ClassworkComponent implements OnInit {
     }
     this.addModal.show();
     this.resetForm(this.frmAdd);
-  }
-
-  resetForm(form: FormGroup) {
-    form.reset();
-    Object.keys(form.controls).forEach(key => {
-      form.get(key).setErrors(null) ;
-    });
   }
 
   onSubmitFormAdd() {
@@ -326,6 +337,85 @@ export class ClassworkComponent implements OnInit {
       });
   }
 
+  onclickShowDetailEx(ex) {
+    this.currentEx = ex;
+    this.detailModal.show();
+  }
+
+  onClickPostEx(ex) {
+    this.currentEx = ex;
+    this.postExModal.show();
+    this.resetForm(this.frmPostExercise);
+    this.lstSelectedFile = [];
+  }
+
+  async onSelectFile(event) {
+    if (event.target.files && event.target.files[0]) {
+      for (let i = 0; i < event.target.files.length; i++) {
+        this.lstSelectedFile.push(
+          {
+            file: event.target.files[i],
+            url: await this.getBase64(event.target.files[i])
+          });
+      }
+    }
+  }
+
+  onSubmitFormPostEx() {
+    this.submitted = true;
+    this.loading = true;
+
+    // Stop here if form is invalid
+    if (this.frmPostExercise.invalid) {
+      this.loading = false;
+      return;
+    }
+
+    // Upload files:
+    const lstFileUpload = this.lstSelectedFile.map(item => {
+      return item.file;
+    });
+    this.classRoomService.uploadFile(lstFileUpload).subscribe(
+      response => {
+        if (response.body != null && response.body !== undefined && response.body.length > 0) {
+          const lstFile = [];
+          response.body.forEach(item => {
+            lstFile.push(
+              {
+                name: item.file_name,
+                description: item.file_name,
+                file_id: item.file_id,
+                file_size: item.file_size
+              });
+          });
+
+          // Post ex:
+          const objEx = {
+            content: this.frmPostEx.textareaContent.value,
+            student_message: 'done',
+            fileRequests: lstFile
+          };
+          this.exService.postExcercise(this.currentEx.id, objEx).subscribe(
+            data => {
+              if (data.body != null && data.body !== undefined) {
+                this.toastr.showToastrSuccess('Bài tập đã được nộp', 'Thành công!');
+                this.lstSelectedFile = [];
+                this.loading = false;
+              }
+            },
+            error => {
+              this.toastr.showToastrWarning('', 'Không thành công!');
+              this.lstSelectedFile = [];
+              this.loading = false;
+            });
+        }
+        this.loading = false;
+      },
+      error => {
+        this.loading = false;
+      });
+  }
+
   getTicksFromDateString(dateTime: string) {
     const date = new Date(dateTime);
     return date.getTime();
@@ -334,5 +424,74 @@ export class ClassworkComponent implements OnInit {
   convertTickToDateDPicker(tick) {
     const date = new Date(Number(tick));
     return moment(date).format('YYYY-MM-DD');
+  }
+
+  resetForm(form: FormGroup) {
+    form.reset();
+    Object.keys(form.controls).forEach(key => {
+      form.get(key).setErrors(null) ;
+    });
+  }
+
+  onClickReadFilePreview(file) {
+    this.currentFile = {
+      name: file.file.name,
+      url: this.sanitizer.bypassSecurityTrustResourceUrl(file.url)
+    };
+  }
+
+  getTypeFile(strUrl: string) {
+    if (strUrl != null && strUrl !== undefined && strUrl !== '') {
+      const extension = strUrl.split('.').pop();
+      if (['png', 'jpg', 'jpeg', 'gif', 'tiff', 'psd', 'svg'].includes(extension)) {
+        return 'Hình ảnh';
+      } else if (['doc', 'docx'].includes(extension)) {
+        return 'Word';
+      } else if (['xls', 'xlsx'].includes(extension)) {
+        return 'Excel';
+      } else if (['pdf'].includes(extension)) {
+        return 'PDF';
+      } else if (['txt'].includes(extension)) {
+        return 'Text';
+      }
+    }
+    return '';
+  }
+
+  getPreviewImgByFileType(strUrl: string, fileId: string, blnIsPreview = false) {
+    if (strUrl != null && strUrl !== undefined && strUrl !== '') {
+      const extension = strUrl.split('.').pop();
+      if (['png', 'jpg', 'jpeg', 'gif', 'tiff', 'psd', 'svg'].includes(extension)) {
+        return !blnIsPreview ? this.driveUrl + fileId : fileId;
+      } else if (['doc', 'docx'].includes(extension)) {
+        return 'assets/img/word-file-icon.jpg';
+      } else if (['xls', 'xlsx'].includes(extension)) {
+        return 'assets/img/excel-icon.png';
+      } else if (['pdf'].includes(extension)) {
+        return 'assets/img/pdf-file-icon-svg.png';
+      }
+      return 'assets/img/document.png';
+    }
+    return 'assets/img/document.png';
+  }
+
+  onClickRemoveSelectedFile(item, blnDeleteFileUploaded = false) {
+    if (!blnDeleteFileUploaded) {
+      const index = this.lstSelectedFile.indexOf(item);
+      this.lstSelectedFile.splice(index, 1);
+    } else {
+      // const index = this.currentPost.attachmentResponses.indexOf(item);
+      // this.currentPost.attachmentResponses.splice(index, 1);
+    }
+  }
+
+  // Convert file to base64data:
+  getBase64(file: File) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
   }
 }
