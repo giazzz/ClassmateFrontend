@@ -15,7 +15,7 @@ export class ClassworkService {
     getListAllExcercise(course_id) {
         let params = new HttpParams();
         params = params.append('course_id', course_id);
-        return this.http.get<any>(`${environment.apiUrl}/data/exercise/gradeList`,
+        return this.http.get<any>(`${environment.apiUrl}/data/exercise/all`,
             { params, observe: 'response' });
     }
 

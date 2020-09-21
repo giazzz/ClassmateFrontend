@@ -108,7 +108,7 @@ export class ClassworkComponent implements OnInit {
     this.exService.getListAllExcercise(this.courseId).subscribe(
       response => {
         if (response.body != null && response.body !== undefined) {
-          this.lstExcercise = response.body;
+          this.lstExcercise = response.body.filter(item => item.status !== 'CANCEL');
         }
         setTimeout(() => {
           this.iconLoading.stop();

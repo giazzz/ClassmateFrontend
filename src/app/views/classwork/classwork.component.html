@@ -7,20 +7,19 @@
                 <span>Tạo bài tập</span>
             </button>
         </div>
-        <div class="card-body work-info" *ngIf="lstExcercise.length == 0">
+        <div class="card-body work-info" *ngIf="lstExcercise.length == 0 && isTeacher">
             <h1>Chỉ định bài tập cho lớp học tại đây</h1>
             <div class="row margin-left-30">
                 <i class="icon-book-open icons font-xl"></i>
                 <p>Tạo bài tập và câu hỏi</p>
             </div>
-            <!-- <div class="row margin-left-30">
-                <i class="icon-list icons font-xl"></i>
-                <p>Sử dụng chủ đề để sắp xếp bài tập trên lớp vào các mô-đun hoặc đơn vị</p>
+        </div>
+        <div class="card-body work-info" *ngIf="isStudent">
+            <h1>Danh sách bài tập dành cho lớp</h1>
+            <div class="row margin-left-30" *ngIf="lstExcercise.length == 0">
+                <i class="icon-book-open icons font-xl"></i>
+                <p>Hiện tại không có bài tập.</p>
             </div>
-            <div class="row margin-left-30">
-                <i class="icon-layers icons font-xl"></i>
-                <p>Sắp xếp bài tập theo cách bạn muốn học sinh nhìn thấy</p>
-            </div> -->
         </div>
         <div class="card-body no-content text-center" *ngIf="lstExcercise.length == 0">
             <img src="../../../assets/img/no_assignments.png" alt="">
@@ -68,11 +67,11 @@
                             <p *ngIf="exam.exercise_end_time != null && exam.exercise_end_time != 0">Hạn nộp: {{convertTickToDateShort(exam.exercise_end_time)}}</p>
                         </div>
                         <div class="row col-12 count">
-                            <div class="col-lg-2 col-md-4 col-6 count-num exam-done">
+                            <div class="col-lg-3 col-md-4 col-6 count-num exam-done">
                                 <h2>{{exam.submitedCount}}</h2>
                                 <p>đã nộp</p>
                             </div>
-                            <div class="col-lg-2 col-md-4 col-6 count-num">
+                            <div class="col-lg-3 col-md-4 col-6 count-num" *ngIf="isTeacher">
                                 <h2>{{exam.markCount}}</h2>
                                 <p>đã chấm</p>
                             </div>

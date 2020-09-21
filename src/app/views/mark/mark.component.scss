@@ -158,3 +158,8 @@ input[type=number] {
     padding-left: 38%;
     color: gray;
 }
+::ng-deep {
+    .container-fluid {
+        max-width: 100% !important;
+    }
+}
