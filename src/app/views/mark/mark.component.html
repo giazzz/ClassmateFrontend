@@ -1,11 +1,15 @@
 <div class="animated fadeIn">
     <div class="card col-12" style="margin: auto;">
         <div class="card-body">
+            <div style="display: flex;">
+                <i (click)="onClickPrevPage()" class="cui-chevron-left icons font-2xl d-block"></i>
+                <i (click)="onClickNextPage()" class="cui-chevron-right icons font-2xl d-block"></i>
+            </div>
             <table class="table table-bordered" >
                 <thead>
                     <tr>
                         <th style="width: 200px;" class="text-center fs-15 fw-500">Sinh viên</th>
-                        <th style="width: 145px;" *ngFor="let exam of sortListExercise(lstClasswork)" class="text-center">
+                        <th style="width: 145px;" *ngFor="let exam of sortListExercise(lstClasswork).slice(startSlice, endSlice)" class="text-center">
                             <div>
                                 <h5 class="exam-title">
                                     {{exam.title}}
@@ -28,7 +32,7 @@
                                 <p class="fw-500">Điểm trung bình của lớp</p>
                             </div>
                         </td>
-                        <td *ngFor="let item of lstClasswork">
+                        <td *ngFor="let item of lstClasswork.slice(startSlice, endSlice)">
                             <div class="fw-500 fs-18 text-center pd-t-8">{{getAverageMarkByIdEx(item.exercise_id)}}</div>
                         </td>
                     </tr>
@@ -44,7 +48,7 @@
                         </td>
 
                         <ng-container *ngIf="isTeacher">
-                            <td *ngFor="let ex of sortListExercise(s.lstExcercise); let j = index" class="div-score" [ngClass]="{'td-hover' : ex.isFocus}" (click)="onTdScoreClick(ex, i, j, $event);" (mouseenter)="ex.isHover = true" (mouseleave)="ex.isHover = false">
+                            <td *ngFor="let ex of sortListExercise(s.lstExcercise).slice(startSlice, endSlice); let j = index" class="div-score" [ngClass]="{'td-hover' : ex.isFocus}" (click)="onTdScoreClick(ex, i, j, $event);" (mouseenter)="ex.isHover = true" (mouseleave)="ex.isHover = false">
                                 <div class="row" *ngIf="ex.isHover || ex.isClick || ex.marked" >
                                     <div class="input-score">
                                         <input class="fw-500" type="number"

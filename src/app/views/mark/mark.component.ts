@@ -25,6 +25,9 @@ export class MarkComponent implements OnInit {
   public isTeacher: boolean = false;
   public isStudent: boolean = false;
   public currentMark: string;
+  public startSlice = 0;
+  public endSlice = 0;
+  public totalCountEx = 0;
 
   public courseId;
   public driveUrl = EndpointsConfig.google.driveUrl;
@@ -52,6 +55,7 @@ export class MarkComponent implements OnInit {
     this.isTeacher = this.role.isTeacher();
     this.lstStudent = [];
     this.lstClasswork = [];
+    this.startSlice = 0;
     this.iconLoading.start();
 
     if (this.role.isTeacher()) {
@@ -104,6 +108,8 @@ export class MarkComponent implements OnInit {
       response => {
         if (response.body != null && response.body !== undefined) {
           this.getListExFromListAll(response.body);
+          this.endSlice = response.body.length > 4 ? 4 : response.body.length;
+          this.totalCountEx = response.body.length;
         }
       });
   }
@@ -113,6 +119,8 @@ export class MarkComponent implements OnInit {
       response => {
         if (response.body != null && response.body !== undefined) {
           this.getListExFromListAll(response.body);
+          this.endSlice = response.body.length > 4 ? 4 : response.body.length;
+          this.totalCountEx = response.body.length;
         }
         setTimeout(() => {
           this.iconLoading.stop();
@@ -125,7 +133,7 @@ export class MarkComponent implements OnInit {
       });
   }
 
-  getListExFromListAll( lstAll) {
+  getListExFromListAll(lstAll) {
     // Get list all excercise:
     this.lstClasswork = lstAll.map( item => {
       return {
@@ -225,6 +233,26 @@ export class MarkComponent implements OnInit {
       count += s.lstExcercise.find( ex => ex.exercise_id === exercise_id && ex?.marked) == null ? 0 : 1;
     });
     return count === 0 ? null : (total / count).toFixed(1);
+  }
+
+  onClickPrevPage() {
+    if (this.startSlice === 0) {
+      return;
+    }
+    this.startSlice = this.startSlice - 1;
+    this.endSlice = this.endSlice - 1;
+    console.log('start = ' + this.startSlice)
+    console.log('end = ' + this.endSlice)
+  }
+
+  onClickNextPage() {
+    if (this.endSlice === this.totalCountEx) {
+      return;
+    }
+    this.startSlice = this.startSlice + 1;
+    this.endSlice = this.endSlice + 1;
+    console.log('start = ' + this.startSlice)
+    console.log('end = ' + this.endSlice)
   }
 
 }

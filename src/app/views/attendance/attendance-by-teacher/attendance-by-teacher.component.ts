@@ -176,7 +176,7 @@ export class AttendanceByTeacherComponent implements OnInit {
   onChangeAttendance(objStudent, e) {
     const blnAttend: boolean = e.target.checked;
     const objAttend = {
-      user_id: objStudent.user_id,
+      user_id: objStudent.userProfileResponse.id,
       status: blnAttend ? 'ATTENDANT' : 'ABSENT'
     };
     this.attendService.checkOne(this.objCourse?.currentSession.id, objAttend).subscribe(

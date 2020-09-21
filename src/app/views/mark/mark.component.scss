@@ -67,7 +67,7 @@ tr th {
 }
 .input-score {
     width: 80px;
-    margin-left: 35%;
+    margin-left: 32%;
     position: relative;
 }
 .input-score input {
@@ -79,13 +79,13 @@ tr th {
 .input-score h4 {
     position: absolute;
     top: 8px;
-    right: 0px;
+    right: -4px;
     font-size: 18px;
     color: rgba(0, 0, 0, 0.549);
 }
 .input-score input {
     text-align: right;
-    padding-right: 48%;
+    padding-right: 40%;
     display: flex;
     font-size: 18px;
     color: rgba(0, 0, 0, 0.549);

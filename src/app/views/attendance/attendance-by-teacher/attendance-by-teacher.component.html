@@ -1,5 +1,5 @@
 <div class="animated fadeIn">
-    <div class="col-12">
+    <div class="col-md-10 col-12" style="margin: auto;">
         <div class="card">
             <div class="card-body">
 
@@ -72,8 +72,7 @@
                                     <td class="row text-left list">
                                         <div class="avatar">
                                             <img src="{{driveUrl + s?.userProfileResponse.avatar_file_id || defaultAvatar}}"
-                                                class="img-avatar" 
-                                                (error)="updateUrl($event)">
+                                                class="img-avatar" >
                                         </div>
                                         <p>{{s.userProfileResponse.fullname}}</p>
                                     </td>

@@ -189,7 +189,14 @@ export class ClassworkComponent implements OnInit {
       return;
     }
     this.addModal.show();
-    this.frmAdd.reset();
+    this.resetForm(this.frmAdd);
+  }
+
+  resetForm(form: FormGroup) {
+    form.reset();
+    Object.keys(form.controls).forEach(key => {
+      form.get(key).setErrors(null) ;
+    });
   }
 
   onSubmitFormAdd() {
@@ -211,7 +218,6 @@ export class ClassworkComponent implements OnInit {
 
     this.exService.createExcercise(objEx).subscribe(
       response => {
-        console.log(response.body)
         if (response.status === 200 && response.body.success) {
           // Success:
           this.addModal.hide();
@@ -246,7 +252,6 @@ export class ClassworkComponent implements OnInit {
   onClickExDetail(exId) {
     this.exService.getDetailExcercise(exId).subscribe(
       response => {
-        console.log(response.status === 200 && response.body != null)
         if (response.status === 200 && response.body != null) {
           // Success:
           this.updateModal.show();
