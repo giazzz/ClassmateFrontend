@@ -163,3 +163,16 @@ input[type=number] {
         max-width: 100% !important;
     }
 }
+.icon-prev {
+    position: absolute;
+    top: 29px;
+    right: -28px;
+    cursor: pointer;
+}
+
+.icon-next {
+    position: absolute;
+    top: 52px;
+    right: 8%;
+    cursor: pointer;
+}
