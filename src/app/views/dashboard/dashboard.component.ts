@@ -6,6 +6,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CheckRole } from '../../shared/checkRole';
 import * as moment from 'moment';
+import { Toastr } from '../../shared/toastr';
 
 @Component({
   templateUrl: 'dashboard.component.html',
@@ -22,6 +23,7 @@ export class DashboardComponent implements OnInit {
   public loading: boolean = false;
   public isTeacher: boolean = false;
   public currentUser;
+  public blnDisableClick = false;
   public minStartDate = this.convertTickToDateDPicker((new Date()).getTime());
 
   @ViewChild('addModal') public addModal: ModalDirective;
@@ -30,6 +32,7 @@ export class DashboardComponent implements OnInit {
               private iconLoading: NgxUiLoaderService,
               private fb: FormBuilder,
               private role: CheckRole,
+              private toastr: Toastr
   ) {
   }
 
@@ -100,12 +103,18 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  onClickShowModalAdd() {
+    this.resetForm(this.frmAdd);
+  }
+
   onSubmitFormAdd() {
     this.submitted = true;
     this.loading = true;
+    this.blnDisableClick = false;
 
     // Stop here if form is invalid
     if (this.frmAdd.invalid) {
+      this.blnDisableClick = false;
       this.loading = false;
       return;
     }
@@ -118,17 +127,21 @@ export class DashboardComponent implements OnInit {
 
     this.dashBoardService.addCourse(objCourse).subscribe(
       response => {
-        const successMsg = 'save course success';
-        if (response.status === 200 && response.body === successMsg) {
+        if (response.status === 200 && response.body.success) {
           // Success:
           this.addModal.hide();
           this.getLstAllCourse();
+          this.toastr.showToastrSuccess(
+            'Lớp học mới đã được tạo. Để bắt đầu bạn cần chuyển trạng thái lớp sang hoạt động.', 'Thành công!', 4000);
         }
         this.loading = false;
+        this.blnDisableClick = false;
       },
       error => {
         // Error:
         this.loading = false;
+        this.blnDisableClick = false;
+        this.toastr.showToastrWarning('', 'Không thành công!');
       });
   }
 
@@ -141,5 +154,13 @@ export class DashboardComponent implements OnInit {
     const date = new Date(Number(tick));
     return moment(date).format('YYYY-MM-DD');
   }
+
+  resetForm(form: FormGroup) {
+    form.reset();
+    Object.keys(form.controls).forEach(key => {
+      form.get(key).setErrors(null) ;
+    });
+  }
+
 
 }

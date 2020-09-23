@@ -241,8 +241,6 @@ export class MarkComponent implements OnInit {
     }
     this.startSlice = this.startSlice - 1;
     this.endSlice = this.endSlice - 1;
-    console.log('start = ' + this.startSlice)
-    console.log('end = ' + this.endSlice)
   }
 
   onClickNextPage() {
@@ -251,8 +249,6 @@ export class MarkComponent implements OnInit {
     }
     this.startSlice = this.startSlice + 1;
     this.endSlice = this.endSlice + 1;
-    console.log('start = ' + this.startSlice)
-    console.log('end = ' + this.endSlice)
   }
 
 }

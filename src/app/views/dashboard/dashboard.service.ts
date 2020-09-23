@@ -36,8 +36,8 @@ export class DashboardService {
     }
 
     addCourse(pObjCourse) {
-        return this.http.post(`${environment.apiUrl}/data/course/add`,
-        pObjCourse, { headers: this.headers, observe: 'response', responseType: 'text' as 'json' });
+        return this.http.post<any>(`${environment.apiUrl}/data/course/add`,
+            pObjCourse, { observe: 'response'});
     }
 
     getAllCourseCategory() {

@@ -11,14 +11,13 @@
                 </h1>
                 <p class="pos-absolute cate-name">Giáo viên: {{objTeacher?.fullname || null}}</p>
                 <p class="pos-absolute class-code">Chuyên ngành: {{ getCtgrname(objClass?.course_category_id) }}</p>
-                <div  class="pos-absolute add-session text-deco" *ngIf="objClass?.currentSession.id == null && objClass?.status == 'ONGOING'">
+                <div  class="pos-absolute add-session text-deco" *ngIf="isTeacher && objClass?.currentSession.id == null && objClass?.status == 'ONGOING'">
                     <p data-toggle="modal" (click)="addSessionModal.show();" >Bắt đầu buổi học</p>
                 </div>
                 <div  class="pos-absolute add-session" *ngIf="objClass?.currentSession.course_id == objClass?.id">
-                    <p style="text-decoration: none;">(Một buổi học đang diễn ra)</p>
+                    <p style="text-decoration: none;">(Buổi học đang diễn ra)</p>
                 </div>
                 <p class="pos-absolute select-img" data-toggle="modal" (click)="chooseImgModal.show(); onClickModalChooseImg()">Chọn chủ đề</p>
-                <!-- <p class="pos-absolute upload-img">Tải ảnh lên</p> -->
             </div>
         </div>
     </div>
