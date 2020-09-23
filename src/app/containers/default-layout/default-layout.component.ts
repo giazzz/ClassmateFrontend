@@ -40,11 +40,11 @@ export class DefaultLayoutComponent implements OnInit {
       url: '/dashboard',
       icon: 'icon-briefcase',
     },
-    {
-      name: 'Thời khóa biểu',
-      url: '/schedule',
-      icon: 'icon-calendar'
-    },
+    // {
+    //   name: 'Thời khóa biểu',
+    //   url: '/schedule',
+    //   icon: 'icon-calendar'
+    // },
     // {
     //   name: 'Quản lý sinh viên',
     //   url: '/manage',
@@ -113,7 +113,7 @@ export class DefaultLayoutComponent implements OnInit {
                 title: true,
                 name: 'Lớp học'
               });
-            response.body.forEach(item => {
+            response.body.filter(item => item.status === 'ONGOING' || item.status === 'PENDING').forEach(item => {
               this.totalCourse++;
               this.lstAllCourse.push(
                 {
@@ -121,6 +121,12 @@ export class DefaultLayoutComponent implements OnInit {
                   url: `/class/${item.id}/stream`,
                   icon: 'icon-graduation'
                 });
+                // this.lstAllCourse.push(
+                //   {
+                //     name: 'Cài đặt',
+                //     url: `/class/${item.id}/setting`,
+                //     icon: 'icon-settings'
+                //   });
             });
             this.nav.push(
               {
@@ -145,7 +151,7 @@ export class DefaultLayoutComponent implements OnInit {
                 title: true,
                 name: 'Lớp học'
               });
-            response.body.forEach(item => {
+            response.body.filter(item => item.status === 'ONGOING' || item.status === 'PENDING').forEach(item => {
               this.totalCourse++;
               if (this.lstAllCourse.length <= 10) {
                 this.lstAllCourse.push(

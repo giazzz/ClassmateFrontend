@@ -58,6 +58,7 @@ export class ClassRoomComponent implements OnInit {
   @ViewChild('inputPost', {static: true}) InputPost: ElementRef<any>;
   @ViewChild('updateModal') public updateModal: ModalDirective;
   @ViewChild('addSessionModal') public addSessionModal: ModalDirective;
+  @ViewChild('deleteModal') public deleteModal: ModalDirective;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -69,7 +70,7 @@ export class ClassRoomComponent implements OnInit {
               private fb: FormBuilder,
               private dashBoardService: DashboardService,
               private sessionService: SessionService,
-              private toastr: Toastr
+              private toastr: Toastr,
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
@@ -357,14 +358,20 @@ export class ClassRoomComponent implements OnInit {
       });
   }
 
-  onClickDeletePost(postId: string) {
-    this.classRoomService.deletePost(postId).subscribe(
+  onClickDeletePost() {
+    this.loading = true;
+    this.classRoomService.deletePost(this.currentPost.id).subscribe(
       response => {
         if (response != null && response !== undefined && response.success) {
           this.getAllPost();
+          this.toastr.showToastrSuccess('Đã xóa thông báo', 'Thành công!');
+          this.deleteModal.hide();
         }
+        this.loading = false;
       },
       error => {
+        this.toastr.showToastrWarning('', 'Không thành công!');
+        this.loading = false;
       });
   }
 

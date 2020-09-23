@@ -61,6 +61,7 @@ import { ScheduleComponent } from './views/schedule/schedule.component';
 import { TodoComponent } from './views/todo/todo.component';
 import { NgxDocViewerModule } from 'ngx-doc-viewer';
 import { PopoverModule } from 'ngx-smart-popover';
+import { SettingClassComponent } from './views/setting-class/setting-class.component';
 
 @NgModule({
   imports: [
@@ -104,7 +105,8 @@ import { PopoverModule } from 'ngx-smart-popover';
     MarkComponent,
     SettingComponent,
     ScheduleComponent,
-    TodoComponent
+    TodoComponent,
+    SettingClassComponent
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},

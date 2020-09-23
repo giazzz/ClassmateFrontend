@@ -51,7 +51,6 @@
 
             <div class="col-sm-9 info-div">
                 <div class="card cmt-div">
-
                     <div class="card-body body-first" (click)="blnIsClick = true" *ngIf="!isUpdate && !blnIsClick">
                         <div class="row col-12 list-exam pd-r-0">
                             <div class="text-left list col-10 pd-r-0">
@@ -167,7 +166,6 @@
                                 </div>
                             </div>
 
-
                             <div class="row pd-l-0 pd-r-0">
                                 <div class="col-6">
                                     <button type="button" class="btn btn-light" (click)="inputFile.click()">
@@ -190,9 +188,22 @@
                             </div>
                         </div>
                     </div>
-
-
                 </div>
+
+                <div class="card content-cmt-div" *ngIf="lstPost.length == 0" >
+                    <div class="card-body">
+                        <h2>Trao đổi với lớp học tại đây</h2>
+                        <div class="row margin-left-30" style="margin-left: 0px;">
+                            <i class="icon-speech icons font-xl" style="margin-right: 5px; margin-top: 5px;"></i>
+                            <p>Tạo thông báo</p>
+                        </div>
+                        <div class="row margin-left-30" style="margin-left: 0px;">
+                            <i class="icon-bubbles icons font-xl" style="margin-right: 5px; margin-top: 5px;"></i>
+                            <p>Phản hồi bài đăng của học sinh</p>
+                        </div>
+                    </div>
+                </div>
+            
                 <ng-container *ngFor="let c of lstPost">
                     <ng-container>
                         <!-- List post -->
@@ -215,7 +226,7 @@
                                             <i class="icon-options-vertical icons font-xl"></i>
                                             <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" >
                                                 <li *ngIf="objLoggedUser?.id == c.user_id" role="menuitem" (click)="onClickUpdatePost(c.id)"><a class="dropdown-item">Chỉnh sửa</a></li>
-                                                <li *ngIf="isTeacher || objLoggedUser?.id == c.user_id" role="menuitem" (click)="onClickDeletePost(c.id)" ><a class="dropdown-item">Xóa</a></li>
+                                                <li *ngIf="isTeacher || objLoggedUser?.id == c.user_id" role="menuitem" (click)="deleteModal.show(); currentPost = c;" ><a class="dropdown-item">Xóa</a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -482,31 +493,56 @@
 <!-- Modal add session -->
 <div bsModal #addSessionModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Bắt đầu buổi học</h4>
-          <button type="button" class="close" (click)="addSessionModal.hide()" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-            <div  class="modal-session" >
-                <p>Bắt đầu buổi học</p>
-                <label class="switch switch-label switch-outline-success-alt">
-                    <input type="checkbox" class="switch-input" [checked]="false" (change)="onChangeAddSession($event)">
-                    <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
-                </label>
+        <div class="modal-content">
+            <div class="modal-header">
+            <h4 class="modal-title">Bắt đầu buổi học</h4>
+            <button type="button" class="close" (click)="addSessionModal.hide()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
             </div>
-            <p>*Bằng việc bắt dầu một buổi học bạn có thể bắt đầu điểm danh và tạo bài tập.</p>
+            <div class="modal-body">
+                <div  class="modal-session" >
+                    <p>Bắt đầu buổi học</p>
+                    <label class="switch switch-label switch-outline-success-alt">
+                        <input type="checkbox" class="switch-input" [checked]="false" (change)="onChangeAddSession($event)">
+                        <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
+                    </label>
+                </div>
+                <p>*Bằng việc bắt dầu một buổi học bạn có thể bắt đầu điểm danh và tạo bài tập.</p>
 
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="addSessionModal.hide()">Hủy</button>
+            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="addSessionModal.hide()">Hủy</button>
-          <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
-        </div>
-      </div>
     </div>
-  </div>
+</div>
+
+<!-- Modal confirm delete -->
+<div bsModal #deleteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h4 class="modal-title">Xóa thông báo?</h4>
+            <button type="button" class="close" (click)="deleteModal.hide()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <p>*Các bình luận cũng sẽ bị xóa.</p>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="deleteModal.hide()">Hủy</button>
+            <button type="button" class="btn btn-primary" (click)="onClickDeletePost()">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                Xóa
+            </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <ngx-ui-loader></ngx-ui-loader>
 <div class="ngx-foreground-spinner spinner-container">

@@ -1,5 +1,5 @@
 <div class="animated fadeIn">
-    <div class="col-12">
+    <div class="col-10" style="margin: auto;">
         <div class="card">
             <div class="card-body">
                 <table class="table table-teacher">
@@ -9,9 +9,6 @@
                                 <h1>Giáo viên</h1>
                             </th>
                             <th class="text-right action">
-                                <div class="wrapper-icon">
-                                    <i class="icon-user-follow icons font-2xl d-block mt-4"></i>
-                                </div>
                             </th>
                         </tr>
                     </thead>
@@ -19,10 +16,9 @@
                         <tr>
                             <td class="row text-left list">
                                 <div class="avatar">
-                                    <img src="assets/img/avatars/4.jpg" class="img-avatar" alt="">
-                                    <span class="avatar-status badge-secondary"></span>
+                                    <img src="{{ driveUrl + objTeacher?.avatar_file_id || defaultAvatar }}" class="img-avatar" alt="">
                                 </div>
-                                <p>Trần Văn Nguyên (Nguyentv)</p>
+                                <p>{{ objTeacher?.fullname }}</p>
                             </td>
                             <td class="text-right action">
                                 <div class="wrapper-icon icon-mail">
@@ -41,7 +37,7 @@
                                 <h1>Sinh viên</h1>
                             </th>
                             <th class="text-right action">
-                                <div class="wrapper-icon">
+                                <div class="wrapper-icon" *ngIf="isTeacher" (click)="addStudentModal.show()">
                                     <i class="icon-user-follow icons font-2xl d-block mt-4"></i>
                                 </div>
                             </th>
@@ -50,39 +46,34 @@
                     <tbody>
                         <tr>
                             <td class="row text-left list">
-
-                                <input type="checkbox" id="checkall" />
-                                <label for="checkall" class="check-box"></label> 
-
-                                <div class="btn-group" dropdown [autoClose]="true">
-                                    <button dropdownToggle type="button" class="btn dropdown-toggle btn-action">
-                                      Tác vụ <span class="caret"></span>
-                                    </button>
-                                    <ul *dropdownMenu class="dropdown-menu" role="menu">
-                                      <li role="menuitem"><a class="dropdown-item" href="#">Gửi mail</a></li>
-                                      <li role="menuitem"><a class="dropdown-item" href="#">Ẩn</a>
-                                      </li>
-                                      <li role="menuitem"><a class="dropdown-item" href="#">Xóa</a></li>
-                                    </ul>
-                                  </div>
+                                <ng-container *ngIf="isTeacher">
+                                    <input type="checkbox" id="checkall" [(ngModel)]="blnCheckAll" (change)="onChangeCheckAll()" />
+                                    <label for="checkall" class="check-box"></label>
+                                    <div class="btn-group" dropdown [autoClose]="true">
+                                        <button dropdownToggle type="button" class="btn dropdown-toggle btn-action">
+                                            Tác vụ <span class="caret"></span>
+                                        </button>
+                                        <ul *dropdownMenu class="dropdown-menu" role="menu">
+                                            <li role="menuitem"><a class="dropdown-item">Gửi mail</a></li>
+                                            <li role="menuitem" (click)="deleteModal.show()"><a class="dropdown-item">Xóa</a></li>
+                                        </ul>
+                                    </div>
+                                </ng-container>
                             </td>
                             <td></td>
                         </tr>
-                        <tr>
+
+                        <tr *ngFor="let s of lstStudents; let i = index;">
                             <td class="row text-left list">
-
-                                <input type="checkbox" id="cbtest" />
-                                <label for="cbtest" class="check-box"></label> 
-
+                                <input type="checkbox" id="cbtest-{{i}}" name="cbtest-{{i}}" [(ngModel)]="s.check" [checked]="s.check" />
+                                <label for="cbtest-{{i}}" class="check-box"></label>
                                 <div class="avatar">
-                                    <img src="assets/img/avatars/4.jpg" class="img-avatar"
-                                        alt="admin@bootstrapmaster.com">
-                                    <span class="avatar-status badge-secondary"></span>
+                                    <img src="{{ driveUrl + s?.avatar_file_id || defaultAvatar }}" class="img-avatar"
+                                        alt="">
                                 </div>
                                 <p [ngStyle]="!blnNotConfirm && {'margin-top': '8px'}">
-                                    <span>Trần Văn Nguyên (Nguyentv)</span>
-                                    <br>
-                                    <span *ngIf="blnNotConfirm" class="confirm">(đã được mời)</span>
+                                    <span>{{ s.fullname }}</span><br>
+                                    <span *ngIf="blnNotConfirm" class="confirm">{{ s.email }}</span>
                                 </p>
                             </td>
                             <td class="text-right action">
@@ -91,56 +82,62 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
-                            <td class="row text-left list">
 
-                                <input type="checkbox" id="cbtest1" />
-                                <label for="cbtest1" class="check-box"></label> 
-
-                                <div class="avatar">
-                                    <img src="assets/img/avatars/4.jpg" class="img-avatar"
-                                        alt="admin@bootstrapmaster.com">
-                                    <span class="avatar-status badge-secondary"></span>
-                                </div>
-                                <p [ngStyle]="!blnNotConfirm && {'margin-top': '8px'}">
-                                    <span>Trần Văn Nguyên (Nguyentv)</span>
-                                    <br>
-                                    <span *ngIf="blnNotConfirm" class="confirm">(đã được mời)</span>
-                                </p>
-                            </td>
-                            <td class="text-right action">
-                                <div class="wrapper-icon icon-mail">
-                                    <i class="icon-envelope icons font-xl d-block"></i>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="row text-left list">
-
-                                <input type="checkbox" id="cbtest2" />
-                                <label for="cbtest2" class="check-box"></label> 
-
-                                <div class="avatar">
-                                    <img src="assets/img/avatars/4.jpg" class="img-avatar"
-                                        alt="admin@bootstrapmaster.com">
-                                    <span class="avatar-status badge-secondary"></span>
-                                </div>
-                                <p [ngStyle]="true && {'margin-top': '8px'}">
-                                    <span>Trần Văn Nguyên (Nguyentv)</span>
-                                    <br>
-                                    <span *ngIf="false" class="confirm">(đã được mời)</span>
-                                </p>
-                            </td>
-                            <td class="text-right action">
-                                <div class="wrapper-icon icon-mail">
-                                    <i class="icon-envelope icons font-xl d-block"></i>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Modal add student to course -->
+<div bsModal #addStudentModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-success" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Thêm sinh viên</h4>
+                <button type="button" class="close" (click)="addStudentModal.hide()" aria-label="Close">
+                    <span aria-hidden="true" style="color: #ffffff;" >&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <div class="col-md-9" >
+                      <input formControlName="inputDes" type="text" id="email-input" name="des-input" class="form-control" >
+                    </div>
+                    <label class="col-md-3 col-form-label" for="des-input">Mô tả</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="addStudentModal.hide()">Hủy</button>
+                <button type="button" class="btn btn-success">
+                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                    Thêm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal confirm delete -->
+<div bsModal #deleteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h4 class="modal-title">Xóa sinh viên?</h4>
+            <button type="button" class="close" (click)="deleteModal.hide()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa sinh viên đã chọn khỏi lớp?</p>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="deleteModal.hide()">Hủy</button>
+            <button type="button" class="btn btn-primary" (click)="onClickRemoveStudent()">
+                Xóa
+            </button>
             </div>
         </div>
     </div>

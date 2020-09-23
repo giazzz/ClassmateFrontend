@@ -82,7 +82,7 @@ export class DashboardComponent implements OnInit {
       this.dashBoardService.getTeacherCourse().subscribe(
         response => {
           if (response.body !== null && response.body !== undefined) {
-            this.lstAllCourse = response.body;
+            this.lstAllCourse = response.body.filter(item => item.status === 'ONGOING' || item.status === 'PENDING');
           }
           this.iconLoading.stop();
         },
@@ -93,7 +93,7 @@ export class DashboardComponent implements OnInit {
       this.dashBoardService.getStudentCourse().subscribe(
         response => {
           if (response.body !== null && response.body !== undefined) {
-            this.lstAllCourse = response.body;
+            this.lstAllCourse = response.body.filter(item => item.status === 'ONGOING' || item.status === 'PENDING');
           }
           this.iconLoading.stop();
         },

@@ -28,7 +28,6 @@ export class MarkComponent implements OnInit {
   public startSlice = 0;
   public endSlice = 0;
   public totalCountEx = 0;
-
   public courseId;
   public driveUrl = EndpointsConfig.google.driveUrl;
   public defaultAvatar = EndpointsConfig.user.defaultAvatar;
