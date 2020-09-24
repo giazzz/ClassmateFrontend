@@ -42,6 +42,7 @@ export class AttendanceByTeacherComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.iconLoading.start();
     this.courseId = this.route.snapshot.paramMap.get('id');
     if (this.courseId == null || this.courseId === undefined || this.courseId === 'undefined') {
       this.router.navigateByUrl('/dashboard');
@@ -57,6 +58,10 @@ export class AttendanceByTeacherComponent implements OnInit {
           this.objCourse = response.body;
           this.getListStudentResult();
         }
+        this.iconLoading.stop();
+      },
+      error => {
+        this.iconLoading.stop();
       });
   }
 

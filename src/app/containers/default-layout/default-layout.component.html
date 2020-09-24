@@ -23,6 +23,10 @@
         <!-- Dành cho giáo viên: -->
         <a class="nav-link" [ngClass]="{'active' : router.url === ('/class/'+classId+'/attendance') }" [routerLink]="['/class', classId, 'attendance']">Điểm danh</a>
       </li>
+      <li *ngIf="isTeacher" class="nav-item px-3">
+        <!-- Dành cho giáo viên: -->
+        <a class="nav-link" [ngClass]="{'active' : router.url === ('/class/'+classId+'/setting') }" [routerLink]="['/class', classId, 'setting']">Cài đặt</a>
+      </li>
       <li *ngIf="isStudent" class="nav-item px-3">
         <!-- Dành cho sinh viên: -->
         <a class="nav-link" [ngClass]="{'active' : router.url === ('/student/'+userId+'/attendance') }" [routerLink]="['/student', userId, 'attendance']">Điểm danh</a>

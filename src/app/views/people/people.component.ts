@@ -5,6 +5,7 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { EndpointsConfig } from '../../config/config';
 import { CheckRole } from '../../shared/checkRole';
 import { Toastr } from '../../shared/toastr';
+import { SettingService } from '../setting/setting.service';
 import { PeopleService } from './people.service';
 
 @Component({
@@ -19,10 +20,15 @@ export class PeopleComponent implements OnInit {
   public courseId;
   public objCourse;
   public objTeacher;
+  public keySearchStudent = '';
   public lstStudents = [];
+  public blnNotFound: boolean = false;
+  public blnStudentInCourse: boolean = false;
+  public objStudentSearch = null;
   public isTeacher: boolean = false;
   public isStudent: boolean = false;
   public blnCheckAll: boolean = false;
+  public loadingSearch: boolean = false;
   public loading: boolean = false;
   public driveUrl = EndpointsConfig.google.driveUrl;
   public defaultAvatar = EndpointsConfig.user.defaultAvatar;
@@ -36,10 +42,12 @@ export class PeopleComponent implements OnInit {
               private toastr: Toastr,
               private peopleService: PeopleService,
               private iconLoading: NgxUiLoaderService,
+              private userService: SettingService,
   ) {
   }
 
   ngOnInit(): void {
+    this.iconLoading.start();
     this.courseId = this.route.snapshot.paramMap.get('id');
     if (this.courseId == null || this.courseId === undefined || this.courseId === 'undefined') {
       this.router.navigateByUrl('/dashboard');
@@ -47,14 +55,10 @@ export class PeopleComponent implements OnInit {
     this.blnNotConfirm = true;
     this.isStudent = this.role.isStudent();
     this.isTeacher = this.role.isTeacher();
-    this.iconLoading.start();
-    if (this.isTeacher) {
-      this.getAllProfilesCourseByTeacher();
-
-    }
+    this.getAllProfilesCourse();
   }
 
-  getAllProfilesCourseByTeacher() {
+  getAllProfilesCourse() {
     this.peopleService.allProfileInCourse(this.courseId).subscribe(
       response => {
         if (response.body != null && response.body !== undefined) {
@@ -90,7 +94,7 @@ export class PeopleComponent implements OnInit {
         response => {
           if (response.body != null && response.body.success) {
             countSuccess++;
-            this.getAllProfilesCourseByTeacher();
+            this.getAllProfilesCourse();
             if (countSuccess === lstStudentSelected.length) {
               this.toastr.showToastrSuccess(`Đã xóa ${countSuccess} sinh viên khỏi lớp.`, 'Thành công!');
             }
@@ -98,6 +102,58 @@ export class PeopleComponent implements OnInit {
         });
     });
     this.deleteModal.hide();
+  }
+
+  onClickOpenModalAddToCourse() {
+    this.objStudentSearch = null;
+    this.blnNotFound = false;
+    this.blnStudentInCourse = false;
+  }
+
+  onClickSearchStudent() {
+    this.loadingSearch = true;
+    this.userService.getProfile(this.keySearchStudent).subscribe(
+      response => {
+        if (response.body != null && response.body) {
+          this.blnNotFound = false;
+          this.objStudentSearch = response.body;
+          const objSv = this.lstStudents.find(s => s.id === response.body.id);
+          if (objSv != null) {
+            this.blnStudentInCourse = true;
+          } else {
+            this.blnStudentInCourse = false;
+          }
+        } else {
+          this.blnNotFound = true;
+        }
+        this.loadingSearch = false;
+      },
+      error => {
+        this.blnNotFound = true;
+        this.loadingSearch = false;
+      });
+  }
+
+  onClickAddStudent() {
+    if (this.objStudentSearch == null || this.blnStudentInCourse) {
+      this.toastr.showToastrWarning('', 'Sinh viên đã ở trong lớp');
+      return;
+    }
+    this.loading = true;
+    const course_id = this.courseId;
+    const student_id = this.objStudentSearch.id;
+    this.peopleService.addToCourse({ course_id, student_id }).subscribe(
+      response => {
+        if (response.body != null && response.body.success) {
+          this.addStudentModal.hide();
+          this.getAllProfilesCourse();
+          this.toastr.showToastrSuccess(`Sinh viên ${this.objStudentSearch.fullname} đã được thêm vào lớp.`, 'Thành công!');
+        }
+        this.loading = false;
+      },
+      error => {
+        this.loading = false;
+      });
   }
 
 }

@@ -146,19 +146,39 @@ export class MarkComponent implements OnInit {
     });
     // Get list excercise by student:
     lstAll.forEach(item => {
-      item.gradeRecordResponses.forEach(ex => {
-        this.lstStudent.find(s => s.id === ex.userProfileResponse.id).lstExcercise.push(
-          {
-            exercise_id: item.id,
-            created_at: item.created_at,
-            exercise_student_id: ex.studentExerciseResponse.id,
-            submitted: ex.studentExerciseResponse.submitted,
-            mark: ex.studentExerciseResponse.marked ? ex.studentExerciseResponse.mark.toFixed(1) : null,
-            marked: ex.studentExerciseResponse.marked,
-            teacher_message: ex.studentExerciseResponse.teacher_message,
+      for (const s of this.lstStudent) {
+        let isHaveEx = false;
+        for (const ex of item.gradeRecordResponses) {
+          if (ex.userProfileResponse.id === s.id ) {
+            isHaveEx = true;
+            s.lstExcercise.push(
+              {
+                exercise_id: item.id,
+                created_at: item.created_at,
+                exercise_student_id: ex.studentExerciseResponse.id,
+                submitted: ex.studentExerciseResponse.submitted,
+                mark: ex.studentExerciseResponse.marked ? ex.studentExerciseResponse.mark.toFixed(1) : null,
+                marked: ex.studentExerciseResponse.marked,
+                teacher_message: ex.studentExerciseResponse.teacher_message,
+                isAssign: true
+              });
           }
-        );
-      });
+        }
+        if (!isHaveEx) {
+          s.lstExcercise.push(
+            {
+              exercise_id: item.id,
+              created_at: null,
+              exercise_student_id: null,
+              submitted: null,
+              mark: null,
+              marked: false,
+              teacher_message: null,
+              isAssign: false
+            });
+        }
+
+      }
     });
   }
 

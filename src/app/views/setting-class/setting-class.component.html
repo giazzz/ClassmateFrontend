@@ -1,1 +1,21 @@
-<p>setting-class works!</p>
+<div class="animated fadeIn">
+	<div class="card col-md-10 col-12" style="margin: auto;">
+		<div class="card-body">
+			<h3 style="padding-left: 15px;">Mã tham gia</h3>
+			<p style="padding-left: 15px; color: gray;">*Mã tham gia dùng cho sinh viên có thể tự tham gia lớp học.</p>
+			<button *ngIf="strCode == null || strCode == undefined" (click)="onClickCreateCode()" type="button" class="btn btn-brand btn-lg btn-vimeo" style="margin-bottom: 4px; margin-left: 15px; color: #ffffff;">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                <i *ngIf="!loading" class="icon-key icons"></i>
+                <span>Tạo mã mới</span>
+            </button>
+            <h2 style="padding-left: 15px; color: blueviolet;">{{strCode || null}}</h2>
+        </div>
+    </div>
+    
+    <div class="card col-md-10 col-12" style="margin: auto;">
+		<div class="card-body">
+			<h3 style="padding-left: 15px;">Buổi học</h3>
+
+        </div>
+	</div>
+</div>

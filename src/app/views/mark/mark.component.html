@@ -52,34 +52,39 @@
 
                         <ng-container *ngIf="isTeacher">
                             <td *ngFor="let ex of sortListExercise(s.lstExcercise).slice(startSlice, endSlice); let j = index" class="div-score" [ngClass]="{'td-hover' : ex.isFocus}" (click)="onTdScoreClick(ex, i, j, $event);" (mouseenter)="ex.isHover = true" (mouseleave)="ex.isHover = false">
-                                <div class="row" *ngIf="ex.isHover || ex.isClick || ex.marked" >
-                                    <div class="input-score">
-                                        <input class="fw-500" type="number"
-                                                max="10"
-                                                min="0"
-                                                id="{{'input-' + i.toString() + j.toString()}}" 
-                                                (focus)="ex.isFocus = true; onFocusInputMark(ex.mark);" 
-                                                (focusout)="ex.isFocus = false; onSubmitMark(ex); "
-                                                (keyup.enter)="onSubmitMark(ex)" 
-                                                [(ngModel)]="ex.mark"
-                                                />
-                                        <h4 class="j4" *ngIf="!ex.marked || ex.isFocus">
-                                            <span *ngIf="!ex.isClick" class="under-input">_</span>
-                                            /10.0
-                                        </h4>
-                                        <span *ngIf="!ex.submitted" class="not-submmit">Chưa nộp</span>
-                                        <span *ngIf="ex.submitted && ex.isFocus" class="not-submmit">Đã nộp</span>
+                                <ng-container *ngIf="ex.isAssign">
+                                    <div class="row" *ngIf="ex.isHover || ex.isClick || ex.marked" >
+                                        <div class="input-score">
+                                            <input class="fw-500" type="number"
+                                                    max="10"
+                                                    min="0"
+                                                    id="{{'input-' + i.toString() + j.toString()}}" 
+                                                    (focus)="ex.isFocus = true; onFocusInputMark(ex.mark);" 
+                                                    (focusout)="ex.isFocus = false; onSubmitMark(ex); "
+                                                    (keyup.enter)="onSubmitMark(ex)" 
+                                                    [(ngModel)]="ex.mark"
+                                                    />
+                                            <h4 class="j4" *ngIf="!ex.marked || ex.isFocus">
+                                                <span *ngIf="!ex.isClick" class="under-input">_</span>
+                                                /10.0
+                                            </h4>
+                                            <span *ngIf="!ex.submitted" class="not-submmit">Chưa nộp</span>
+                                            <span *ngIf="ex.submitted && ex.isFocus" class="not-submmit">Đã nộp</span>
+                                        </div>
+                                        <div class="wrapper-action" dropdown dropdownToggle placement="bottom right" *ngIf="ex.isHover || ex.isFocus" >
+                                            <i class="icon-options-vertical icons font-xl"></i>
+                                            <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+                                                <li (click)="onClickEditMark(i, j);" role="menuitem"><a class="dropdown-item" >Chỉnh sửa</a></li>
+                                                <li (click)="onClickShowEx(ex.exercise_student_id);" role="menuitem"><a class="dropdown-item" >Xem bài nộp</a></li>
+                                            </ul>
+                                        </div>
                                     </div>
-                                    <div class="wrapper-action" dropdown dropdownToggle placement="bottom right" *ngIf="ex.isHover || ex.isFocus" >
-                                        <i class="icon-options-vertical icons font-xl"></i>
-                                        <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
-                                            <li (click)="onClickEditMark(i, j);" role="menuitem"><a class="dropdown-item" >Chỉnh sửa</a></li>
-                                            <li (click)="onClickShowEx(ex.exercise_student_id);" role="menuitem"><a class="dropdown-item" >Xem bài nộp</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <ng-container *ngIf="!ex.isHover && !ex.isClick && !ex.marked && ex.submitted">
-                                    <span class="submmited">Đã nộp</span>
+                                    <ng-container *ngIf="!ex.isHover && !ex.isClick && !ex.marked && ex.submitted">
+                                        <span class="submmited">Đã nộp</span>
+                                    </ng-container>
+                                </ng-container>
+                                <ng-container *ngIf="!ex.isAssign">
+                                    <span class="submmited" style="padding-left: 20%;">Không được giao</span>
                                 </ng-container>
                             </td>
                         </ng-container>

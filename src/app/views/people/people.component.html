@@ -37,7 +37,7 @@
                                 <h1>Sinh viên</h1>
                             </th>
                             <th class="text-right action">
-                                <div class="wrapper-icon" *ngIf="isTeacher" (click)="addStudentModal.show()">
+                                <div class="wrapper-icon" *ngIf="isTeacher" (click)="addStudentModal.show(); onClickOpenModalAddToCourse();">
                                     <i class="icon-user-follow icons font-2xl d-block mt-4"></i>
                                 </div>
                             </th>
@@ -65,8 +65,10 @@
 
                         <tr *ngFor="let s of lstStudents; let i = index;">
                             <td class="row text-left list">
-                                <input type="checkbox" id="cbtest-{{i}}" name="cbtest-{{i}}" [(ngModel)]="s.check" [checked]="s.check" />
-                                <label for="cbtest-{{i}}" class="check-box"></label>
+                                <ng-container *ngIf="isTeacher">
+                                    <input type="checkbox" id="cbtest-{{i}}" name="cbtest-{{i}}" [(ngModel)]="s.check" [checked]="s.check" />
+                                    <label for="cbtest-{{i}}" class="check-box"></label>
+                                </ng-container>
                                 <div class="avatar">
                                     <img src="{{ driveUrl + s?.avatar_file_id || defaultAvatar }}" class="img-avatar"
                                         alt="">
@@ -102,16 +104,35 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="form-group row">
-                    <div class="col-md-9" >
-                      <input formControlName="inputDes" type="text" id="email-input" name="des-input" class="form-control" >
+                <div class="form-group " style="display: flex; padding-left: 20px; margin-bottom: 0.5rem;">
+                    <div style="width: 70%;" >
+                      <input [(ngModel)]="keySearchStudent" type="text" id="email-input" name="des-input" class="form-control" >
                     </div>
-                    <label class="col-md-3 col-form-label" for="des-input">Mô tả</label>
+                    <div style="width: 30%; padding-left: 10px;" >
+                        <button type="button" class="btn btn-primary block" (click)="onClickSearchStudent()">
+                            <span *ngIf="loadingSearch" class="spinner-border spinner-border-sm mr-1"></span>
+                            <i *ngIf="!loadingSearch" class="icon-magnifier icons"></i>
+                            &nbsp;Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group " style="padding-left: 20px;">
+                    <p style="color: gray;">*Tìm kiếm sinh viên theo email hoặc tên đăng nhập.</p>
+                    <p *ngIf="blnNotFound" style="color: gray;">Không tìm thấy sinh viên.</p>
+                </div>
+                <div class="row text-left list" *ngIf="objStudentSearch != null">
+                    <div class="avatar">
+                        <img src="{{ driveUrl + objStudentSearch?.avatar_file_id }}" class="img-avatar" alt="">
+                    </div>
+                    <p style="margin-top: 8px;">
+                        <span>{{ objStudentSearch?.fullname }}</span><br>
+                        <span *ngIf="blnStudentInCourse" class="confirm">(Sinh viên đã ở trong lớp)</span>
+                    </p>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" (click)="addStudentModal.hide()">Hủy</button>
-                <button type="button" class="btn btn-success">
+                <button type="button" class="btn btn-success" (click)="onClickAddStudent()">
                     <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
                     Thêm
                 </button>
@@ -140,5 +161,15 @@
             </button>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Loading -->
+<ngx-ui-loader></ngx-ui-loader>
+<div class="ngx-foreground-spinner spinner-container">
+    <div class="sk-three-strings">
+    <div></div>
+    <div></div>
+    <div></div>
     </div>
 </div>

@@ -160,6 +160,19 @@
 						</div>
 					</div>
 
+					<div class="form-group row">
+						<label class="col-md-3 col-form-label" for="select2">Công khai</label>
+						<div class="col-md-9">
+							<select formControlName="selectAllowInfo" id="select1" name="select1" class="form-control" >
+								<option value="PUBLIC">Công khai</option>
+								<option value="TEACHER">Tất cả giáo viên</option>
+								<option *ngIf="isStudent" value="COURSE">Giáo viên và bạn cùng lớp</option>
+								<option *ngIf="isStudent" value="TEACHERCOURSE">Giáo viên giảng dạy</option>
+								<option value="PRIVATE">Ẩn</option>
+							</select>
+						</div>
+					</div>
+
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" (click)="addModal.hide()">Hủy</button>
@@ -218,4 +231,14 @@
 			</div>
 		</div>
 	</div>
+</div>
+
+<!-- Loading -->
+<ngx-ui-loader></ngx-ui-loader>
+<div class="ngx-foreground-spinner spinner-container">
+    <div class="sk-three-strings">
+    <div></div>
+    <div></div>
+    <div></div>
+    </div>
 </div>

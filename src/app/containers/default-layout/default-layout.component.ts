@@ -58,7 +58,7 @@ export class DefaultLayoutComponent implements OnInit {
     {
       name: 'Cá nhân',
       url: '/setting',
-      icon: 'icon-settings'
+      icon: 'icon-user'
     },
   ];
 
@@ -121,12 +121,6 @@ export class DefaultLayoutComponent implements OnInit {
                   url: `/class/${item.id}/stream`,
                   icon: 'icon-graduation'
                 });
-                // this.lstAllCourse.push(
-                //   {
-                //     name: 'Cài đặt',
-                //     url: `/class/${item.id}/setting`,
-                //     icon: 'icon-settings'
-                //   });
             });
             this.nav.push(
               {
@@ -134,6 +128,14 @@ export class DefaultLayoutComponent implements OnInit {
                 url: '/manage',
                 icon: 'icon-folder-alt'
               });
+            // if (this.classId != null && this.classId !== undefined) {
+            //   this.lstAllCourse.push(
+            //     {
+            //       name: 'Cài đặt',
+            //       url: `/class/${this.classId}/setting`,
+            //       icon: 'icon-settings'
+            //     });
+            // }
             this.navItems = this.lstAllCourse.concat(this.nav);
           }
           this.iconLoading.stop();
