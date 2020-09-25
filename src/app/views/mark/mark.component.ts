@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import * as $ from 'jquery';
 import { CheckRole } from '../../shared/checkRole';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -8,6 +8,8 @@ import { EndpointsConfig } from '../../config/config';
 import { Toastr } from '../../shared/toastr';
 import { SettingService } from '../setting/setting.service';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-mark',
@@ -24,14 +26,29 @@ export class MarkComponent implements OnInit {
   public isClick: boolean;
   public isTeacher: boolean = false;
   public isStudent: boolean = false;
+  public loading: boolean = false;
   public currentMark: string;
   public startSlice = 0;
   public endSlice = 0;
   public totalCountEx = 0;
-
   public courseId;
   public driveUrl = EndpointsConfig.google.driveUrl;
   public defaultAvatar = EndpointsConfig.user.defaultAvatar;
+  public currentFile;
+  public currentExResult = {
+    exercise_title: '',
+    student_name: '',
+    content: '',
+    mark: '',
+    result: {
+      content: '',
+      marked: false,
+      mark: '',
+      fileResponses: []
+    },
+  };
+
+  @ViewChild('detailResultExModal') public detailResultExModal: ModalDirective;
 
   constructor(private role: CheckRole,
               private router: Router,
@@ -40,6 +57,7 @@ export class MarkComponent implements OnInit {
               private toastr: Toastr,
               private settingService: SettingService,
               private iconLoading: NgxUiLoaderService,
+              public sanitizer: DomSanitizer,
   ) {
   }
 
@@ -75,12 +93,12 @@ export class MarkComponent implements OnInit {
           }
           setTimeout(() => {
             this.iconLoading.stop();
-          }, 2000);
+          }, 4000);
         },
         error => {
           setTimeout(() => {
             this.iconLoading.stop();
-          }, 2000);
+          }, 4000);
         });
     }
 
@@ -147,19 +165,45 @@ export class MarkComponent implements OnInit {
     });
     // Get list excercise by student:
     lstAll.forEach(item => {
-      item.gradeRecordResponses.forEach(ex => {
-        this.lstStudent.find(s => s.id === ex.userProfileResponse.id).lstExcercise.push(
-          {
-            exercise_id: item.id,
-            created_at: item.created_at,
-            exercise_student_id: ex.studentExerciseResponse.id,
-            submitted: ex.studentExerciseResponse.submitted,
-            mark: ex.studentExerciseResponse.marked ? ex.studentExerciseResponse.mark.toFixed(1) : null,
-            marked: ex.studentExerciseResponse.marked,
-            teacher_message: ex.studentExerciseResponse.teacher_message,
+      for (const s of this.lstStudent) {
+        let isHaveEx = false;
+        for (const ex of item.gradeRecordResponses) {
+          if (ex.userProfileResponse.id === s.id ) {
+            isHaveEx = true;
+            s.lstExcercise.push(
+              {
+                exercise_id: item.id,
+                exercise_content: item.content,
+                exercise_title: item.title,
+                student_name: s.name,
+                created_at: item.created_at,
+                exercise_student_id: ex.studentExerciseResponse.id,
+                submitted: ex.studentExerciseResponse.submitted,
+                mark: ex.studentExerciseResponse.marked ? ex.studentExerciseResponse.mark.toFixed(1) : null,
+                marked: ex.studentExerciseResponse.marked,
+                teacher_message: ex.studentExerciseResponse.teacher_message,
+                isAssign: true
+              });
           }
-        );
-      });
+        }
+        if (!isHaveEx) {
+          s.lstExcercise.push(
+            {
+              exercise_id: item.id,
+              exercise_content: null,
+              exercise_title: null,
+              student_name: null,
+              created_at: null,
+              exercise_student_id: null,
+              submitted: null,
+              mark: null,
+              marked: false,
+              teacher_message: null,
+              isAssign: false
+            });
+        }
+
+      }
     });
   }
 
@@ -200,6 +244,7 @@ export class MarkComponent implements OnInit {
       ex.mark = this.currentMark;
       return;
     }
+    this.loading = true;
     this.markService.markStudentExercise(ex.exercise_student_id, {mark: ex.mark, teacher_message: 'Done'}).subscribe(
       response => {
         if (response.body != null && response.body !== undefined && response.body.success) {
@@ -210,8 +255,10 @@ export class MarkComponent implements OnInit {
           this.getAverageMarkByIdEx(ex.exercise_id);
           this.toastr.showToastrSuccess('Thêm điểm thành công', 'Thành công');
         }
+        this.loading = false;
       },
       error => {
+        this.loading = false;
         ex.mark = this.currentMark;
       });
   }
@@ -221,8 +268,16 @@ export class MarkComponent implements OnInit {
     $('#input-' + id).trigger('focus');
   }
 
-  onClickShowEx(exId) {
-    console.log(exId);
+  onClickShowModalDetailEx(ex) {
+    this.detailResultExModal.show();
+    const id = ex.exercise_student_id;
+    this.markService.getDetailResultEx(id).subscribe(
+      response => {
+        if (response.body != null && response.body !== undefined) {
+          ex.result = response.body;
+          this.currentExResult = ex;
+        }
+      });
   }
 
   getAverageMarkByIdEx(exercise_id) {
@@ -241,8 +296,6 @@ export class MarkComponent implements OnInit {
     }
     this.startSlice = this.startSlice - 1;
     this.endSlice = this.endSlice - 1;
-    console.log('start = ' + this.startSlice)
-    console.log('end = ' + this.endSlice)
   }
 
   onClickNextPage() {
@@ -251,8 +304,57 @@ export class MarkComponent implements OnInit {
     }
     this.startSlice = this.startSlice + 1;
     this.endSlice = this.endSlice + 1;
-    console.log('start = ' + this.startSlice)
-    console.log('end = ' + this.endSlice)
   }
+
+  onClickReadFile(file) {
+    this.currentFile = {
+      name: file.name,
+      url: this.sanitizer.bypassSecurityTrustResourceUrl('https://drive.google.com/file/d/' + file.file_id + '/preview?hl=en&pid=explorer&efh=false&a=v&chrome=false&embedded=true')
+    };
+  }
+
+  getTypeFile(strUrl: string) {
+    if (strUrl != null && strUrl !== undefined && strUrl !== '') {
+      const extension = strUrl.split('.').pop();
+      if (['png', 'jpg', 'jpeg', 'gif', 'tiff', 'psd', 'svg'].includes(extension)) {
+        return 'Hình ảnh';
+      } else if (['doc', 'docx'].includes(extension)) {
+        return 'Word';
+      } else if (['xls', 'xlsx'].includes(extension)) {
+        return 'Excel';
+      } else if (['pdf'].includes(extension)) {
+        return 'PDF';
+      } else if (['txt'].includes(extension)) {
+        return 'Text';
+      }
+    }
+    return '';
+  }
+
+  getPreviewImgByFileType(strUrl: string, fileId: string, blnIsPreview = false) {
+    if (strUrl != null && strUrl !== undefined && strUrl !== '') {
+      const extension = strUrl.split('.').pop();
+      if (['png', 'jpg', 'jpeg', 'gif', 'tiff', 'psd', 'svg'].includes(extension)) {
+        return !blnIsPreview ? this.driveUrl + fileId : fileId;
+      } else if (['doc', 'docx'].includes(extension)) {
+        return 'assets/img/word-file-icon.jpg';
+      } else if (['xls', 'xlsx'].includes(extension)) {
+        return 'assets/img/excel-icon.png';
+      } else if (['pdf'].includes(extension)) {
+        return 'assets/img/pdf-file-icon-svg.png';
+      }
+      return 'assets/img/document.png';
+    }
+    return 'assets/img/document.png';
+  }
+
+  numberOnly(event): boolean {
+    const charCode = (event.which) ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      return false;
+    }
+    return true;
+  }
+
 
 }

@@ -12,7 +12,7 @@ export class ClassMateService {
 
     getUserDetail(id: string) {
         let params = new HttpParams();
-        params = params.append('id', id);
+        params = params.append('query', id);
         return this.http.get<any>(`${environment.apiUrl}/data/user/profile`,
             { params,  observe: 'response' });
     }

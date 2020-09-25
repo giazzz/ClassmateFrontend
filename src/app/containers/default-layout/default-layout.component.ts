@@ -40,11 +40,11 @@ export class DefaultLayoutComponent implements OnInit {
       url: '/dashboard',
       icon: 'icon-briefcase',
     },
-    {
-      name: 'Thời khóa biểu',
-      url: '/schedule',
-      icon: 'icon-calendar'
-    },
+    // {
+    //   name: 'Thời khóa biểu',
+    //   url: '/schedule',
+    //   icon: 'icon-calendar'
+    // },
     // {
     //   name: 'Quản lý sinh viên',
     //   url: '/manage',
@@ -58,7 +58,7 @@ export class DefaultLayoutComponent implements OnInit {
     {
       name: 'Cá nhân',
       url: '/setting',
-      icon: 'icon-settings'
+      icon: 'icon-user'
     },
   ];
 
@@ -113,7 +113,7 @@ export class DefaultLayoutComponent implements OnInit {
                 title: true,
                 name: 'Lớp học'
               });
-            response.body.forEach(item => {
+            response.body.filter(item => item.status === 'ONGOING' || item.status === 'PENDING').forEach(item => {
               this.totalCourse++;
               this.lstAllCourse.push(
                 {
@@ -125,9 +125,17 @@ export class DefaultLayoutComponent implements OnInit {
             this.nav.push(
               {
                 name: 'Quản lý sinh viên',
-                url: '/manage',
+                url: '/management',
                 icon: 'icon-folder-alt'
               });
+            // if (this.classId != null && this.classId !== undefined) {
+            //   this.lstAllCourse.push(
+            //     {
+            //       name: 'Cài đặt',
+            //       url: `/class/${this.classId}/setting`,
+            //       icon: 'icon-settings'
+            //     });
+            // }
             this.navItems = this.lstAllCourse.concat(this.nav);
           }
           this.iconLoading.stop();
@@ -145,7 +153,7 @@ export class DefaultLayoutComponent implements OnInit {
                 title: true,
                 name: 'Lớp học'
               });
-            response.body.forEach(item => {
+            response.body.filter(item => item.status === 'ONGOING' || item.status === 'PENDING').forEach(item => {
               this.totalCourse++;
               if (this.lstAllCourse.length <= 10) {
                 this.lstAllCourse.push(

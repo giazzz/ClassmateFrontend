@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
@@ -36,12 +38,21 @@ export class DashboardService {
     }
 
     addCourse(pObjCourse) {
-        return this.http.post(`${environment.apiUrl}/data/course/add`,
-        pObjCourse, { headers: this.headers, observe: 'response', responseType: 'text' as 'json' });
+        return this.http.post<any>(`${environment.apiUrl}/data/course/add`,
+            pObjCourse, { observe: 'response'});
+    }
+
+    joinByCode(pObjCode) {
+        return this.http.post<any>(`${environment.apiUrl}/data/course/joinByToken`,
+            pObjCode, { observe: 'response'}).pipe(catchError(this.handleError));
     }
 
     getAllCourseCategory() {
         return this.http.get<any>(`${environment.apiUrl}/data/courseCategory/all`,
             { headers: this.headers, observe: 'response' });
+    }
+
+    handleError(error: HttpErrorResponse) {
+        return throwError(error);
     }
 }

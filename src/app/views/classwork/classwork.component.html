@@ -30,14 +30,16 @@
             <div *ngFor="let exam of lstExcercise" class="row exam" id="exam-{{exam.id}}"
                 (mouseover)="exam.isHover = true" (mouseout)="exam.isHover = false"
                 [ngClass]="{'is-hover' : exam.isHover || exam.isCollapsed }">
-                <div class="row col-12 list-exam"
-                    (click)="exam.isCollapsed = !exam.isCollapsed; collapse(exam.isCollapsed, exam.id, $event)">
+                <div class="row col-12 list-exam" (click)="exam.isCollapsed = !exam.isCollapsed; collapse(exam.isCollapsed, exam.id, $event)">
                     <div class="td text-left list col-9">
                         <div class="row click-col">
                             <div class="wrapper-icon">
                                 <i class="icon-note icons font-xl"></i>
                             </div>
-                            <p>{{exam.title}}</p>
+                            <p>
+                                {{exam.title}}
+                                <span *ngIf="isStudent && !exam.result?.submitted" style="font-size: 13px; color: gray;"> (Chưa nộp)</span>
+                            </p>
                         </div>
                     </div>
                     <div class="td text-right action col-3">
@@ -48,7 +50,8 @@
                                 <i dropdownToggle class="icon-options-vertical icons font-xl"></i>
                                 <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
                                     <ng-container *ngIf="isStudent">
-                                        <li role="menuitem" (click)="onClickPostEx(exam)" ><a class="dropdown-item">Nộp bài</a></li>
+                                        <li *ngIf="!exam.result?.submitted && exam.status == 'ONGOING'" role="menuitem" (click)="onClickPostEx(exam)" ><a class="dropdown-item">Nộp bài</a></li>
+                                        <li *ngIf="exam.result?.submitted && !exam.result?.marked && exam.status == 'ONGOING'" role="menuitem" (click)="onClickShowModalUnsubmit(exam)" ><a class="dropdown-item">Hủy bài nộp</a></li>
                                         <li role="menuitem" [routerLink]="['/class', objCourse?.id, 'mark']"><a class="dropdown-item">Xem điểm</a></li>
                                     </ng-container>
                                     <ng-container *ngIf="isTeacher">
@@ -66,16 +69,25 @@
                     <div class="col-12 exam-content">
                         <div class="col-12 expried">
                             <p *ngIf="exam.exercise_end_time == null || exam.exercise_end_time === 0">Không có ngày đến hạn</p>
-                            <p *ngIf="exam.exercise_end_time != null && exam.exercise_end_time != 0">Hạn nộp: {{convertTickToDateShort(exam.exercise_end_time)}}</p>
+                            <p *ngIf="exam.exercise_end_time != null && exam.exercise_end_time != 0 && exam.status == 'ONGOING'">Hạn nộp: {{convertTickToDateLong(exam.exercise_end_time)}}</p>
+                            <p *ngIf="exam.exercise_end_time != null && exam.exercise_end_time != 0 && exam.status != 'ONGOING'">Hết hạn nộp bài.</p>
                         </div>
-                        <div class="row col-12 count">
+                        <div class="row col-12 count" *ngIf="isTeacher">
                             <div class="col-lg-3 col-md-4 col-6 count-num exam-done">
                                 <h2>{{exam.submitedCount}}</h2>
                                 <p>đã nộp</p>
                             </div>
-                            <div class="col-lg-3 col-md-4 col-6 count-num" *ngIf="isTeacher">
+                            <div class="col-lg-3 col-md-4 col-6 count-num">
                                 <h2>{{exam.markCount}}</h2>
                                 <p>đã chấm</p>
+                            </div>
+                        </div>
+                        <div class="row col-12 count" *ngIf="isStudent">
+                            <div class="col-lg-3 col-md-4 col-6 count-num exam-done">
+                                <p style="margin-top: revert">{{ exam.result?.submitted ?'Đã nộp' : 'Chưa nộp'}}</p>
+                            </div>
+                            <div class="col-lg-3 col-md-4 col-6 count-num">
+                                <p style="margin-top: revert">{{ exam.result?.marked ?'Đã chấm' : 'Chưa chấm'}}</p>
                             </div>
                         </div>
                     </div>
@@ -83,7 +95,10 @@
                         <div class="td text-left list col-9">
                             <div class="row">
                                 <p>
-                                    <a (click)="onclickShowDetailEx(exam)" style="color: #20a8d8; text-decoration: underline; cursor: pointer;">Xem bàitập</a>
+                                    <a (click)="onclickShowDetailEx(exam)" style="color: #20a8d8; text-decoration: underline; cursor: pointer;">Xem bài tập</a>
+                                </p>
+                                <p *ngIf="isStudent && exam.result?.submitted">
+                                    <a (click)="onclickShowModalResultEx(exam)" style="color: #20a8d8; text-decoration: underline; cursor: pointer;">Xem bài nộp</a>
                                 </p>
                             </div>
                         </div>
@@ -99,7 +114,6 @@
     aria-hidden="true">
     <div class="modal-dialog modal-success" role="document">
         <div class="modal-content">
-
             <form class="form-horizontal" [formGroup]="frmAdd" (ngSubmit)="onSubmitFormAdd()">
                 <div class="modal-header">
                     <h4 class="modal-title">Thêm bài tập</h4>
@@ -138,10 +152,9 @@
                             <input formControlName="inputExpiredDate" class="form-control" id="begin-input" type="date"
                                 placeholder="date"
                                 [ngClass]="{ 'is-invalid': (submitted || f.inputExpiredDate.touched)  && f.inputExpiredDate.errors }"
-                                min="{{minExpiredDate}}">
-                            <span
-                                *ngIf="(submitted || f.inputExpiredDate.touched)  && f.inputExpiredDate.errors?.required"
-                                class="help-block">Ngày hết hạn không được để trống!</span>
+                                min="{{minExpiredDate}}"
+                                >
+                            <span *ngIf="(submitted || f.inputExpiredDate.touched)  && f.inputExpiredDate.errors?.required" class="help-block">Ngày hết hạn không được để trống!</span>
                         </div>
                     </div>
 
@@ -333,7 +346,7 @@
                     <div class="form-group row" style="margin-bottom: 0;">
                         <label class="col-md-2 col-form-label" for="begin-input"></label>
                         <div class="col-md-10">
-                            <div class="file-div preview-file" *ngFor="let f of lstSelectedFile" (click)="onClickReadFilePreview(f); readFileModal.show();">
+                            <div class="file-div preview-file" *ngFor="let f of lstSelectedFile" (click)="onClickReadFilePreview(f);">
                                 <!-- File -->
                                 <div class="file-img" [style.backgroundImage]="'url('+ getPreviewImgByFileType(f.file.name, f.url, true) +')'" ></div>
                                 <div class="file-name">
@@ -368,6 +381,103 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal read ex result by student -->
+<div bsModal #detailResultExModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-success" role="document" style="max-width: 750px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Bài nộp cho bài tập: {{exTitleSelected}}</h4>
+                <button type="button" class="close" (click)="detailResultExModal.hide()" aria-label="Close">
+                    <span aria-hidden="true" style="color: #ffffff;">&times;</span>
+                </button>
+            </div>
+            <form class="form-horizontal">
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label" for="textarea-p">Nội dung</label>
+                        <div class="col-md-10">
+                            <textarea name="textarea-p"
+                                    [readOnly]="true"
+                                    rows="8" class="form-control" 
+                                    placeholder="Nội dung bài nộp.."
+                                    [(ngModel)]="resultExSelected.content"
+                                    >
+                            </textarea>
+                        </div>
+                    </div>
+                    <!-- Preview file -->
+                    <div class="form-group row" style="margin-bottom: 0;">
+                        <label class="col-md-2 col-form-label" for="begin-input"></label>
+                        <div class="col-md-10">
+                            <div class="file-div preview-file" *ngFor="let f of resultExSelected.fileResponses" (click)="onClickReadFile(f); readFileModal.show();">
+                                <!-- File -->
+                                <div class="file-img" [style.backgroundImage]="'url('+ getPreviewImgByFileType(f.name, f.file_id) +')'" ></div>
+                                <div class="file-name">
+                                    <div style="font-size: 18px; overflow: hidden; display: flex;">
+                                        {{f.name}}
+                                    </div>
+                                    <p class="color-gray">
+                                        {{getTypeFile(f.name)}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="detailResultExModal.hide()">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal read file-->
+<div bsModal #readFileModal="bs-modal" class="modal fade" id="modalReadFile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-w-900" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center" style="margin-bottom: 10px; height: 50px; border: none;">
+                <h4 class="modal-title w-100 font-weight-bold" style="overflow: hidden;">{{currentFile?.name}}</h4>
+                <button #closeReadFile type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="readFileModal.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <iframe 
+                [src]="currentFile?.url" 
+                style="width:100%; height:80vh;"
+                >
+            </iframe>
+        </div>
+    </div>
+</div>
+
+<!-- Modal unsubmit result ex -->
+<div bsModal #unSubmitModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Hủy bài nộp</h4>
+                <button type="button" class="close" (click)="unSubmitModal.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn hủy bài nộp cho bài tập: {{exTitleSelected}}?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="unSubmitModal.hide()">Bỏ qua</button>
+                <button (click)="onSubmitUnSubmitEx()" type="button" class="btn btn-primary">
+                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                    Hủy bài nộp
+                </button>
+            </div>
         </div>
     </div>
 </div>

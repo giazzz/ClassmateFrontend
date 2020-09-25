@@ -43,12 +43,28 @@ export class ClassworkService {
             { observe: 'response' });
     }
 
+    // Student:
+
     // Nộp bài tập:
     postExcercise(exercise_id, objEx) {
         let params = new HttpParams();
         params = params.append('exercise_id', exercise_id);
         return this.http.post<any>(`${environment.apiUrl}/data/exercise/studentExercise/save`,
             objEx, { params, observe: 'response' });
+    }
+
+    // Hủy bài nộp:
+    unSubmit(exercise_id) {
+        return this.http.post<any>(`${environment.apiUrl}/data/exercise/studentExercise/unSubmit?exercise_id=${exercise_id}`,
+            { observe: 'response' });
+    }
+
+    // Get list ex result:
+    getListStudentExByCourse(course_id) {
+        let params = new HttpParams();
+        params = params.append('course_id', course_id);
+        return this.http.get<any>(`${environment.apiUrl}/data/exercise/studentExercise/student`,
+            { params, observe: 'response' });
     }
 
 }

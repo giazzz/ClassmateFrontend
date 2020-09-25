@@ -29,13 +29,23 @@
     </div>
 
     <div class="col-sm-6 col-lg-3" *ngIf="isTeacher">
-      <div class="brand-card add-card" (click)="addModal.show(); frmAdd.reset();">
+      <div class="brand-card add-card" (click)="addModal.show(); onClickShowModalAdd();">
         <div class="brand-card-body">
           <fa-icon [icon]="faPlus"></fa-icon>
           <p class="add-char">Thêm lớp học</p>
         </div>
       </div>
     </div>
+
+    <div class="col-sm-6 col-lg-3" *ngIf="isStudent">
+      <div class="brand-card add-card" (click)="joinCourseModal.show();">
+        <div class="brand-card-body">
+          <fa-icon [icon]="faPlus"></fa-icon>
+          <p class="add-char">Tham gia lớp học</p>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -43,19 +53,19 @@
   <div class="modal-dialog modal-success" role="document">
     <div class="modal-content">
 
-      <form class="form-horizontal" [formGroup]="frmAdd" (ngSubmit)="onSubmitFormAdd()">
+      <form class="form-horizontal" [formGroup]="frmAdd" (ngSubmit)="onSubmitFormAdd()" >
         <div class="modal-header">
           <h4 class="modal-title">Thêm lớp học</h4>
-          <button type="button" class="close" (click)="addModal.hide()" aria-label="Close">
+          <button type="button" class="close" (click)="addModal.hide();" aria-label="Close" >
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
 
             <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="text-input">Tên</label>
+              <label class="col-md-3 col-form-label" for="text-input1">Tên</label>
               <div class="col-md-9" >
-                <input formControlName="inputName" type="text" id="text-input" name="text-input" class="form-control" [ngClass]="{ 'is-invalid': (submitted || f.inputName.touched)  && f.inputName.errors }">
+                <input formControlName="inputName" type="text" id="text-input1" name="text-input1" class="form-control" [ngClass]="{ 'is-invalid': (submitted || f.inputName.touched)  && f.inputName.errors }">
                 <span *ngIf="(submitted || f.inputName.touched)  && f.inputName.errors?.required" class="help-block">Tên không được để trống!</span>
               </div>
             </div>
@@ -96,8 +106,7 @@
             <div class="form-group row">
               <label class="col-md-3 col-form-label" for="end-input">Ngày kết thúc</label>
               <div class="col-md-9">
-                <input formControlName="inputEndDate" 
-                      class="form-control" id="end-input" 
+                <input formControlName="inputEndDate" class="form-control" id="end-input" 
                       type="date" placeholder="date" 
                       [ngClass]="{ 'is-invalid': (submitted || f.inputEndDate.touched)  && f.inputEndDate.errors }"
                       min="{{f.inputBeginDate.value}}"
@@ -105,18 +114,50 @@
                 <span *ngIf="(submitted || f.inputEndDate.touched)  && f.inputEndDate.errors?.required" class="help-block">Ngày kết thúc không được để trống!</span>
               </div>
             </div>
-
         </div>
         
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="addModal.hide()">Hủy</button>
-          <button type="submit" class="btn btn-success">
+          <button type="button" class="btn btn-secondary" (click)="addModal.hide();">Hủy</button>
+          <button type="submit" class="btn btn-success" [disabled]="blnDisableClick">
             <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
             Thêm lớp học
           </button>
         </div>
 
       </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal join course -->
+<div bsModal #joinCourseModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-success" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Tham gia lớp học</h4>
+        <button type="button" class="close" (click)="joinCourseModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="col-md-12 col-form-label" style="font-weight: 600; font-size: 16px;" for="text-input">Mã lớp học</label>
+          <div class="col-md-12" >
+            <input type="text" [(ngModel)]="strCourseCode" id="text-input" name="text-input" class="form-control" >
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-12" style="color: gray; margin-left: 15px;">*Bạn có thể lấy mã từ giáo viên.</label>
+          <label class="col-12" style="color: gray; margin-left: 15px;">*Để tham gia lớp học bạn cần để công khai thông tin cá nhân.</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="joinCourseModal.hide()">Hủy</button>
+        <button (click)="onClickJoinByCode()" type="button" class="btn btn-success">
+          <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+          Tham gia
+        </button>
+      </div>
     </div>
   </div>
 </div>

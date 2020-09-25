@@ -1,8 +1,8 @@
 <app-header
   [navbarBrandRouterLink]="['/dashboard']"
   [fixed]="true"
-  [navbarBrandFull]="{src: 'assets/img/brand/logo.svg', width: 89, height: 25, alt: 'CoreUI Logo'}"
-  [navbarBrandMinimized]="{src: 'assets/img/brand/sygnet.svg', width: 30, height: 30, alt: 'CoreUI Logo'}"
+  [navbarBrandFull]="{src: 'assets/img/brand/logo.svg', width: 100, height: 30, alt: 'Classmate'}"
+  [navbarBrandMinimized]="{src: 'assets/img/brand/sygnet.svg', width: 30, height: 30, alt: 'Classmate'}"
   [sidebarToggler]="'lg'"
   [asideMenuToggler]="'lg'">
   <div class="text-center top-menu" *ngIf="(router.url.includes('class') || router.url.includes('student')) && !router.url.includes('transcript')">
@@ -23,6 +23,10 @@
         <!-- Dành cho giáo viên: -->
         <a class="nav-link" [ngClass]="{'active' : router.url === ('/class/'+classId+'/attendance') }" [routerLink]="['/class', classId, 'attendance']">Điểm danh</a>
       </li>
+      <li *ngIf="isTeacher" class="nav-item px-3">
+        <!-- Dành cho giáo viên: -->
+        <a class="nav-link" [ngClass]="{'active' : router.url === ('/class/'+classId+'/setting') }" [routerLink]="['/class', classId, 'setting']">Cài đặt</a>
+      </li>
       <li *ngIf="isStudent" class="nav-item px-3">
         <!-- Dành cho sinh viên: -->
         <a class="nav-link" [ngClass]="{'active' : router.url === ('/student/'+userId+'/attendance') }" [routerLink]="['/student', userId, 'attendance']">Điểm danh</a>
@@ -37,9 +41,9 @@
       <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
         <div class="dropdown-header text-center"><strong>Tài khoản</strong></div>
         <a class="dropdown-item" [routerLink]="['/dashboard']" ><i class="fa fa-bell-o"></i> Lớp học<span class="badge badge-info">{{totalCourse}}</span></a>
-        <a class="dropdown-item" ><i class="fa fa-envelope-o"></i> Bài tập<span class="badge badge-success">{{totalEx}}</span></a>
+        <a class="dropdown-item" style="cursor: pointer;" ><i class="fa fa-envelope-o" ></i> Bài tập<span class="badge badge-success">{{totalEx}}</span></a>
         <a class="dropdown-item" [routerLink]="['/setting']" ><i class="fa fa-user"></i> Cá nhân</a>
-        <a class="dropdown-item" (click)="logout()"><i class="fa fa-lock"></i> Đăng xuất</a>
+        <a class="dropdown-item" (click)="logout()" style="cursor: pointer;"><i class="fa fa-lock"></i> Đăng xuất</a>
       </div>
     </li>
   </ul>

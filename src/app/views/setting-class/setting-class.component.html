@@ -1,0 +1,111 @@
+<div class="animated fadeIn">
+	<div class="card col-md-10 col-12" style="margin: auto;">
+		<div class="card-body">
+			<h3 style="padding-left: 15px;">Mã tham gia</h3>
+			<p style="padding-left: 15px; color: gray;">*Mã tham gia dùng cho sinh viên có thể tự tham gia lớp học.</p>
+			<button *ngIf="strCode == null || strCode == undefined" (click)="onClickCreateCode()" type="button" class="btn btn-brand btn-lg btn-vimeo" style="margin-bottom: 4px; margin-left: 15px; color: #ffffff;">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                <i *ngIf="!loading" class="icon-key icons"></i>
+                <span>Tạo mã mới</span>
+            </button>
+            <h2 style="padding-left: 15px; color: blueviolet;">{{strCode || null}}</h2>
+            <button *ngIf="strCode != null && strCode != undefined" ngxClipboard [cbContent]="strCode" style="margin-left: 15px;" type="button" class="btn btn-ghost-primary active" aria-pressed="true">
+                <i class="icon-share icons"></i>
+                Sao chép
+            </button>
+        </div>
+    </div>
+    
+    <div class="card col-md-10 col-12" style="margin: auto;">
+		<div class="card-body">
+            <h3 style="padding-left: 15px;">Buổi học</h3>
+            <div *ngIf="objClass?.currentSession.id == null" style="width: 100%;">
+                <p style="padding-left: 15px; color: gray;">*Hiện không có buổi học nào đang diễn ra.</p>
+                <div class="modal-session" style="display: flex; padding-left: 15px;">
+                    <p style="font-weight: bold; margin-right: 10px;">Bắt đầu buổi học mới</p>
+                    <label class="switch switch-label switch-outline-success-alt">
+                        <input type="checkbox" class="switch-input" [checked]="false" (change)="onChangeAddSession($event)">
+                        <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
+                    </label>
+                </div>
+            </div>
+            <div *ngIf="objClass?.currentSession.course_id == objClass?.id" style="width: 100%;">
+                <p style="padding-left: 15px; color: gray;">*Một buổi học đang diễn ra.</p>
+                <div class="col-12 row">
+                    <div class="col-6">
+                        <h5>Buổi học ngày: {{convertTickToDateShort(objClass?.currentSession.start_time)}}</h5>
+                    </div>
+                    <div class="col-6">
+                        <h5>Kết thúc lúc: {{getEndTime(objClass?.currentSession.start_time, objClass?.currentSession.session_duration)}}</h5>
+                    </div>
+                </div>
+                <div class="col-12 row">
+                    <!-- <button (click)="addTimeModal.show()" style="margin-left: 15px;" type="button" class="btn btn-ghost-primary active" aria-pressed="true">
+                        <i class="icon-clock icons"></i>
+                        Thêm giờ
+                    </button> -->
+                    <button (click)="endSessionModal.show()" style="margin-left: 15px;" type="button" class="btn btn-ghost-danger active" aria-pressed="true">
+                        <i class="icon-power icons"></i>
+                        Kết thúc
+                    </button>
+                </div>
+            </div>
+        </div>
+	</div>
+</div>
+
+<!-- Modal confirm end session -->
+<div bsModal #endSessionModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Kết thúc buổi học</h4>
+                <button type="button" class="close" (click)="endSessionModal.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn kết thúc buổi học?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="endSessionModal.hide()">Hủy</button>
+                <button type="button" class="btn btn-primary" (click)="onClickEndSession()">
+                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                    Kết thúc
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal add time session -->
+<div bsModal #addTimeModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Thêm giờ</h4>
+                <button type="button" class="close" (click)="addTimeModal.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label class="col-md-4 col-form-label" for="text-input">Số giờ</label>
+                    <div class="col-md-8" >
+                        <input type="text" id="text-input" (input)="numberOnly($event)" maxlength="1" name="text-input" class="form-control" >
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-12" style="color: gray;">*Bạn có thể kéo dài buổi học thêm từ 0 đến 9 giờ.</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="addTimeModal.hide()">Hủy</button>
+                <button type="button" class="btn btn-primary" (click)="onClickAddTimeSession()">
+                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                    Lưu
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

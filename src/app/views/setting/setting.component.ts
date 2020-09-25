@@ -75,6 +75,7 @@ export class SettingComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.iconLoading.start();
     this.strUserId = JSON.parse(localStorage.currentUser).id || '';
     this.isStudent = this.role.isStudent();
     this.getProfile();
@@ -95,6 +96,8 @@ export class SettingComponent implements OnInit {
       ]],
       selectGender: ['', [
         Validators.required
+      ]],
+      selectAllowInfo: ['PUBLIC', [
       ]]
     });
 
@@ -149,9 +152,11 @@ export class SettingComponent implements OnInit {
           this.objProfile = response.body;
         }
         this.loading = false;
+        this.iconLoading.stop();
       },
       () => {
         this.loading = false;
+        this.iconLoading.stop();
       });
   }
 
@@ -161,7 +166,8 @@ export class SettingComponent implements OnInit {
       inputPhone: this.objProfile.phone,
       inputAddress: this.objProfile.address,
       selectBirthday: this.convertTickToDate(this.objProfile.birthday) || null,
-      selectGender: this.convertGenderToInt(this.objProfile.gender)
+      selectGender: this.convertGenderToInt(this.objProfile.gender),
+      selectAllowInfo: this.objProfile.profile_visibility
     });
   }
 
@@ -181,7 +187,8 @@ export class SettingComponent implements OnInit {
     const gender = Number(this.f.selectGender.value);
     const avatar_file_id = this.objProfile.avatar_file_id;
     const civil_id = this.objProfile.civil_id;
-    const objProfile = {fullname, phone, address, birthday, gender, civil_id, avatar_file_id};
+    const profile_visibility = this.f.selectAllowInfo.value;
+    const objProfile = {fullname, phone, address, birthday, gender, civil_id, avatar_file_id, profile_visibility};
 
     this.settingService.updateProfile(objProfile)
       .subscribe(
@@ -190,11 +197,13 @@ export class SettingComponent implements OnInit {
             // Success:
             this.addModal.hide();
             this.getProfile();
+            this.toastr.showToastrSuccess('', 'Cập nhật thông tin thành công');
           }
           this.loading = false;
         },
         () => {
           // Error:
+          this.toastr.showToastrWarning('', 'Không thành công');
           this.loading = false;
         });
   }
@@ -229,14 +238,15 @@ export class SettingComponent implements OnInit {
                   this.addModal.hide();
                   this.imageModal.hide();
                   this.getProfile();
-                } else {
-                  setTimeout(() => {
-                    this.loading = false;
-                  }, 500);
+                  this.toastr.showToastrSuccess('', 'Cập nhật ảnh thành công!');
                 }
+                setTimeout(() => {
+                  this.loading = false;
+                }, 500);
               },
               () => {
                 // Error:
+                this.toastr.showToastrWarning('', 'Không thành công');
                 setTimeout(() => {
                   this.loading = false;
                 }, 500);
@@ -276,6 +286,7 @@ export class SettingComponent implements OnInit {
               },
               () => {
                 // Error:
+                this.toastr.showToastrWarning('', 'Không thành công');
                 setTimeout(() => {
                   this.loading = false;
                 }, 500);
@@ -335,7 +346,6 @@ export class SettingComponent implements OnInit {
       return false;
     }
     return true;
-
   }
 
   dataURLtoFile(dataurl, filename) {
@@ -347,4 +357,20 @@ export class SettingComponent implements OnInit {
     return new File([u8arr], filename, {type: mime});
   }
 
+  getAllowRoleVN(role) {
+    switch (role) {
+      case 'PUBLIC':
+        return 'Công khai';
+      case 'TEACHER':
+        return 'Tất cả giáo viên';
+      case 'COURSE':
+        return 'Mọi người cùng lớp';
+      case 'TEACHERCOURSE':
+        return 'Giáo viên giảng dạy';
+      case 'PRIVATE':
+        return 'Ẩn';
+      default:
+        return '';
+    }
+  }
 }

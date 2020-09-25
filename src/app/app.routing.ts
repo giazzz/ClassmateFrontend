@@ -19,6 +19,8 @@ import { MarkComponent } from './views/mark/mark.component';
 import { SettingComponent } from './views/setting/setting.component';
 import { ScheduleComponent } from './views/schedule/schedule.component';
 import { TodoComponent } from './views/todo/todo.component';
+import { SettingClassComponent } from './views/setting-class/setting-class.component';
+import { ManagementComponent } from './views/management/management.component';
 
 export const routes: Routes = [
   {
@@ -70,7 +72,9 @@ export const routes: Routes = [
       { path: 'class/:id/mark', component: MarkComponent, canActivate: [AuthGuard] },
       { path: 'student/:id/todo', component: TodoComponent, canActivate: [AuthGuard] },
       { path: 'setting', component: SettingComponent, canActivate: [AuthGuard] },
-      { path: 'schedule', component: ScheduleComponent, canActivate: [AuthGuard] }
+      { path: 'schedule', component: ScheduleComponent, canActivate: [AuthGuard] },
+      { path: 'class/:id/setting', component: SettingClassComponent, canActivate: [AuthGuard] },
+      { path: 'management', component: ManagementComponent, canActivate: [AuthGuard] }
     ]
   },
   { path: '**', component: P404Component }

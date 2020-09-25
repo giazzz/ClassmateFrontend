@@ -30,3 +30,11 @@ a.nav-link{
 .nav-item a.active:hover{
     background-color: #e8f0fe;
 }
+::ng-deep {
+    app-header button:last-of-type {
+        display: none;
+    }
+    // app-header button:nth-of-type(1) {
+    //     display: none;
+    // }
+}

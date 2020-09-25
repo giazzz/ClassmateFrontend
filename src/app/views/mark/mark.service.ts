@@ -26,6 +26,12 @@ export class MarkService {
         return this.http.get<any>(`${environment.apiUrl}/data/exercise/gradeList`,
             { params, observe: 'response' });
     }
+    getDetailResultEx(result_id) {
+        let params = new HttpParams();
+        params = params.append('id', result_id);
+        return this.http.get<any>(`${environment.apiUrl}/data/exercise/studentExercise/getOne`,
+            { params, observe: 'response' });
+    }
 
     // For student by course;
     getListStudentExcercise(course_id) {

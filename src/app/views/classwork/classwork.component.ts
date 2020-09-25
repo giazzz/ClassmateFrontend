@@ -22,6 +22,7 @@ import { EndpointsConfig } from '../../config/config';
 export class ClassworkComponent implements OnInit {
 
   public lstExcercise: any[] = [];
+  public lstExResultStudent: any[] = [];
   public courseId;
   public objCourse;
   public isTeacher = false;
@@ -35,6 +36,10 @@ export class ClassworkComponent implements OnInit {
   public exTitleSelected = '';
   public exIdSelected = '';
   public currentEx;
+  public resultExSelected = {
+    content: '',
+    fileResponses: []
+  };
   public lstSelectedFile = [];
   public currentFile;
   public defaultAvatar = EndpointsConfig.user.defaultAvatar;
@@ -46,6 +51,9 @@ export class ClassworkComponent implements OnInit {
   @ViewChild('cancelModal') public cancelModal: ModalDirective;
   @ViewChild('detailModal') public detailModal: ModalDirective;
   @ViewChild('postExModal') public postExModal: ModalDirective;
+  @ViewChild('readFileModal') public readFileModal: ModalDirective;
+  @ViewChild('unSubmitModal') public unSubmitModal: ModalDirective;
+  @ViewChild('detailResultExModal') public detailResultExModal: ModalDirective;
 
   constructor(private classService: ClassMateService,
               private exService: ClassworkService,
@@ -121,12 +129,21 @@ export class ClassworkComponent implements OnInit {
       });
   }
 
-
   getListExcercise() {
     this.exService.getListAllExcercise(this.courseId).subscribe(
       response => {
         if (response.body != null && response.body !== undefined) {
           this.lstExcercise = response.body.filter(item => item.status !== 'CANCEL');
+          if (this.isStudent) {
+            this.exService.getListStudentExByCourse(this.courseId).subscribe(
+              data => {
+                if (data.body != null && data.body !== undefined) {
+                  this.lstExcercise.forEach(ex => {
+                    ex.result = data.body.find(rs => rs.exercise_id === ex.id);
+                  });
+                }
+              });
+          }
         }
         setTimeout(() => {
           this.iconLoading.stop();
@@ -156,6 +173,11 @@ export class ClassworkComponent implements OnInit {
   convertTickToDateShort(tick) {
     const date = new Date(Number(tick));
     return moment(date).format('D & M YYYY').replace('&', 'thg') || null;
+  }
+
+  convertTickToDateLong(tick) {
+    const date = new Date(Number(tick));
+    return moment(date).format('D & M YYYY hh:mm').replace('&', 'thg') || null;
   }
 
   // Add new session and set ONGOING:
@@ -226,7 +248,6 @@ export class ClassworkComponent implements OnInit {
       answer: '',
       exercise_end_time: this.getTicksFromDateString(this.f.inputExpiredDate.value)
     };
-
     this.exService.createExcercise(objEx).subscribe(
       response => {
         if (response.status === 200 && response.body.success) {
@@ -361,6 +382,7 @@ export class ClassworkComponent implements OnInit {
     }
   }
 
+  // Nộp bài tập:
   onSubmitFormPostEx() {
     this.submitted = true;
     this.loading = true;
@@ -399,6 +421,8 @@ export class ClassworkComponent implements OnInit {
             data => {
               if (data.body != null && data.body !== undefined) {
                 this.toastr.showToastrSuccess('Bài tập đã được nộp', 'Thành công!');
+                this.postExModal.hide();
+                this.getListExcercise();
                 this.lstSelectedFile = [];
                 this.loading = false;
               }
@@ -414,6 +438,37 @@ export class ClassworkComponent implements OnInit {
       error => {
         this.loading = false;
       });
+  }
+
+  onClickShowModalUnsubmit(exam) {
+    this.exTitleSelected = exam.title;
+    this.exIdSelected = exam.id;
+    this.unSubmitModal.show();
+  }
+
+  onSubmitUnSubmitEx() {
+    this.loading = true;
+    this.exService.unSubmit(this.exIdSelected).subscribe(
+      response => {
+        if (response.http_status === 'OK' && response.success) {
+          // Success:
+          this.toastr.showToastrSuccess('Bài nộp đã được hủy.', 'Thành công!');
+          this.unSubmitModal.hide();
+          this.getListExcercise();
+        }
+        this.loading = false;
+      },
+      error => {
+        // Error:
+        this.toastr.showToastrWarning('', 'Không thành công!');
+        this.loading = false;
+      });
+  }
+
+  onclickShowModalResultEx(exam) {
+    this.resultExSelected = exam.result;
+    this.exTitleSelected = exam.title;
+    this.detailResultExModal.show();
   }
 
   getTicksFromDateString(dateTime: string) {
@@ -433,11 +488,23 @@ export class ClassworkComponent implements OnInit {
     });
   }
 
+  onClickReadFile(file) {
+    this.currentFile = {
+      name: file.name,
+      url: this.sanitizer.bypassSecurityTrustResourceUrl('https://drive.google.com/file/d/' + file.file_id + '/preview?hl=en&pid=explorer&efh=false&a=v&chrome=false&embedded=true')
+    };
+  }
+
   onClickReadFilePreview(file) {
     this.currentFile = {
       name: file.file.name,
       url: this.sanitizer.bypassSecurityTrustResourceUrl(file.url)
     };
+    const type = this.getTypeFile(file.file.name)
+    if (type === 'Word' || type === 'Excel') {
+      return;
+    }
+    this.readFileModal.show();
   }
 
   getTypeFile(strUrl: string) {
