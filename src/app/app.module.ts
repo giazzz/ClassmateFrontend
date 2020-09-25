@@ -62,6 +62,8 @@ import { TodoComponent } from './views/todo/todo.component';
 import { NgxDocViewerModule } from 'ngx-doc-viewer';
 import { PopoverModule } from 'ngx-smart-popover';
 import { SettingClassComponent } from './views/setting-class/setting-class.component';
+import { ClipboardModule } from 'ngx-clipboard';
+import { ManagementComponent } from './views/management/management.component';
 
 @NgModule({
   imports: [
@@ -87,7 +89,8 @@ import { SettingClassComponent } from './views/setting-class/setting-class.compo
     AutosizeModule,
     NgxDocViewerModule,
     ToastrModule.forRoot(),
-    PopoverModule
+    PopoverModule,
+    ClipboardModule
   ],
   declarations: [
     AppComponent,
@@ -106,7 +109,8 @@ import { SettingClassComponent } from './views/setting-class/setting-class.compo
     SettingComponent,
     ScheduleComponent,
     TodoComponent,
-    SettingClassComponent
+    SettingClassComponent,
+    ManagementComponent
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},

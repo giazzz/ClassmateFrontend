@@ -79,7 +79,7 @@
                             <div class="form-group pd-l-0">
                                 <textarea [(ngModel)]="strPostContent" id="textarea-input" name="textarea-input" rows="6" class="form-control cmt" placeholder="Chia sẻ với lớp học của bạn"></textarea>
                             </div>
-                            <div class="file-div preview-file" *ngFor="let f of lstSelectedFile" (click)="onClickReadFilePreview(f); readFileModal.show();">
+                            <div class="file-div preview-file" *ngFor="let f of lstSelectedFile" (click)="onClickReadFilePreview(f);">
                                 <!-- File -->
                                 <div class="file-img" [style.backgroundImage]="'url('+ getPreviewImgByFileType(f.file.name, f.url, true) +')'" ></div>
                                 <div class="file-name">

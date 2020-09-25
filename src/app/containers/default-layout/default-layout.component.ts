@@ -125,7 +125,7 @@ export class DefaultLayoutComponent implements OnInit {
             this.nav.push(
               {
                 name: 'Quản lý sinh viên',
-                url: '/manage',
+                url: '/management',
                 icon: 'icon-folder-alt'
               });
             // if (this.classId != null && this.classId !== undefined) {

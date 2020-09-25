@@ -16,17 +16,20 @@ export class DashboardComponent implements OnInit {
 
   public faPlus;
   public imageUrl;
+  public strCourseCode = '';
   public lstAllCourse: any[];
   public lstAllCourseCtgr: any[];
   public frmAdd: FormGroup;
   public submitted: boolean;
   public loading: boolean = false;
   public isTeacher: boolean = false;
+  public isStudent: boolean = false;
   public currentUser;
   public blnDisableClick = false;
   public minStartDate = this.convertTickToDateDPicker((new Date()).getTime());
 
   @ViewChild('addModal') public addModal: ModalDirective;
+  @ViewChild('joinCourseModal') public joinCourseModal: ModalDirective;
 
   constructor(private dashBoardService: DashboardService,
               private iconLoading: NgxUiLoaderService,
@@ -45,6 +48,7 @@ export class DashboardComponent implements OnInit {
     this.lstAllCourseCtgr = [];
     this.currentUser = JSON.parse(localStorage.currentUser);
     this.isTeacher = this.role.isTeacher();
+    this.isStudent = this.role.isStudent();
 
     this.getLstAllCourse();
 
@@ -145,6 +149,25 @@ export class DashboardComponent implements OnInit {
       });
   }
 
+  onClickJoinByCode () {
+    this.loading = true;
+    this.dashBoardService.joinByCode({ token: this.strCourseCode }).subscribe(
+      response => {
+        if (response.status === 200 && response.body.success) {
+          // Success:
+          this.addModal.hide();
+          this.getLstAllCourse();
+          this.toastr.showToastrSuccess('', 'Bạn đã tham gia lớp học!');
+        }
+        this.loading = false;
+      },
+      error => {
+        // Error:
+        this.loading = false;
+        this.toastr.showToastrWarning('Mã sai hoặc bạn chưa công khai thông tin cá nhân!', 'Không thành công!');
+      });
+  }
+
   getTicksFromDateString(dateTime: string) {
     const date = new Date(dateTime);
     return date.getTime();
@@ -161,6 +184,8 @@ export class DashboardComponent implements OnInit {
       form.get(key).setErrors(null) ;
     });
   }
+
+
 
 
 }

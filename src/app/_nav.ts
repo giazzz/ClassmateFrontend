@@ -15,18 +15,8 @@ export const navItems: INavData[] = [
     icon: 'icon-briefcase',
   },
   {
-    name: 'Thời khóa biểu',
-    url: '/schedule',
-    icon: 'icon-calendar'
-  },
-  {
-    name: 'To do',
-    url: '/student/1/todo',
-    icon: 'icon-notebook'
-  },
-  {
     name: 'Cá nhân',
     url: '/setting',
-    icon: 'icon-settings'
+    icon: 'icon-user'
   },
 ];

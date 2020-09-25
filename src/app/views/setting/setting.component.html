@@ -61,6 +61,12 @@
 								class="icon-emotsmile icons"></i>
 							<strong>{{convertGenderToVN(objProfile?.gender)}}</strong>
 						</li>
+						<li>
+							<i *ngIf="objProfile?.profile_visibility == 'PRIVATE'" class="icon-lock icons"></i>
+							<i *ngIf="objProfile?.profile_visibility != 'PRIVATE'"class="icon-lock-open icons"></i>
+							<span *ngIf="objProfile?.profile_visibility == ''" class="empty">(Trống)</span>
+							<strong>{{getAllowRoleVN(objProfile?.profile_visibility)}} </strong>
+						</li>
 					</ul>
 				</div>
 				<div class="col-md-3" *ngIf="isStudent">
@@ -166,7 +172,7 @@
 							<select formControlName="selectAllowInfo" id="select1" name="select1" class="form-control" >
 								<option value="PUBLIC">Công khai</option>
 								<option value="TEACHER">Tất cả giáo viên</option>
-								<option *ngIf="isStudent" value="COURSE">Giáo viên và bạn cùng lớp</option>
+								<option value="COURSE">Mọi người cùng lớp</option>
 								<option *ngIf="isStudent" value="TEACHERCOURSE">Giáo viên giảng dạy</option>
 								<option value="PRIVATE">Ẩn</option>
 							</select>

@@ -59,6 +59,7 @@ export class ClassRoomComponent implements OnInit {
   @ViewChild('updateModal') public updateModal: ModalDirective;
   @ViewChild('addSessionModal') public addSessionModal: ModalDirective;
   @ViewChild('deleteModal') public deleteModal: ModalDirective;
+  @ViewChild('readFileModal') public readFileModal: ModalDirective;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -398,6 +399,11 @@ export class ClassRoomComponent implements OnInit {
       name: file.file.name,
       url: this.sanitizer.bypassSecurityTrustResourceUrl(file.url)
     };
+    const type = this.getTypeFile(file.file.name)
+    if (type === 'Word' || type === 'Excel') {
+      return;
+    }
+    this.readFileModal.show();
   }
 
   onClickUpdateCmt(objPost, cmt) {

@@ -346,7 +346,6 @@ export class SettingComponent implements OnInit {
       return false;
     }
     return true;
-
   }
 
   dataURLtoFile(dataurl, filename) {
@@ -358,4 +357,20 @@ export class SettingComponent implements OnInit {
     return new File([u8arr], filename, {type: mime});
   }
 
+  getAllowRoleVN(role) {
+    switch (role) {
+      case 'PUBLIC':
+        return 'Công khai';
+      case 'TEACHER':
+        return 'Tất cả giáo viên';
+      case 'COURSE':
+        return 'Mọi người cùng lớp';
+      case 'TEACHERCOURSE':
+        return 'Giáo viên giảng dạy';
+      case 'PRIVATE':
+        return 'Ẩn';
+      default:
+        return '';
+    }
+  }
 }

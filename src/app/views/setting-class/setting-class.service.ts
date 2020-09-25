@@ -22,4 +22,9 @@ export class SettingClassService {
             objSession, { params, observe: 'response' });
     }
 
+    endSession(session_id) {
+        return this.http.post<any>(`${environment.apiUrl}/data/session/updateStatus?id=${session_id}&&status=END`,
+            { observe: 'response' });
+    }
+
 }
