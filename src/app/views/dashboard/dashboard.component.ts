@@ -155,7 +155,7 @@ export class DashboardComponent implements OnInit {
       response => {
         if (response.status === 200 && response.body.success) {
           // Success:
-          this.addModal.hide();
+          this.joinCourseModal.hide();
           this.getLstAllCourse();
           this.toastr.showToastrSuccess('', 'Bạn đã tham gia lớp học!');
         }
@@ -164,7 +164,8 @@ export class DashboardComponent implements OnInit {
       error => {
         // Error:
         this.loading = false;
-        this.toastr.showToastrWarning('Mã sai hoặc bạn chưa công khai thông tin cá nhân!', 'Không thành công!');
+        this.toastr.showToastrWarning(
+          'Mã sai hoặc bạn đã tham gia lớp hoặc bạn chưa công khai thông tin cá nhân!', 'Không thành công!', 4000);
       });
   }
 

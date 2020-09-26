@@ -54,6 +54,7 @@ export class ManagementComponent implements OnInit {
     if (this.strSelectedCourseId === '' || this.strSelectedCourseId === null || this.strSelectedCourseId === undefined) {
       return;
     }
+    this.iconLoading.start();
     this.managerService.getListAllCheckResult(this.strSelectedCourseId).subscribe(
       response => {
         if (response.body != null && response.body !== undefined) {
@@ -65,6 +66,10 @@ export class ManagementComponent implements OnInit {
             };
           });
         }
+        this.iconLoading.stop();
+      },
+      error => {
+        this.iconLoading.stop();
       });
   }
 

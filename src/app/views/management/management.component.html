@@ -24,7 +24,7 @@
                         <img src="../../../assets/img/empty.png" alt="">
                     </div>
                     <div class="text-center" style="margin-top: 20px;">
-                        <p>Chọn lớp và buổi học để xem danh sách điểm danh.</p>
+                        <p>*Chọn lớp và buổi học để xem danh sách điểm danh.</p>
                     </div>
                 </div>
                 <div class="no-data" *ngIf="lstStudentOfSession.length == 0 && strSelectedSessionId != ''">
@@ -54,7 +54,7 @@
                                         <img src="{{driveUrl + s?.userProfileResponse.avatar_file_id || defaultAvatar}}"
                                             class="img-avatar" >
                                     </div>
-                                    <p>{{s.userProfileResponse.fullname}}</p>
+                                    <p>{{s.userProfileResponse.username}}</p>
                                 </td>
                                 <td class="text-right action">
                                     <label class="switch switch-label switch-danger">
@@ -70,5 +70,15 @@
                 </ng-container>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Loading -->
+<ngx-ui-loader></ngx-ui-loader>
+<div class="ngx-foreground-spinner spinner-container">
+    <div class="sk-three-strings">
+    <div></div>
+    <div></div>
+    <div></div>
     </div>
 </div>

@@ -16,7 +16,7 @@ export class SessionService {
     }
 
     updateStatusToGoing(session_id) {
-        return this.http.post<any>(`http://192.168.31.178:8080/api/data/session/updateStatus?id=${session_id}&status=ONGOING`,
+        return this.http.post<any>(`${environment.apiUrl}/data/session/updateStatus?id=${session_id}&status=ONGOING`,
             { observe: 'response' });
     }
 

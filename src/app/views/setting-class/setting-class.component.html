@@ -8,7 +8,7 @@
                 <i *ngIf="!loading" class="icon-key icons"></i>
                 <span>Tạo mã mới</span>
             </button>
-            <h2 style="padding-left: 15px; color: blueviolet;">{{strCode || null}}</h2>
+            <h3 style="padding-left: 15px; color: blueviolet;">{{strCode || null}}</h3>
             <button *ngIf="strCode != null && strCode != undefined" ngxClipboard [cbContent]="strCode" style="margin-left: 15px;" type="button" class="btn btn-ghost-primary active" aria-pressed="true">
                 <i class="icon-share icons"></i>
                 Sao chép
